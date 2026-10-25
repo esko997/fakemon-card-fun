@@ -334,7 +334,8 @@ export function renderCard(card, { kidName, onAttack = null, flipped = false } =
 /** Shrink long names and move text until they fit; call once the card is in the DOM and visible. */
 export function fitCard(cardEl) {
   for (const name of cardEl.querySelectorAll(".front .name, .front .trainer-name, .front .v-name")) {
-    shrink(name, "--name-fit", () => name.scrollWidth > name.clientWidth + 1, 0.5);
+    // No slack here: even 1px of overflow turns the end of the name into "…".
+    shrink(name, "--name-fit", () => name.scrollWidth > name.clientWidth, 0.5);
   }
   const moves = cardEl.querySelector(".front .moves");
   if (moves) shrink(moves, "--fit", () => moves.scrollHeight > moves.clientHeight + 1, 0.55);
