@@ -53,6 +53,8 @@ Like real packs, some cards come out special. These are rolled once when a card 
 
 In the full-size view, pointer movement gently tilts the card under a fixed upper-left light.
 Foil reflection responds to orientation rather than following the pointer as a spotlight.
+Pointer tracking uses the stationary card slot to avoid moving-edge jitter. A frame-timed
+80 ms smoothing filter updates the card and reflection together, then stops when settled.
 Tablet orientation is used where the browser exposes it; touch taps still flip the card.
 Reduced-motion preferences disable tilt. Print output is flat, front-only; gold and rainbow
 tints print, but moving shine does not.

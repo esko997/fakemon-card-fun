@@ -22,16 +22,16 @@
 /* Tilt belongs to the outer card; turning it over remains an independent transform. */
 .card.tilt-enabled {
   transform: perspective(1100px) rotateX(var(--pitch, 0deg)) rotateY(var(--yaw, 0deg));
-  transition: transform 0.22s ease-out;
+  will-change: transform;
 }
 .card.tilt-enabled .holo::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(ellipse at var(--foil-x, 29%) var(--foil-y, 25%), #fff, transparent 65%);
   opacity: var(--glint, 0.18);
-  transition: opacity 0.22s ease-out;
 }
+.card.tilt-enabled .holo { transition: none; }
 @media (prefers-reduced-motion: reduce) {
-  .card.tilt-enabled { transform: none; transition: none; }
+  .card.tilt-enabled { transform: none; will-change: auto; }
   .card .flipper, .card .holo, .card.tilt-enabled .holo::after { transition: none; }
 }
 

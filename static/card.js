@@ -357,6 +357,9 @@ export function attachCardTilt(cardEl) {
   const options = { signal: controller.signal, passive: true };
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   const bound = (value, limit) => Math.max(-limit, Math.min(limit, value));
+  const surface = cardEl.parentElement;
+  let pitch = 0, yaw = 0, targetPitch = 0, targetYaw = 0;
+  let frame = 0, lastTime = 0;
   let reference = null;
   cardEl.classList.add("tilt-enabled");
 
@@ -376,32 +379,61 @@ export function attachCardTilt(cardEl) {
     cardEl.style.setProperty("--foil-y", `${50 + y / depth * 110}%`);
     cardEl.style.setProperty("--glint", `${Math.pow(Math.max(0, depth), 16) * 0.35}`);
   };
-  const reset = () => { reference = null; pose(0, 0); };
-  cardEl.addEventListener("pointerenter", () => {
-    // The untransformed parent is stable while the card tilts beneath the pointer.
-    reference = cardEl.parentElement.getBoundingClientRect();
+  // One clock for both the card and its reflection. Event frequency must not restart
+  // separate CSS transitions or expose sensor noise directly.
+  const animate = (time) => {
+    const blend = 1 - Math.exp(-(time - lastTime) / 80);
+    lastTime = time;
+    pitch += (targetPitch - pitch) * blend;
+    yaw += (targetYaw - yaw) * blend;
+    const settled = Math.abs(targetPitch - pitch) < 0.01 && Math.abs(targetYaw - yaw) < 0.01;
+    if (settled) { pitch = targetPitch; yaw = targetYaw; }
+    pose(pitch, yaw);
+    frame = settled ? 0 : requestAnimationFrame(animate);
+  };
+  const stop = () => {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    pitch = yaw = targetPitch = targetYaw = 0;
+    reference = null;
+    pose(0, 0);
+  };
+  const aim = (nextPitch, nextYaw) => {
+    if (reduced.matches) { stop(); return; }
+    targetPitch = nextPitch;
+    targetYaw = nextYaw;
+    if (!frame) {
+      lastTime = performance.now();
+      frame = requestAnimationFrame(animate);
+    }
+  };
+  const reset = () => { reference = null; aim(0, 0); };
+  // Listen on the stationary slot, not the card whose moving edges can repeatedly
+  // trigger leave/enter underneath a stationary pointer.
+  surface.addEventListener("pointerenter", () => {
+    reference = surface.getBoundingClientRect();
   }, options);
-  cardEl.addEventListener("pointermove", (event) => {
+  surface.addEventListener("pointermove", (event) => {
     if (event.pointerType === "touch" || reduced.matches) return;
-    const rect = reference || cardEl.parentElement.getBoundingClientRect();
+    const rect = reference || surface.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     const x = bound((event.clientX - rect.left) / rect.width * 2 - 1, 1);
     const y = bound((event.clientY - rect.top) / rect.height * 2 - 1, 1);
-    pose(-y * 7, x * 7);
+    aim(-y * 7, x * 7);
   }, options);
-  cardEl.addEventListener("pointerleave", reset, options);
-  cardEl.addEventListener("pointercancel", reset, options);
+  surface.addEventListener("pointerleave", reset, options);
+  surface.addEventListener("pointercancel", reset, options);
   window.addEventListener("resize", reset, options);
-  window.addEventListener("blur", reset, options);
+  window.addEventListener("blur", stop, options);
   window.addEventListener("deviceorientation", (event) => {
     if (event.gamma == null || event.beta == null || reduced.matches || !cardEl.isConnected) return;
-    pose(bound((45 - event.beta) * 0.2, 7), bound(event.gamma * 0.25, 7));
+    aim(bound((45 - event.beta) * 0.2, 7), bound(event.gamma * 0.25, 7));
   }, options);
-  reduced.addEventListener("change", reset, options);
-  reset();
+  reduced.addEventListener("change", stop, options);
+  pose(0, 0);
   return () => {
     controller.abort();
-    reset();
+    stop();
     cardEl.classList.remove("tilt-enabled");
   };
 }

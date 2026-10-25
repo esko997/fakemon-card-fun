@@ -488,9 +488,9 @@ function showCard(card, { reveal = false, history: mode } = {}) {
   const el = renderCard(card, { kidName: status.kid_name, onAttack: newAttack, flipped: reveal });
   el.addEventListener("click", () => el.classList.toggle("flipped"));
   stopCardTilt();
-  stopCardTilt = attachCardTilt(el);
   const slot = $("card-slot");
   slot.replaceChildren(el);
+  stopCardTilt = attachCardTilt(el);
   requestAnimationFrame(() => fitCard(el));
   const busy = card.status === "working";
   $("new-art").disabled = busy;
