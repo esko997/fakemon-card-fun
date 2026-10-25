@@ -434,7 +434,12 @@
   background-position: var(--mx, 0%) var(--my, 0%);
   transition: background-position 0.1s;
 }
-@media print { .card .holo { display: none; } }
+/* Chrome's print path flattens the 3D flip and ignores backface-visibility, so the back face
+   (rotated 180°, later in the DOM) printed mirrored over the front. Print the front only, flat. */
+@media print {
+  .card .holo, .card .face.back { display: none; }
+  .card .flipper { transform: none; transform-style: flat; }
+}
 
 /* ---------------- back: the kid's original drawing ---------------- */
 
