@@ -438,7 +438,7 @@
    (rotated 180°, later in the DOM) printed mirrored over the front. Print the front only, flat. */
 @media print {
   .card .holo, .card .face.back { display: none; }
-  .card .flipper { transform: none; transform-style: flat; }
+  .card .flipper, .card.flipped .flipper { transform: none; transform-style: flat; }
 }
 
 /* ---------------- back: the kid's original drawing ---------------- */
