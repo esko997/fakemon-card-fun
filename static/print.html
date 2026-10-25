@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Print cards</title>
+  <link rel="stylesheet" href="card.css">
+  <style>
+    body { margin: 0; font-family: "Trebuchet MS", Roboto, Arial, sans-serif; background: #ddd; }
+    .controls { display: flex; gap: 1rem; justify-content: center; padding: 1rem; }
+    .controls button { font: inherit; font-size: 1.3rem; font-weight: 800; padding: 0.7rem 1.4rem; border-radius: 1rem; border: none; background: #ffcb05; }
+    /* 3x3 cards of 63x88mm = 193x266mm, centered on letter paper (216x279mm). */
+    .sheet {
+      width: 8.5in; height: 11in; margin: 0 auto 1rem; background: #fff;
+      display: grid; grid-template-columns: repeat(3, 63mm); grid-auto-rows: 88mm; gap: 1mm;
+      justify-content: center; align-content: center;
+    }
+    .controls button.plain { background: #fff; }
+    .sheet .card { width: 63mm; }
+    /* Printed cards: square corners make cutting easy; skip the screen shadow. */
+    .sheet .face { box-shadow: none; border-radius: 0; }
+    @page { size: letter; margin: 0; }
+    @media print {
+      body { background: none; }
+      .controls { display: none; }
+      .sheet { margin: 0; break-after: page; }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button class="plain" onclick="location.href='/#binder'">⬅️ Back</button>
+    <button onclick="print()">🖨️ Print</button>
+  </div>
+  <div id="sheets"></div>
+  <script type="module">
+    import { renderCard, fitCard } from "./card.js";
+
+    const ids = (new URLSearchParams(location.search).get("ids") || "").split(",").filter(Boolean);
+    const status = await fetch("/api/status").then((r) => r.json());
+    const cards = (await Promise.all(ids.map((id) => fetch(`/api/cards/${id}`).then((r) => r.ok ? r.json() : null))))
+      .filter((c) => c && c.status === "ready" && c.stats);
+
+    const root = document.getElementById("sheets");
+    for (let i = 0; i < cards.length; i += 9) {
+      const sheet = document.createElement("div");
+      sheet.className = "sheet";
+      for (const card of cards.slice(i, i + 9)) sheet.append(renderCard(card, { kidName: status.kid_name }));
+      root.append(sheet);
+    }
+    await Promise.all([...document.images].map((img) => img.decode().catch(() => {})));
+    document.querySelectorAll(".card").forEach(fitCard);
+  </script>
+</body>
+</html>

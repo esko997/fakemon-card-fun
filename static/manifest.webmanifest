@@ -1,0 +1,11 @@
+{
+  "name": "Fakemon Card Maker",
+  "short_name": "Fakemon",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#2a3399",
+  "theme_color": "#3b4cca",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

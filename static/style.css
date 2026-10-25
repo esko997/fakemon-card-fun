@@ -1,0 +1,152 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  font-family: "Trebuchet MS", "Segoe UI", Roboto, Arial, sans-serif;
+  background: radial-gradient(circle at 30% 10%, #5b6ee8, #2a3399 70%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  overscroll-behavior: none;
+}
+button, label.icon-btn { font: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+
+.bar { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; }
+.stars { font-size: 1.3rem; font-weight: 700; }
+
+main { flex: 1; min-height: 0; position: relative; }
+.screen {
+  position: absolute;
+  inset: 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem 1.5rem;
+  overflow-y: auto;
+}
+.screen.active { display: flex; }
+
+h1, h2 { margin: 0; text-align: center; text-shadow: 0 3px 0 #0004; }
+h2 { font-size: clamp(1.4rem, 4.5vw, 2.3rem); }
+.logo {
+  font-size: clamp(3rem, 12vw, 6rem);
+  color: #ffcb05;
+  -webkit-text-stroke: 0.06em #2a3399;
+  paint-order: stroke fill;
+  line-height: 0.95;
+  text-shadow: 0 0.06em 0 #1a2070;
+}
+.logo small { font-size: 0.4em; color: #fff; -webkit-text-stroke: 0; }
+
+.row { display: flex; gap: 1rem; align-items: center; justify-content: center; }
+.row.wrap { flex-wrap: wrap; gap: 0.6rem; }
+
+.big, .mid, .icon-btn {
+  border: none;
+  border-radius: 1.2rem;
+  background: #fff;
+  color: #2a3399;
+  font-weight: 800;
+  box-shadow: 0 0.35rem 0 #0005;
+  transition: transform 0.08s;
+}
+.big { font-size: clamp(1.3rem, 4.5vw, 2rem); padding: 1rem 2rem; min-width: 12rem; }
+.mid { font-size: 1.2rem; padding: 0.7rem 1.2rem; }
+.icon-btn { font-size: 1.8rem; width: 3.6rem; height: 3.6rem; display: inline-grid; place-items: center; padding: 0; }
+.icon-btn.small { font-size: 1.1rem; width: 2.4rem; height: 2.4rem; vertical-align: middle; border-radius: 0.8rem; }
+.primary { background: #ffcb05; color: #1a1a1a; }
+button:active, label.icon-btn:active { transform: translateY(0.25rem); box-shadow: 0 0.1rem 0 #0005; }
+button:disabled { opacity: 0.5; }
+
+.msg { font-size: 1.3rem; text-align: center; max-width: 32rem; margin: 0; }
+.hint { font-size: 1.15rem; text-align: center; opacity: 0.9; margin: 0; line-height: 1.5; }
+.tip { margin: 0; opacity: 0.8; text-align: center; }
+
+/* snap */
+.viewfinder {
+  position: relative;
+  width: min(92vw, 70vh * 4 / 3);
+  aspect-ratio: 4 / 3;
+  background: #000;
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 0.4rem solid #fff;
+  display: grid;
+  place-items: center;
+}
+.viewfinder video, .viewfinder img { width: 100%; height: 100%; object-fit: contain; position: absolute; inset: 0; }
+.viewfinder .msg { position: relative; padding: 1rem; }
+.shutter {
+  width: 5.5rem; height: 5.5rem; border-radius: 50%;
+  border: 0.45rem solid #fff; background: #ff4b4b; box-shadow: 0 0 0 0.3rem #ff4b4b88;
+}
+
+/* talk */
+.thumb { max-height: 28vh; max-width: 70vw; border-radius: 0.8rem; border: 0.3rem solid #fff; }
+.mic {
+  width: 8rem; height: 8rem; border-radius: 50%; border: none;
+  font-size: 3.5rem; background: #fff; box-shadow: 0 0.4rem 0 #0005;
+}
+.mic.recording { background: #ff4b4b; animation: pulse 1s infinite; }
+.rec-time { font-size: 1.6rem; font-weight: 800; min-height: 2rem; margin: 0; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 #ff4b4bcc; } 100% { box-shadow: 0 0 0 2.5rem #ff4b4b00; } }
+
+/* making */
+.magic { position: relative; }
+.magic img {
+  max-height: 40vh; max-width: 75vw; border-radius: 1rem; border: 0.4rem solid #fff;
+  animation: wobble 1.6s ease-in-out infinite;
+}
+.spark { position: absolute; font-size: 2.5rem; animation: twinkle 1.2s ease-in-out infinite; }
+.s1 { top: -1rem; left: -1rem; }
+.s2 { top: 30%; right: -1.5rem; animation-delay: 0.4s; }
+.s3 { bottom: -1rem; left: 40%; animation-delay: 0.8s; }
+@keyframes wobble { 0%, 100% { transform: rotate(-3deg) scale(1); } 50% { transform: rotate(3deg) scale(1.04); } }
+@keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.7); } 50% { opacity: 1; transform: scale(1.2); } }
+
+/* card view */
+.card-slot { width: min(88vw, 62vh * 63 / 88); perspective: 1600px; }
+.card-slot .card { width: 100%; cursor: pointer; }
+.reveal { animation: reveal 0.9s cubic-bezier(0.2, 1.6, 0.4, 1); }
+@keyframes reveal { from { transform: scale(0.3) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* binder */
+#binder { justify-content: flex-start; }
+.binder-head { display: flex; gap: 1rem; align-items: center; justify-content: center; width: 100%; }
+.print-bar { display: flex; gap: 1rem; align-items: center; font-size: 1.2rem; font-weight: 700; }
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(42vw, 11rem), 1fr));
+  gap: 1rem;
+}
+.tile { position: relative; cursor: pointer; }
+.tile .card { width: 100%; }
+.tile.placeholder {
+  aspect-ratio: 63 / 88; border-radius: 0.8rem; background: #fff3; display: grid; place-items: center;
+  overflow: hidden; border: 0.25rem dashed #fff8;
+}
+.tile.placeholder img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.5; }
+.tile.placeholder span { position: relative; font-size: 1.1rem; font-weight: 800; text-align: center; text-shadow: 0 2px 0 #0008; }
+.tile .check {
+  position: absolute; top: -0.4rem; right: -0.4rem; width: 2.4rem; height: 2.4rem; border-radius: 50%;
+  background: #fff; color: #2a3399; display: grid; place-items: center; font-size: 1.4rem; font-weight: 900;
+  box-shadow: 0 2px 4px #0006;
+}
+.selecting .tile:not(.selected) .card { opacity: 0.55; }
+
+dialog {
+  border: none; border-radius: 1.5rem; padding: 1.5rem; text-align: center;
+  font-size: 1.5rem; font-weight: 800; color: #2a3399; max-width: 90vw;
+}
+dialog::backdrop { background: #0008; }
+dialog .big { min-width: 8rem; }
+dialog .big:not(.primary) { background: #e8e8f4; }
+dialog .pin {
+  font: inherit; font-size: 2rem; text-align: center; letter-spacing: 0.4em;
+  width: 10rem; padding: 0.4rem; margin-bottom: 1rem; border: 0.2rem solid #2a3399; border-radius: 0.8rem;
+}

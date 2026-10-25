@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fakemon – grown-ups</title>
+  <style>
+    body { font-family: system-ui, Roboto, Arial, sans-serif; max-width: 52rem; margin: 0 auto; padding: 1rem; color: #222; }
+    h1 { margin-top: 0; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 1.5rem; }
+    th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #ddd; vertical-align: top; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .big { font-size: 2rem; font-weight: 700; }
+    .muted { color: #666; font-size: 0.9rem; }
+    .hidden-cards { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+    .hidden-cards figure { margin: 0; width: 8rem; text-align: center; }
+    .hidden-cards img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #f4f4f4; border-radius: 0.4rem; }
+    button { font: inherit; padding: 0.3rem 0.8rem; }
+    code { background: #f2f2f2; padding: 0.1rem 0.3rem; border-radius: 0.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Grown-ups</h1>
+  <p><a href="/">⬅ Back to the card maker</a></p>
+
+  <h2>Cards today</h2>
+  <p><span class="big" id="left"></span> <span class="muted" id="left-detail"></span></p>
+  <p>
+    <input id="pin" type="password" inputmode="numeric" placeholder="PIN" size="6" hidden>
+    <button data-add="1">+1 card</button> <button data-add="5">+5 cards</button>
+    <span id="top-up-msg" class="muted"></span>
+  </p>
+
+  <h2>Spending this month <span class="muted" id="month"></span></h2>
+  <p><span class="big" id="total"></span> <span class="muted" id="budget"></span></p>
+  <p class="muted">Estimated from API usage and list prices; the OpenAI usage dashboard is authoritative.
+    Set a hard project limit there too (platform.openai.com → Settings → Limits).</p>
+  <table id="by-kind"></table>
+
+  <h2>Recent cards</h2>
+  <table id="per-card"></table>
+
+  <h2>Put-away cards</h2>
+  <div id="hidden" class="hidden-cards"></div>
+
+  <h2>Cards with problems</h2>
+  <p class="muted">Latest error per card; it clears once the card succeeds (the server log keeps the full history).</p>
+  <table id="errors"></table>
+
+  <h2>Tablet setup</h2>
+  <ol>
+    <li>Install the <a href="/ca.crt">local certificate</a> on the tablet: Settings → Security → Encryption &amp; credentials →
+      Install a certificate → CA certificate. This removes the browser's security warning.</li>
+    <li>Open this site in Chrome, then ⋮ → Add to Home screen.</li>
+    <li>Optional: pin the app (Settings → Security → App pinning) so it stays on the card maker.</li>
+  </ol>
+
+  <script type="module">
+    const money = (n) => `$${n.toFixed(n < 1 ? 3 : 2)}`;
+    const row = (cells, head = false) => {
+      const tr = document.createElement("tr");
+      for (const [text, num] of cells) {
+        const td = document.createElement(head ? "th" : "td");
+        td.textContent = text;
+        if (num) td.className = "num";
+        tr.append(td);
+      }
+      return tr;
+    };
+
+    async function loadToday() {
+      const st = await fetch("/api/status").then((r) => r.json());
+      document.getElementById("left").textContent = `${st.cards_left_today} left`;
+      document.getElementById("left-detail").textContent = `of ${st.daily_limit} today (top-ups last until midnight)`;
+      document.getElementById("pin").hidden = !st.pin_required;
+    }
+
+    for (const btn of document.querySelectorAll("[data-add]")) {
+      btn.onclick = async () => {
+        const res = await fetch("/api/top-up", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ count: Number(btn.dataset.add), pin: document.getElementById("pin").value }),
+        });
+        document.getElementById("top-up-msg").textContent = res.ok ? "Added!" : res.status === 403 ? "Wrong PIN" : "Failed";
+        loadToday();
+      };
+    }
+
+    async function load() {
+      loadToday();
+      const s = await fetch("/api/spend").then((r) => r.json());
+      document.getElementById("month").textContent = `(${s.month})`;
+      document.getElementById("total").textContent = money(s.month_usd);
+      document.getElementById("budget").textContent =
+        `of ${money(s.budget_usd)} budget · image ${s.models.image} (${s.models.quality}) · text ${s.models.text} · voice ${s.models.transcribe}`;
+
+      const kinds = document.getElementById("by-kind");
+      kinds.replaceChildren(row([["What"], ["Model"], ["Calls", 1], ["Cost", 1], ["Per call", 1]], true),
+        ...s.by_kind.map((k) => row([[k.kind], [k.model], [k.calls, 1], [money(k.usd), 1], [money(k.usd / k.calls), 1]])));
+
+      const cards = document.getElementById("per-card");
+      cards.replaceChildren(row([["Card"], ["Made"], ["Total cost (incl. rerolls)", 1]], true),
+        ...s.per_card.map((c) => row([[`#${c.card_id}`], [c.at.replace("T", " ").slice(0, 16)], [money(c.usd), 1]])));
+
+      const errors = document.getElementById("errors");
+      errors.replaceChildren(row([["Card"], ["Error"]], true), ...s.errors.map((e) => row([[`#${e.id}`], [e.error]])));
+
+      const hidden = await fetch("/api/cards?hidden=true").then((r) => r.json());
+      const box = document.getElementById("hidden");
+      box.replaceChildren(...hidden.map((c) => {
+        const fig = document.createElement("figure");
+        const img = document.createElement("img");
+        img.src = c.art_url || c.drawing_url;
+        const cap = document.createElement("figcaption");
+        cap.textContent = c.stats?.name || `#${c.id}`;
+        const btn = document.createElement("button");
+        btn.textContent = "Restore";
+        btn.onclick = async () => { await fetch(`/api/cards/${c.id}/unhide`, { method: "POST" }); load(); };
+        fig.append(img, cap, btn);
+        return fig;
+      }));
+      if (!hidden.length) box.textContent = "None.";
+    }
+    load();
+  </script>
+</body>
+</html>

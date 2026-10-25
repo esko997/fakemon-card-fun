@@ -1,0 +1,374 @@
+/* Trading card rendering, styled after the Mega Evolution era: silver border, type-colored body,
+   silver art frame, energy discs. Everything is sized in em off a font-size tied to the card's
+   width (cqw), so the same markup works as a binder thumbnail, a full-screen card, and a 63x88mm
+   print. All selectors are scoped under .card so app styles can't leak in. */
+
+.card {
+  container-type: inline-size;
+  aspect-ratio: 63 / 88;
+  position: relative;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.card .flipper {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+.card.flipped .flipper { transform: rotateY(180deg); }
+
+.card .face {
+  position: absolute;
+  inset: 0;
+  font-size: 4cqw; /* card = 25em wide */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 1em;
+  overflow: hidden;
+  box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.35);
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", Roboto, Arial, sans-serif;
+  /* silver border */
+  background: linear-gradient(135deg, #c9cdd1 0%, #f3f4f5 22%, #b8bdc2 48%, #eef0f2 74%, #c2c7cb 100%);
+  padding: 0.95em 0.95em 0.85em;
+}
+.card .face.back { transform: rotateY(180deg); }
+
+/* ---------------- front ---------------- */
+
+.card .front .inner {
+  position: relative;
+  height: 100%;
+  border-radius: 0.3em;
+  overflow: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 60% 40% at 25% 30%, rgba(255, 255, 255, 0.28), transparent 70%),
+    radial-gradient(ellipse 50% 35% at 75% 75%, rgba(255, 255, 255, 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 20%, rgba(0, 0, 0, 0.06), transparent 70%),
+    linear-gradient(175deg, var(--frame-light) 0%, var(--frame) 45%, var(--frame-light) 100%);
+  padding: 0.15em 0.55em 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card .top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  height: 2.3em;
+  flex: none;
+  padding-left: 3.4em;   /* room for the stage tab */
+}
+/* the pale swoosh behind HP */
+.card .top::before {
+  content: "";
+  position: absolute;
+  right: -1em;
+  top: -0.5em;
+  width: 9em;
+  height: 3em;
+  background: radial-gradient(ellipse at 70% 40%, rgba(255, 255, 255, 0.55), transparent 65%);
+  pointer-events: none;
+}
+.card .stage {
+  position: absolute;
+  left: -0.55em;
+  top: 0.2em;
+  font-size: 0.62em;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: 0.02em;
+  color: #333;
+  padding: 0.18em 1.1em 0.18em 0.7em;
+  background: linear-gradient(180deg, #f6f7f8, #b9bec3 55%, #e3e6e8);
+  clip-path: polygon(0 0, 100% 0, 86% 100%, 0 100%);
+  border-radius: 0 0 0 0.3em;
+}
+.card .name {
+  position: relative;
+  font-weight: 800;
+  font-size: 1.32em;
+  line-height: 1.1;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+}
+.card .ex-mark {
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1.15em;
+  margin-left: 0.1em;
+  color: #fff;
+  -webkit-text-stroke: 0.06em #222;
+  paint-order: stroke fill;
+  letter-spacing: -0.04em;
+}
+.card .hp { position: relative; display: flex; align-items: baseline; gap: 0.12em; white-space: nowrap; }
+.card .hp small { font-size: 0.55em; font-weight: 800; }
+.card .hp b { font-size: 1.6em; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+
+/* energy disc: colored glossy circle, black glyph */
+.card .energy {
+  display: inline-grid;
+  place-items: center;
+  width: 1.05em;
+  height: 1.05em;
+  border-radius: 50%;
+  flex: none;
+  background: radial-gradient(circle at 42% 38%, var(--cl) 0%, var(--c) 52%, var(--cd) 100%);
+  box-shadow: inset 0 0 0 0.06em rgba(255, 255, 255, 0.75), 0 0 0 0.04em rgba(0, 0, 0, 0.45);
+}
+.card .energy svg { width: 72%; height: 72%; fill: #111; }
+.card .energy svg .hole { fill: var(--c); }
+.card .energy.type-badge { font-size: 1.6em; }
+
+.card .evolves {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  height: 1.05em;
+  margin: -0.15em 0 0.15em 2.4em;
+  font-size: 0.55em;
+  font-style: italic;
+  font-weight: 700;
+  flex: none;
+}
+.card .evolves .from {
+  padding: 0.05em 1.4em 0.05em 0.6em;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.75), rgba(220, 224, 228, 0.6) 70%, transparent);
+  color: #222;
+}
+.card .mega-tag {
+  margin-left: auto;
+  padding: 0.05em 0.8em;
+  border-radius: 0.6em;
+  color: #fff;
+  -webkit-text-stroke: 0.04em #6a3c8c;
+  paint-order: stroke fill;
+  background: linear-gradient(90deg, #f6b3e8, #b9a6ff, #8fe3f5, #c7f59b);
+  white-space: nowrap;
+}
+
+/* art window with a thin silver frame */
+.card .art {
+  position: relative;
+  aspect-ratio: 1.6;
+  margin: 0 0.15em;
+  padding: 0.16em;
+  background: linear-gradient(135deg, #f7f8f9, #a9afb5 40%, #eef0f2 60%, #9da4ab);
+  box-shadow: 0 0.08em 0.25em rgba(0, 0, 0, 0.35);
+  flex: none;
+}
+.card .art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card .art .pending {
+  position: absolute;
+  inset: 0.16em;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.75);
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #222;
+  text-align: center;
+}
+.card .art .pending img { position: absolute; inset: 0; opacity: 0.35; object-fit: contain; }
+.card .art .pending span { position: relative; animation: bob 1s ease-in-out infinite alternate; }
+
+/* pokédex-style info strip */
+.card .dex {
+  flex: none;
+  margin: 0.2em -0.15em 0.1em 0.1em;
+  padding: 0.22em 1.5em 0.2em 0.8em;
+  font-size: 0.48em;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #222;
+  background: linear-gradient(180deg, #fbfbfc, #c4c9cd 50%, #eceef0);
+  border-radius: 0.8em 0 0 0.8em;
+  clip-path: polygon(0 0, 100% 0, 97% 100%, 0 100%);
+  box-shadow: 0 0.05em 0.15em rgba(0, 0, 0, 0.3);
+}
+
+.card .moves {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.55em;
+  padding: 0.2em 0.1em;
+  font-size: calc(1em * var(--fit, 1));
+}
+.card .ability-head { display: flex; align-items: center; gap: 0.35em; }
+.card .ability .label {
+  font-size: 0.62em;
+  font-weight: 800;
+  font-style: italic;
+  color: #fff;
+  padding: 0.12em 1.1em 0.12em 0.8em;
+  background: linear-gradient(180deg, #ff5a4f, #c8160d);
+  border-radius: 0.6em;
+  box-shadow: inset 0 0 0 0.08em #fff, 0 0 0 0.05em #8a0c06;
+  clip-path: polygon(0 0, 100% 0, 92% 100%, 0 100%);
+}
+.card .ability .title { color: #c8160d; font-weight: 800; font-size: 1.05em; }
+.card .move-text { font-size: 0.66em; line-height: 1.25; margin-top: 0.2em; }
+.card .attack { border-radius: 0.3em; }
+.card .attack .atk-head { display: flex; align-items: center; gap: 0.4em; }
+.card .attack .cost { display: flex; gap: 0.12em; min-width: 4.6em; }
+.card .attack .title { flex: 1; font-weight: 800; font-size: 1.08em; }
+.card .attack .dmg { font-weight: 800; font-size: 1.2em; }
+.card .attack.tappable { cursor: pointer; }
+.card .attack.tappable:active { background: rgba(255, 255, 255, 0.35); }
+
+/* weakness | resistance / retreat */
+.card .wrr {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  height: 1.35em;
+  margin: 0 -0.55em;
+  padding: 0 0.6em;
+  border-top: 0.07em solid rgba(255, 255, 255, 0.9);
+  border-bottom: 0.07em solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 -0.05em 0 rgba(0, 0, 0, 0.15), 0 0.05em 0 rgba(0, 0, 0, 0.15);
+}
+.card .wrr .seg { display: flex; align-items: center; gap: 0.18em; flex: 1; }
+.card .wrr .seg:last-child { justify-content: flex-end; }
+.card .wrr i { font-style: normal; font-weight: 700; font-size: 0.5em; margin-right: 0.3em; }
+.card .wrr b { font-size: 0.72em; font-weight: 800; }
+.card .wrr .energy { font-size: 0.78em; }
+.card .wrr .divider { width: 0.08em; height: 0.8em; background: rgba(255, 255, 255, 0.85); }
+.card .wrr .slash { width: 0.1em; height: 1.2em; background: rgba(255, 255, 255, 0.85); transform: skewX(-35deg); }
+
+.card .bottom { flex: none; display: flex; gap: 0.5em; align-items: flex-start; padding-top: 0.3em; min-height: 2.2em; }
+.card .credit { display: flex; flex-direction: column; gap: 0.2em; white-space: nowrap; font-weight: 700; }
+.card .illus { font-size: 0.45em; font-style: italic; }
+.card .setline { display: flex; align-items: center; gap: 0.25em; font-size: 0.45em; font-weight: 700; }
+.card .setline .reg {
+  display: inline-grid; place-items: center; width: 1.25em; height: 1.45em;
+  border: 0.12em solid currentColor; border-radius: 0.25em; font-size: 0.9em;
+}
+.card .setline .setcode {
+  border: 0.12em solid currentColor; border-radius: 0.25em; padding: 0 0.2em; font-size: 0.85em;
+}
+.card .setline .setcode small { font-size: 0.6em; margin-left: 0.1em; }
+.card .setline .rarity { font-size: 1.1em; }
+.card .flavor { flex: 1; font-size: 0.47em; line-height: 1.25; text-align: right; }
+.card .rule {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  padding: 0.3em 0.6em;
+  border-radius: 1em;
+  background: linear-gradient(180deg, #4b5056, #22262a);
+  box-shadow: inset 0 0 0 0.07em #c9ced3;
+  color: #fff;
+}
+.card .rule-name {
+  align-self: flex-start;
+  font-size: 0.45em;
+  font-weight: 800;
+  font-style: italic;
+  color: #222;
+  background: linear-gradient(180deg, #fff27a, #e6c419);
+  padding: 0.05em 0.9em 0.05em 0.6em;
+  border-radius: 0.5em;
+  clip-path: polygon(0 0, 100% 0, 93% 100%, 0 100%);
+}
+.card .rule-text { font-size: 0.42em; line-height: 1.25; font-weight: 600; }
+.card .copyright { flex: none; text-align: center; font-size: 0.36em; padding: 0.25em 0 0.35em; opacity: 0.85; }
+
+/* ---------------- ex: full art behind everything ---------------- */
+
+.card .ex .art {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  aspect-ratio: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+.card .ex .art .pending { inset: 0; }
+.card .ex .art-spacer { flex: 1.15; min-height: 0; }
+/* One tint layer over the art: solid behind the header, clear through the middle, then a
+   frosted type-colored panel behind the text. A single layer leaves no seams between rows. */
+.card .ex .inner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* fallback for browsers without color-mix() (Chrome < 111) */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.7) 7%,
+    transparent 14%, transparent 40%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0.82) 100%);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--frame-light) 92%, transparent) 0%,
+    color-mix(in srgb, var(--frame-light) 80%, transparent) 7%,
+    transparent 14%,
+    transparent 40%,
+    color-mix(in srgb, var(--frame-light) 82%, transparent) 50%,
+    color-mix(in srgb, var(--frame-light) 88%, transparent) 100%);
+}
+.card .ex .inner > :not(.art):not(.holo) { position: relative; z-index: 2; }
+.card .ex .holo { z-index: 3; }
+.card .mega .name {
+  color: #ffe94a;
+  -webkit-text-stroke: 0.07em #222;
+  paint-order: stroke fill;
+}
+
+/* holo shine: rare cards on the art, ex cards across the whole card.
+   no-repeat + soft-edged band + clamped position = no seam at any tilt. */
+.card .holo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: color-dodge;
+  opacity: 0.4;
+  background-image: linear-gradient(115deg,
+    transparent 30%,
+    rgba(255, 110, 199, 0.8) 40%,
+    rgba(122, 240, 255, 0.8) 46%,
+    rgba(255, 248, 107, 0.8) 52%,
+    rgba(138, 255, 138, 0.8) 58%,
+    transparent 68%);
+  background-repeat: no-repeat;
+  background-size: 300% 300%;
+  background-position: var(--mx, 0%) var(--my, 0%);
+  transition: background-position 0.1s;
+}
+@media print { .card .holo { display: none; } }
+
+/* ---------------- back: the kid's original drawing ---------------- */
+
+.card .back .paper {
+  height: 100%;
+  border-radius: 0.3em;
+  background: #fffdf5;
+  display: flex;
+  flex-direction: column;
+  padding: 0.8em;
+  gap: 0.5em;
+  color: #222;
+}
+.card .back .drawing { flex: 1; min-height: 0; display: grid; place-items: center; }
+.card .back .drawing img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 0.3em; box-shadow: 0 0.1em 0.4em rgba(0, 0, 0, 0.2); }
+.card .back .by { text-align: center; font-weight: 800; font-size: 1em; }
+.card .back .story { font-size: 0.55em; line-height: 1.3; font-style: italic; max-height: 9em; overflow: hidden; color: #444; }
+
+@keyframes bob { from { transform: translateY(-0.15em); } to { transform: translateY(0.15em); } }
