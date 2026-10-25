@@ -182,7 +182,7 @@ def create_app() -> FastAPI:
         for task in list(state["app"].tasks):
             task.cancel()
 
-    api = FastAPI(title="Fakemon Card Maker", lifespan=lifespan)
+    api = FastAPI(title="Learning Box", lifespan=lifespan)
 
     def app() -> App:
         return state["app"]

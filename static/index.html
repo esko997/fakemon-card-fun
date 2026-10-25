@@ -4,123 +4,44 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#3b4cca">
-  <title>Fakemon Cards</title>
+  <title>Learning Box</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg">
-  <link rel="stylesheet" href="card.css">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .hub { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; padding: 1rem; }
+    .hub h1 { font-size: clamp(2.6rem, 10vw, 5rem); }
+    .hub h1 small { display: block; font-size: 0.35em; color: #fff; -webkit-text-stroke: 0; margin-top: 0.4rem; }
+    .tiles { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
+    .tile {
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem;
+      width: min(40vw, 16rem); aspect-ratio: 1; border-radius: 1.8rem; text-decoration: none;
+      background: #fff; color: #2a3399; font-weight: 900; font-size: clamp(1.3rem, 4vw, 1.9rem); text-align: center;
+      box-shadow: 0 0.5rem 0 #0005; transition: transform 0.08s;
+    }
+    .tile:active { transform: translateY(0.35rem); box-shadow: 0 0.15rem 0 #0005; }
+    .tile .emoji { font-size: 4em; line-height: 1; }
+    .tile.cards { background: linear-gradient(160deg, #fff6c2, #ffcb05); }
+    .tile.race { background: linear-gradient(160deg, #d6f5ff, #5bc8f5); }
+  </style>
 </head>
 <body>
   <header class="bar">
-    <button class="icon-btn" data-go="home" aria-label="Home">🏠</button>
+    <span></span>
     <span id="env-badge" class="env-badge" hidden></span>
-    <span id="stars" class="stars"></span>
+    <span></span>
   </header>
-
-  <main>
-    <section id="home" class="screen">
-      <h1 class="logo">Fakemon<br><small>Card Maker</small></h1>
-      <button class="big primary" data-go="snap">✏️ Make a new card!</button>
-      <button class="big" data-go="binder">📒 My cards</button>
-      <p id="home-msg" class="msg"></p>
-    </section>
-
-    <section id="snap" class="screen">
-      <h2>📷 Show me your drawing!</h2>
-      <div class="viewfinder">
-        <video id="video" playsinline muted autoplay></video>
-        <img id="snap-preview" alt="Your drawing" hidden>
-        <p id="cam-msg" class="msg" hidden></p>
-      </div>
-      <div class="row" id="snap-live">
-        <button class="icon-btn" id="flip-cam" aria-label="Switch camera">🔄</button>
-        <button class="shutter" id="shutter" aria-label="Take picture"></button>
-        <label class="icon-btn" aria-label="Pick a photo">🖼️<input type="file" id="pick-photo" accept="image/*" capture="environment" hidden></label>
-      </div>
-      <div class="row" id="snap-done" hidden>
-        <button class="big" id="snap-again">↩️ Again</button>
-        <button class="big primary" id="snap-ok">👍 Use it!</button>
-      </div>
-    </section>
-
-    <section id="talk" class="screen">
-      <h2>🎤 Tell me about it!</h2>
-      <img id="talk-drawing" class="thumb" alt="Your drawing">
-      <p class="hint">What's its name? What does it look like?<br>What are its powers and attacks? Where does it live?<br>
-        <small>Making an Item or Supporter card? Just say so!</small>
-        <button class="icon-btn small" id="say-hint" aria-label="Read this to me">🔊</button></p>
-      <button class="mic" id="mic" aria-label="Record">🎤</button>
-      <p id="rec-time" class="rec-time"></p>
-      <div class="row" id="talk-done" hidden>
-        <button class="big" id="play-story">▶️ Listen</button>
-        <button class="big primary" id="make">✨ Make my card!</button>
-      </div>
-    </section>
-
-    <section id="making" class="screen">
-      <div class="magic">
-        <img id="making-drawing" alt="">
-        <span class="spark s1">✨</span><span class="spark s2">⭐</span><span class="spark s3">✨</span>
-      </div>
-      <h2 id="making-step">Getting ready…</h2>
-      <div id="making-failed" hidden>
-        <p class="msg" id="making-msg">Oops! The card machine got confused.</p>
-        <div id="making-detail" class="err-detail" hidden>
-          <p>Ask Dad to look at this error:</p>
-          <pre></pre>
-        </div>
-        <div class="row">
-          <button class="big" data-go="home">🏠 Home</button>
-          <button class="big primary" id="retry">🔁 Try again</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="view" class="screen">
-      <div id="card-slot" class="card-slot"></div>
-      <p class="tip" id="view-tip"></p>
-      <div class="row wrap">
-        <button class="mid" id="read-card">🔊 Read it</button>
-        <button class="mid" id="new-art">🎨 New picture</button>
-        <button class="mid" data-go="binder">📒 My cards</button>
-        <button class="mid" id="put-away">🗑️</button>
-      </div>
-    </section>
-
-    <section id="binder" class="screen">
-      <div class="binder-head">
-        <h2>📒 My cards</h2>
-        <button class="mid" id="print-mode">🖨️ Print</button>
-      </div>
-      <div id="print-bar" class="print-bar" hidden>
-        <span id="print-count">Tap cards to print</span>
-        <button class="mid primary" id="print-go" disabled>🖨️ Print!</button>
-      </div>
-      <div id="grid" class="grid"></div>
-    </section>
+  <main class="hub">
+    <h1 class="logo">Learning Box<small id="hello"></small></h1>
+    <nav class="tiles">
+      <a class="tile cards" href="cards.html"><span class="emoji">🃏</span>Fakemon Cards</a>
+      <a class="tile race" href="number-race.html"><span class="emoji">🎲</span>Number Race</a>
+    </nav>
   </main>
-
-  <dialog id="ask">
-    <p id="ask-text"></p>
-    <div id="ask-detail" class="err-detail" hidden>
-      <p>Ask Dad to look at this error:</p>
-      <pre></pre>
-    </div>
-    <div class="row">
-      <button class="big" value="no" id="ask-no">No</button>
-      <button class="big primary" value="yes" id="ask-yes">Yes!</button>
-    </div>
-  </dialog>
-
-  <dialog id="pin-dlg">
-    <p>🔑 Grown-up PIN</p>
-    <input id="pin-input" class="pin" type="password" inputmode="numeric" autocomplete="off">
-    <div class="row">
-      <button class="big" id="pin-cancel">Cancel</button>
-      <button class="big primary" id="pin-ok">⭐ Add 5 cards</button>
-    </div>
-  </dialog>
-
-  <script type="module" src="app.js"></script>
+  <script type="module">
+    import { loadShell } from "./shell.js";
+    const status = await loadShell("Learning Box");
+    document.getElementById("hello").textContent = `Hi ${status.kid_name}! What do you want to play?`;
+  </script>
 </body>
 </html>

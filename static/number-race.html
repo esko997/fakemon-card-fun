@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Number Race</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="number-race.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="icon-btn" href="./" aria-label="All games">🧰</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <button class="icon-btn" id="rules-btn" aria-label="How to play">🔊</button>
+  </header>
+
+  <main>
+    <!-- 1. who's playing -->
+    <section id="setup" class="screen">
+      <h1 class="logo">🎲 Number Race</h1>
+      <p class="rules">Roll two dice and add them up. Fill in a box for that number.<br>
+        The first number to reach the top wins!</p>
+      <h2>Who's playing?</h2>
+      <div class="row wrap" id="who"></div>
+      <h2>Who adds the dice?</h2>
+      <div class="row wrap" id="adder">
+        <button class="chip" data-auto="false">🧠 I'll add them!</button>
+        <button class="chip" data-auto="true">✨ Add for me</button>
+      </div>
+      <h2>How long?</h2>
+      <div class="row wrap" id="length">
+        <button class="chip" data-rows="5">🐇 Short</button>
+        <button class="chip" data-rows="8">🐢 Normal</button>
+        <button class="chip" data-rows="10">🐌 Long</button>
+      </div>
+      <button class="big primary" id="go">Let's go! 🏁</button>
+    </section>
+
+    <!-- 2. each player picks a number to cheer for -->
+    <section id="pick" class="screen">
+      <h2 id="pick-title"></h2>
+      <p class="rules">Which number do you think will win?</p>
+      <div class="pick-grid" id="pick-grid"></div>
+    </section>
+
+    <!-- 3. the race -->
+    <section id="race" class="screen">
+      <div class="controls">
+        <div class="turn" id="turn"></div>
+        <div class="dice" id="dice">
+          <div class="die"></div>
+          <span class="plus">+</span>
+          <div class="die"></div>
+        </div>
+        <p class="prompt" id="prompt"></p>
+        <button class="big primary roll" id="roll">🎲 Roll!</button>
+      </div>
+      <div class="board" id="board"></div>
+    </section>
+  </main>
+
+  <dialog id="win">
+    <div class="confetti" aria-hidden="true"></div>
+    <h2 id="win-title"></h2>
+    <p id="win-who"></p>
+    <p id="win-fact" class="fact"></p>
+    <div class="row">
+      <button class="big" id="win-home">🧰 Home</button>
+      <button class="big primary" id="win-again">🔁 Play again</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="number-race.js"></script>
+</body>
+</html>

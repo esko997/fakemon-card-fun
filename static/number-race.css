@@ -1,0 +1,96 @@
+/* Number Race. Shared look (buttons, header, screens) comes from style.css. */
+
+.rules { margin: 0; text-align: center; font-size: 1.2rem; opacity: 0.9; line-height: 1.5; }
+#setup { gap: 0.8rem; }
+#setup h2 { font-size: clamp(1.2rem, 3.5vw, 1.7rem); margin-top: 0.4rem; }
+
+.chip {
+  border: none; border-radius: 1rem; padding: 0.7rem 1.3rem;
+  font-size: 1.3rem; font-weight: 800; color: #2a3399;
+  background: #fff6; box-shadow: 0 0.3rem 0 #0004;
+}
+.chip.on { background: var(--pc, #ffcb05); color: #1a1a1a; }
+.chip:active { transform: translateY(0.2rem); box-shadow: 0 0.1rem 0 #0004; }
+
+/* pick a number */
+.pick-grid { display: grid; grid-template-columns: repeat(6, auto); gap: 1rem; justify-content: center; }
+.pick-num {
+  width: clamp(3.8rem, 12vw, 6rem); aspect-ratio: 1; border-radius: 50%; border: 0.3rem solid #fff;
+  background: var(--c); color: #fff; font-size: clamp(1.8rem, 6vw, 2.8rem); font-weight: 900;
+  text-shadow: 0 2px 0 #0005; box-shadow: 0 0.35rem 0 #0005;
+}
+.pick-num:disabled { opacity: 0.55; }
+.pick-num:active { transform: translateY(0.25rem); box-shadow: 0 0.1rem 0 #0005; }
+
+/* the race: controls beside the board in landscape, above it in portrait */
+#race.active { display: grid; grid-template-columns: minmax(14rem, 24%) 1fr; align-items: stretch; gap: 1rem; padding: 0.5rem 1rem 1rem; }
+@media (orientation: portrait) {
+  #race.active { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .controls { flex-direction: row !important; flex-wrap: wrap; justify-content: center; }
+}
+.controls { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; }
+.turn {
+  font-size: 1.4rem; font-weight: 900; padding: 0.4rem 1rem; border-radius: 1rem;
+  background: var(--pc); color: #1a1a1a; box-shadow: 0 0.25rem 0 #0004;
+}
+.prompt { margin: 0; min-height: 3.2rem; text-align: center; font-size: 1.35rem; font-weight: 800; max-width: 18rem; }
+.roll { min-width: 0; }
+.roll:disabled { opacity: 0.45; }
+
+.dice { display: flex; align-items: center; gap: 0.6rem; }
+.dice .plus { font-size: 2.4rem; font-weight: 900; }
+.die {
+  width: clamp(4rem, 9vw, 6rem); aspect-ratio: 1; border-radius: 22%;
+  background: linear-gradient(145deg, #fff, #e4e6ef); box-shadow: 0 0.35rem 0 #0005, inset 0 0 0 0.15rem #fff;
+  /* padding in % would be relative to the .dice row's width, not the die's */
+  display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: clamp(0.55rem, 1.25vw, 0.85rem);
+}
+.die span { display: flex; align-items: center; justify-content: center; }
+.die span.on::after { content: ""; width: 85%; aspect-ratio: 1; border-radius: 50%; background: #1d2266; }
+.dice.idle .die { opacity: 0.55; }
+.dice.tumble .die { animation: tumble 0.14s linear infinite alternate; }
+.dice.tumble .die:last-child { animation-delay: 0.07s; }
+@keyframes tumble { from { transform: rotate(-14deg) translateY(-0.3rem); } to { transform: rotate(14deg) translateY(0.2rem); } }
+
+/* the board: one column per number, boxes fill from the bottom */
+.board { display: grid; grid-template-columns: repeat(11, 1fr); gap: 0.4rem; min-height: 0; }
+.col { display: flex; flex-direction: column; gap: 0.3rem; min-height: 0; border-radius: 0.8rem; padding: 0.2rem; }
+.cells { flex: 1; min-height: 0; display: flex; flex-direction: column-reverse; gap: 0.25rem; }
+.cell {
+  flex: 1; min-height: 0; border-radius: 0.45rem; border: 0.15rem dashed #ffffff55;
+  display: grid; place-items: center; font-weight: 900;
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", "Trebuchet MS", sans-serif;
+  font-size: clamp(0.9rem, 2.6vw, 1.7rem);
+}
+.cell.filled { background: var(--c); border: 0.15rem solid #fff; color: #fff; text-shadow: 0 2px 0 #0005; animation: pop 0.35s ease-out; }
+@keyframes pop { from { transform: scale(0.3); } 60% { transform: scale(1.15); } to { transform: scale(1); } }
+.label {
+  flex: none; aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background: var(--c); border: 0.2rem solid #fff; font-weight: 900; font-size: clamp(1rem, 2.8vw, 1.7rem);
+  text-shadow: 0 2px 0 #0005;
+}
+.fans { flex: none; min-height: 1.6rem; text-align: center; font-size: 1.3rem; line-height: 1.2; }
+
+.board.asking .col { cursor: pointer; background: #ffffff12; }
+.board.asking .col:active { background: #ffffff30; }
+.col.nope { animation: nope 0.4s; }
+@keyframes nope { 20%, 60% { transform: translateX(-0.4rem); } 40%, 80% { transform: translateX(0.4rem); } }
+.col.hint { background: #ffffff38; box-shadow: 0 0 0 0.25rem #ffcb05; animation: glow 0.8s ease-in-out infinite alternate; }
+@keyframes glow { to { box-shadow: 0 0 0 0.25rem #ffcb05, 0 0 1.5rem #ffcb05; } }
+.col.winner { box-shadow: 0 0 0 0.3rem #ffcb05, 0 0 2rem #ffcb05; }
+
+/* winner */
+#win { overflow: hidden; }
+#win h2 { color: #2a3399; text-shadow: none; font-size: 2rem; }
+#win p { margin: 0.6rem 0; }
+#win .fact { font-size: 1.1rem; font-weight: 600; color: #555; max-width: 28rem; margin: 0.6rem auto 1.2rem; }
+.confetti { position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle, #ff7a45 0 0.25rem, transparent 0.28rem),
+    radial-gradient(circle, #2fa8ff 0 0.2rem, transparent 0.23rem),
+    radial-gradient(circle, #ffcb05 0 0.22rem, transparent 0.25rem),
+    radial-gradient(circle, #c46bff 0 0.18rem, transparent 0.21rem);
+  background-size: 3.1rem 3.7rem, 4.3rem 2.9rem, 2.7rem 4.1rem, 3.9rem 3.3rem;
+  animation: fall 2.5s linear infinite; opacity: 0.35; }
+@keyframes fall { to { background-position: 0 3.7rem, 1rem 2.9rem, -1rem 4.1rem, 0.5rem 3.3rem; } }
+#win h2, #win p, #win .row { position: relative; }

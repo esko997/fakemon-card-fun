@@ -1,7 +1,21 @@
-# Fakemon Card Maker: setup and details
+# Learning Box: setup and details
 
 How it works, setting up the server and tablet, costs and limits, and where data lives.
 For the short version, see the [README](../README.md).
+
+| Page | What |
+|---|---|
+| `/` | Learning Box home: one tile per game |
+| `/cards.html` | Fakemon card maker (`/print.html` prints cards, `/parent.html` is the grown-ups page) |
+| `/number-race.html` | Number Race; runs entirely in the browser, no server data |
+
+A second, separate instance for trying changes can run beside the kid's: its own checkout (a git
+worktree on another branch), its own copy of `data/`, `PORT=8444 ./run.sh`, and
+`FAKEMON_ENV=dev` in its `.env`, which shows a striped DEV badge so the two can't be confused.
+Both share the OpenAI key; give the dev `.env` a small `MONTHLY_BUDGET_USD`, since each
+instance's budget guard only counts its own spending.
+
+## Fakemon Cards
 
 ```
 tablet (browser) ──HTTPS──▶ this server ──▶ OpenAI
@@ -120,7 +134,7 @@ As a systemd user service:
 mkdir -p ~/.config/systemd/user
 cat > ~/.config/systemd/user/fakemon.service <<EOF
 [Unit]
-Description=Fakemon Card Maker
+Description=Learning Box
 After=network-online.target
 
 [Service]
