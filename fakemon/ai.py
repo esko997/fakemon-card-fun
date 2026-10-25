@@ -44,13 +44,12 @@ POKEMON_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
     "required": [
-        "name", "kind", "full_art", "stage", "evolves_from", "hp", "type", "species", "height", "weight",
-        "ability", "attacks", "weakness", "resistance", "retreat", "rarity", "flavor", "art_prompt",
+        "name", "kind", "stage", "evolves_from", "hp", "type", "species", "height", "weight", "ability",
+        "attacks", "weakness", "resistance", "retreat", "rarity", "flavor", "art_prompt",
     ],
     "properties": {
         "name": {"type": "string", "description": "Without 'ex'; include 'Mega ' for mega_ex."},
         "kind": {"type": "string", "enum": KINDS},
-        "full_art": {"type": "boolean", "description": "True only if the child asks for a full-art or illustration card."},
         "stage": {"type": "string", "enum": ["Basic", "Stage 1", "Stage 2"]},
         "evolves_from": {"type": ["string", "null"], "description": "Invented pre-evolution name; null for Basic."},
         "hp": {"type": "integer", "description": "Multiple of 10; the child's number if they said one, else 30-300."},
@@ -93,12 +92,17 @@ TRAINER_SCHEMA: dict[str, Any] = {
 
 CARD_TYPES = ["pokemon", "item", "supporter"]
 
+# Special versions a kid can ask for; otherwise they are rolled at random (see roll_extras).
+REQUESTS = ["full_art", "vintage", "gold", "rainbow", "shiny", "holo"]
+
 CARD_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["card_type", "pokemon", "trainer"],
+    "required": ["card_type", "requests", "pokemon", "trainer"],
     "properties": {
         "card_type": {"type": "string", "enum": CARD_TYPES},
+        "requests": {"type": "array", "items": {"type": "string", "enum": REQUESTS},
+                     "description": "Special versions the child explicitly asked for; usually empty."},
         "pokemon": {"anyOf": [POKEMON_SCHEMA, {"type": "null"}], "description": "Only for card_type pokemon."},
         "trainer": {"anyOf": [TRAINER_SCHEMA, {"type": "null"}], "description": "Only for item and supporter."},
     },
@@ -124,6 +128,11 @@ Rules for every card:
 - Original inventions only: never use names of real Pokémon, real trainer cards, or other existing
   characters. Creatures are called "Fakemon" in card text.
 - Kid-friendly content only.
+- requests: special versions the child explicitly asks for, else empty: "full_art" (full art or
+  illustration card), "vintage" (old-school, classic, retro or yellow-border card), "gold" (gold
+  card), "rainbow" (rainbow card), "shiny" (a shiny, different-colored version), "holo" (holo or
+  holographic or foil card). Words like "shiny" describing its skin or "gold" as its color are not
+  requests; only asks about the card itself.
 
 Creature (pokemon) cards:
 - Types are the card game's energy types. Map other words: electric -> lightning, dark -> darkness,
@@ -133,7 +142,6 @@ Creature (pokemon) cards:
   If the child says how many energies an attack needs, use that many (max 4).
 - kind: "mega_ex" if the child says Mega (put "Mega " at the start of the name), "ex" if they say
   ex or describe it as legendary or super strong, otherwise "regular". Never put "ex" in the name.
-- full_art: true only if the child asks for a "full art" or "illustration" card; otherwise false.
 - Short and readable for a young child: name <= 18 characters, attack names <= 20,
   attack/ability text <= 90 characters, flavor text <= 120 characters.
 - Fun and a bit over-the-top. Use the child's HP and damage numbers exactly, however big. When you
@@ -278,8 +286,61 @@ Character details: {details}
 
 LANDSCAPE, PORTRAIT = "1536x1024", "1024x1536"
 
-# Share of regular creature cards that come out as full-art illustration cards, a surprise "pull".
-ILLUSTRATION_CHANCE = 1 / 6
+# Surprise "pulls", rolled once when a card is invented and stored with it. Odds are per card.
+VINTAGE_CHANCE = 1 / 8         # 1990s yellow-border layout (regular creatures)
+ILLUSTRATION_CHANCE = 1 / 6    # full-art storybook scene, gold ★ (regular creatures)
+SHINY_CHANCE = 1 / 15          # alternate colors
+FINISH_ODDS = {                # foil treatments, any card type; the rest get none (or holo if rare)
+    "gold": 0.03,              # gold secret rare: full art, gold frame and tint
+    "rainbow": 0.04,           # rainbow rare: full art under a rainbow foil
+    "cosmos": 0.07,            # cosmos-pattern holo on the art
+    "sparkle": 0.06,           # glitter across the whole card
+    "reverse": 0.10,           # reverse holo: foil card body, plain art
+}
+HOLO_FINISHES = ["holo", "cosmos", "sparkle", "reverse"]
+
+
+def roll_extras(card_type: str, kind: str | None, rarity: str, requests: list[str]) -> dict[str, Any]:
+    """Layout/finish/shiny for a new card: what the child asked for, else a random roll."""
+    asked = set(requests)
+    if "gold" in asked or "rainbow" in asked:
+        finish = "gold" if "gold" in asked else "rainbow"
+    elif "holo" in asked:
+        finish = random.choice(HOLO_FINISHES)
+    else:
+        roll, finish = random.random(), None
+        for name, odds in FINISH_ODDS.items():
+            if roll < odds:
+                finish = name
+                break
+            roll -= odds
+        finish = finish or ("holo" if rarity == "rare" else "none")
+    if card_type != "pokemon":
+        return {"finish": finish}
+
+    if kind != "regular":
+        layout = "standard"   # ex / Mega ex have their own full-art layout
+    elif "vintage" in asked:
+        layout = "vintage"
+    elif "full_art" in asked:
+        layout = "illustration"
+    elif finish in ("gold", "rainbow"):
+        layout = "standard"   # already full art
+    else:
+        roll = random.random()
+        layout = "vintage" if roll < VINTAGE_CHANCE else (
+            "illustration" if roll < VINTAGE_CHANCE + ILLUSTRATION_CHANCE else "standard")
+    if layout == "vintage" and finish in ("gold", "rainbow"):
+        finish = "holo"       # 90s cards had plain holo, not gold/rainbow foils
+    shiny = "shiny" in asked or random.random() < SHINY_CHANCE
+    return {"layout": layout, "finish": finish, "shiny": shiny}
+
+
+def is_full_art(stats: dict[str, Any]) -> bool:
+    """Creature cards whose art fills the whole card (portrait art)."""
+    return stats["card_type"] == "pokemon" and (
+        stats["kind"] != "regular" or stats["layout"] == "illustration" or stats["finish"] in ("gold", "rainbow")
+    )
 
 
 def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
@@ -288,11 +349,17 @@ def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
         return ITEM_ART_PROMPT, "item", LANDSCAPE
     if stats["card_type"] == "supporter":
         return SUPPORTER_ART_PROMPT, "supporter", LANDSCAPE
-    if stats["kind"] != "regular":
-        return EX_ART_PROMPT, "creature", PORTRAIT
     if stats["layout"] == "illustration":
         return ILLUSTRATION_ART_PROMPT, "creature", PORTRAIT
+    if is_full_art(stats):
+        return EX_ART_PROMPT, "creature", PORTRAIT
     return ART_PROMPT, "creature", LANDSCAPE
+
+
+SHINY_ART = """\
+This is the creature's rare shiny form: give it a striking alternate color scheme that is clearly
+different from its usual colors (a new main color and accent colors), keeping its shape and features.
+"""
 
 
 # Appended after a moderation block; resending the identical request would only be blocked again.
@@ -345,20 +412,18 @@ def tidy_card(raw: dict[str, Any]) -> dict[str, Any]:
     if card_type != "pokemon":
         if raw["trainer"] is None:
             raise ValueError(f"{card_type} card came back without trainer details")
-        return {"card_type": card_type, **raw["trainer"]}
+        trainer = raw["trainer"]
+        return {"card_type": card_type, **trainer, **roll_extras(card_type, None, trainer["rarity"], raw["requests"])}
     stats = raw["pokemon"]
     if stats is None:
         raise ValueError("creature card came back without creature details")
     attacks = [tidy_attack(a) for a in stats["attacks"][:2]]
     if not attacks:
         raise ValueError("card came back with no attacks")
-    full_art = stats.pop("full_art")
-    # ex / Mega ex have their own full-art layout; regular cards are full-art when asked, or by luck.
-    illustration = stats["kind"] == "regular" and (full_art or random.random() < ILLUSTRATION_CHANCE)
     return {
         "card_type": "pokemon",
         **stats,
-        "layout": "illustration" if illustration else "standard",
+        **roll_extras("pokemon", stats["kind"], stats["rarity"], raw["requests"]),
         "hp": _clamp(round(int(stats["hp"]) / 10) * 10, 10, 990),   # 3 digits fit the header
         "retreat": _clamp(int(stats["retreat"]), 0, 4),
         # the card prints "<species> Fakemon"
@@ -450,6 +515,8 @@ class CardAI:
             type=stats.get("type", ""),
             details=stats["art_prompt"],
         )
+        if stats.get("shiny"):
+            prompt += "\n" + SHINY_ART
         if safer:
             prompt += SAFER_ART
         try:

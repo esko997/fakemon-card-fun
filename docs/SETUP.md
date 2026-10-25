@@ -19,9 +19,21 @@ words show up exactly, and attacks or art can be re-rolled separately.
 Types follow the card game's ten energy types (grass, fire, water, lightning, psychic, fighting,
 darkness, metal, dragon, colorless); other words a kid uses are mapped onto them (electric →
 lightning, ice → water, …). Saying "ex" or "Mega" makes a full-art ex / Mega Evolution ex card
-with portrait art and the rule box. About 1 in 6 regular creature cards comes out as a full-art
-**illustration** card (a storybook scene of the creature's life, gold ★), like a rare pull; saying
-"full art" or "illustration" asks for one. `ILLUSTRATION_CHANCE` in `fakemon/ai.py` sets the odds.
+with portrait art and the rule box.
+
+Like real packs, some cards come out special. These are rolled once when a card is made (odds in
+`fakemon/ai.py`), or the kid can ask for them by name:
+
+| Special | Ask with | Odds | Looks like |
+|---|---|---|---|
+| Illustration | "full art", "illustration" | 1 in 6 creature cards | full-art storybook scene, gold ★ |
+| Vintage | "old school", "classic", "yellow border" | 1 in 8 creature cards | 1990s yellow-border layout |
+| Gold | "gold card" | 3% | full art, gold frame, gold-etched art, gold ★★★ |
+| Rainbow | "rainbow card" | 4% | full art under a pastel rainbow foil, rainbow ★★★ |
+| Holo foils | "holo", "foil" | cosmos 7%, sparkle 6%, reverse 10%; rare cards get classic holo | ring pattern on the art / glitter over the card / foil card body |
+| Shiny | "shiny" | 1 in 15 creature cards | painted in alternate colors, ✦ by the name |
+
+Foils follow finger, mouse and tablet tilt. Gold and rainbow tints also print; moving shine doesn't.
 
 Each painting rolls an art style, the way real sets mix illustrators: anime cel-shading (most
 often), watercolor, painterly, 3D CG, papercraft, pastel, woodblock print, clay, or 90s retro.

@@ -78,6 +78,7 @@ class Card:
             "status": self.status,
             "step": self.step,
             "error_kind": self.kind,
+            "error": self.error,
             "transcript": self.transcript,
             "stats": self.stats,
             "drawing_url": f"{base}/{self.drawing_file}",

@@ -87,15 +87,52 @@ function energy(type, extra = "") {
 const RARITY = { common: "●", uncommon: "◆", rare: "★" };
 const STAGE = { "Basic": "BASIC", "Stage 1": "STAGE1", "Stage 2": "STAGE2" };
 
+// Gold cards swap the type colors for gold (frame, body tint, overlays).
+const GOLD = { frame: ["#d9b44a", "#f6e7ad"], ink: "#2b1d00" };
+
+/** Foil on the art window. */
+function artFoil(finish) {
+  if (finish === "holo") return h("div", { class: "holo" });
+  if (finish === "cosmos") return h("div", { class: "holo cosmos" });
+  return null;
+}
+
+/** Foils over (or, for reverse holo, under) the whole card body. */
+function cardFoils(finish, fullArt) {
+  const out = [];
+  if (finish === "gold") out.push(h("div", { class: "foil gold" }));
+  if (finish === "rainbow") out.push(h("div", { class: "foil rainbow" }));
+  if (finish === "sparkle") out.push(h("div", { class: "holo sparkle" }));
+  if (finish === "reverse") out.push(h("div", { class: `holo ${fullArt ? "sparkle" : "reverse"}` }));
+  if (fullArt || finish === "gold" || finish === "rainbow") out.push(h("div", { class: "holo" }));
+  return out;
+}
+
+/** Set-line rarity symbol: rarer treatments outrank the printed rarity. */
+function rarityMark(s) {
+  const mark = s.finish === "gold" ? h("span", { class: "gold" }, "★★★")
+    : s.finish === "rainbow" ? h("span", { class: "rainbow" }, "★★★")
+    : s.kind === "ex" || s.kind === "mega_ex" ? "★★"
+    : s.layout === "illustration" ? h("span", { class: "gold" }, "★")
+    : RARITY[s.rarity] || "●";
+  return s.shiny ? [h("span", { class: "shiny-star" }, "✦"), mark] : mark;
+}
+
+const shinyMark = (s) => (s.shiny ? h("span", { class: "shiny-mark", title: "Shiny" }, "✦") : null);
+
+function faceClasses(s, ...extra) {
+  return ["face", "front", `finish-${s.finish}`, s.shiny ? "shiny" : "", ...extra].filter(Boolean).join(" ");
+}
+
 function setNumber(id) {
   // "/151" for the original set; past 151 it reads like a secret rare (152/151).
   return `${String(id).padStart(3, "0")}/151`;
 }
 
-function artBox(card, holo) {
+function artBox(card, foil) {
   const art = h("div", { class: "art" },
     card.art_url ? h("img", { src: card.art_url, alt: card.stats.name }) : null,
-    holo ? h("div", { class: "holo" }) : null,
+    foil,
   );
   if (card.status === "working") {
     art.append(h("div", { class: "pending" }, h("img", { src: card.drawing_url, alt: "" }), h("span", {}, "🎨 Painting…")));
@@ -127,67 +164,121 @@ const TRAINER_RULE = {
 function trainerFront(card, { kidName }) {
   const s = card.stats;
   const label = s.card_type === "item" ? "Item" : "Supporter";
-  return h("div", { class: `face front trainer ${s.card_type}` },
+  return h("div", { class: faceClasses(s, "trainer", s.card_type) },
     h("div", { class: "inner" },
       h("div", { class: "trainer-top" },
         h("span", { class: "subtype" }, label),
         h("span", { class: "trainer-word" }, "TRAINER"),
       ),
       h("div", { class: "trainer-name" }, s.name),
-      artBox(card, s.rarity === "rare"),
+      artBox(card, artFoil(s.finish)),
       h("div", { class: "moves" }, h("div", { class: "effect" }, s.effect)),
       h("div", { class: "bottom" },
-        credit(card, kidName, RARITY[s.rarity] || "●"),
+        credit(card, kidName, rarityMark(s)),
         h("div", { class: "trainer-rule" }, TRAINER_RULE[s.card_type]),
       ),
       copyright(card, kidName),
+      cardFoils(s.finish, false),
     ),
   );
 }
 
 function front(card, opts) {
-  return card.stats.card_type === "pokemon" ? pokemonFront(card, opts) : trainerFront(card, opts);
+  const s = card.stats;
+  if (s.card_type !== "pokemon") return trainerFront(card, opts);
+  return s.layout === "vintage" ? vintageFront(card, opts) : pokemonFront(card, opts);
+}
+
+function attackRow(a, i, onAttack, ...children) {
+  return h("div", {
+    class: `attack ${onAttack ? "tappable" : ""}`,
+    onclick: onAttack ? (e) => { e.stopPropagation(); onAttack(i); } : null,
+  }, ...children);
+}
+
+/** The 1990s yellow-border layout: name and red "HP", gold art frame, italic info ribbon,
+ *  ruled attack rows, weakness/resistance/retreat columns, boxed flavor text. */
+function vintageFront(card, { kidName, onAttack }) {
+  const s = card.stats;
+  const t = TYPES[s.type] || TYPES.colorless;
+  const stageLine = s.stage === "Basic" ? "Basic Fakemon" : `${s.stage} Fakemon`;
+  const moves = h("div", { class: "moves" },
+    s.ability && h("div", { class: "v-power" },
+      h("span", { class: "v-power-name" }, `Fakemon Power: ${s.ability.name}`), " ", s.ability.text),
+    s.attacks.map((a, i) => attackRow(a, i, onAttack,
+      h("div", { class: "v-atk" },
+        h("span", { class: "cost" }, a.cost.map((c) => energy(c))),
+        h("span", { class: "v-atk-body" }, h("b", {}, a.name), a.text ? ` ${a.text}` : ""),
+        h("span", { class: "dmg" }, a.damage),
+      ))),
+  );
+  const col = (label, ...content) => h("div", { class: "v-col" }, h("span", {}, label), h("div", {}, ...content));
+  return h("div", {
+    class: faceClasses(s, "vintage"),
+    style: `--frame:${t.frame[0]};--frame-light:${t.frame[1]};--ink:${t.ink}`,
+  },
+    h("div", { class: "inner" },
+      h("div", { class: "v-stage" }, stageLine,
+        s.evolves_from && h("i", {}, ` · Evolves from ${s.evolves_from}`)),
+      h("div", { class: "v-top" },
+        h("span", { class: "v-name" }, s.name, shinyMark(s)),
+        h("span", { class: "v-hp" }, `${s.hp} HP`),
+        energy(s.type, "type-badge"),
+      ),
+      artBox(card, artFoil(s.finish)),
+      h("div", { class: "v-dex" }, `${s.species} Fakemon. Length: ${s.height}, Weight: ${s.weight}`),
+      moves,
+      h("div", { class: "v-wrr" },
+        col("weakness", s.weakness ? energy(s.weakness) : null),
+        col("resistance", s.resistance ? [energy(s.resistance), h("b", {}, "-30")] : null),
+        col("retreat cost", Array.from({ length: s.retreat }, () => energy("colorless"))),
+      ),
+      h("div", { class: "v-flavor" }, s.flavor, h("b", {}, `  LV. ${Math.max(5, Math.round(s.hp / 4))}  #${card.id}`)),
+      h("div", { class: "v-foot" },
+        h("span", {}, `Illus. ${kidName}`),
+        h("span", {}, `©${new Date(card.created_at).getFullYear()} ${kidName}`),
+        h("span", {}, setNumber(card.id), " ", h("span", { class: "rarity" }, rarityMark(s))),
+      ),
+      cardFoils(s.finish, false),
+    ),
+  );
 }
 
 function pokemonFront(card, { kidName, onAttack }) {
   const s = card.stats;
-  const t = TYPES[s.type] || TYPES.colorless;
+  const gold = s.finish === "gold";
+  const t = gold ? GOLD : TYPES[s.type] || TYPES.colorless;
   const ex = s.kind === "ex" || s.kind === "mega_ex";
   const mega = s.kind === "mega_ex";
-  const illustration = s.layout === "illustration";
-  const fullArt = ex || illustration;   // art behind the whole card
-  const art = artBox(card, s.rarity === "rare" && !fullArt);
+  const fullArt = ex || s.layout === "illustration" || gold || s.finish === "rainbow";   // art behind the whole card
+  const art = artBox(card, fullArt ? null : artFoil(s.finish));
 
   const moves = h("div", { class: "moves" },
     s.ability && h("div", { class: "ability" },
       h("div", { class: "ability-head" }, h("span", { class: "label" }, "Ability"), h("span", { class: "title" }, s.ability.name)),
       h("div", { class: "move-text" }, s.ability.text),
     ),
-    s.attacks.map((a, i) =>
-      h("div", {
-        class: `attack ${onAttack ? "tappable" : ""}`,
-        onclick: onAttack ? (e) => { e.stopPropagation(); onAttack(i); } : null,
-      },
-        h("div", { class: "atk-head" },
-          h("span", { class: "cost" }, a.cost.map((c) => energy(c))),
-          h("span", { class: "title" }, a.name),
-          h("span", { class: "dmg" }, a.damage),
-        ),
-        a.text && h("div", { class: "move-text" }, a.text),
-      )),
+    s.attacks.map((a, i) => attackRow(a, i, onAttack,
+      h("div", { class: "atk-head" },
+        h("span", { class: "cost" }, a.cost.map((c) => energy(c))),
+        h("span", { class: "title" }, a.name),
+        h("span", { class: "dmg" }, a.damage),
+      ),
+      a.text && h("div", { class: "move-text" }, a.text),
+    )),
   );
 
   const baseName = mega ? s.name.replace(/^Mega\s+/i, "") : s.name;
 
   return h("div", {
-    class: `face front ${fullArt ? "fullart" : ""} ${ex ? "ex" : ""} ${mega ? "mega" : ""}`,
+    class: faceClasses(s, fullArt ? "fullart" : "", ex ? "ex" : "", mega ? "mega" : ""),
     style: `--frame:${t.frame[0]};--frame-light:${t.frame[1]};--ink:${t.ink}`,
   },
     h("div", { class: "inner" },
       fullArt ? art : null,
       h("div", { class: "top" },
         h("span", { class: "stage" }, STAGE[s.stage] || "BASIC"),
-        h("span", { class: "name" }, s.name, ex ? h("span", { class: "ex-mark" }, "ex") : null),
+        h("span", { class: "name" }, s.name, ex ? h("span", { class: "ex-mark" }, "ex") : null, shinyMark(s)),
         h("span", { class: "hp" }, h("small", {}, "HP"), h("b", {}, s.hp)),
         energy(s.type, "type-badge"),
       ),
@@ -207,7 +298,7 @@ function pokemonFront(card, { kidName, onAttack }) {
         h("span", { class: "seg" }, h("i", {}, "retreat"), Array.from({ length: s.retreat }, () => energy("colorless"))),
       ),
       h("div", { class: "bottom" },
-        credit(card, kidName, ex ? "★★" : illustration ? h("span", { class: "gold" }, "★") : RARITY[s.rarity] || "●"),
+        credit(card, kidName, rarityMark(s)),
         ex
           ? h("div", { class: "rule" },
               h("span", { class: "rule-name" }, mega ? "Mega Evolution ex rule" : "Fakemon ex rule"),
@@ -218,7 +309,7 @@ function pokemonFront(card, { kidName, onAttack }) {
           : h("div", { class: "flavor" }, s.flavor),
       ),
       copyright(card, kidName),
-      fullArt ? h("div", { class: "holo" }) : null,
+      cardFoils(s.finish, fullArt),
     ),
   );
 }
@@ -242,7 +333,7 @@ export function renderCard(card, { kidName, onAttack = null, flipped = false } =
 
 /** Shrink long names and move text until they fit; call once the card is in the DOM and visible. */
 export function fitCard(cardEl) {
-  for (const name of cardEl.querySelectorAll(".front .name, .front .trainer-name")) {
+  for (const name of cardEl.querySelectorAll(".front .name, .front .trainer-name, .front .v-name")) {
     shrink(name, "--name-fit", () => name.scrollWidth > name.clientWidth + 1, 0.5);
   }
   const moves = cardEl.querySelector(".front .moves");
@@ -288,7 +379,7 @@ export function cardSpeech(card) {
     return `${s.name}! ${s.card_type === "item" ? "Item" : "Supporter"} card. ${s.effect}`;
   }
   const ex = s.kind === "ex" || s.kind === "mega_ex";
-  const parts = [`${s.name}${ex ? " ex" : ""}! ${s.hp} HP. ${s.type} type.`];
+  const parts = [`${s.shiny ? "Shiny " : ""}${s.name}${ex ? " ex" : ""}! ${s.hp} HP. ${s.type} type.`];
   if (s.ability) parts.push(`Ability: ${s.ability.name}. ${s.ability.text}`);
   for (const a of s.attacks) {
     parts.push(`Attack: ${a.name}${a.damage ? `, ${a.damage.replace("×", " times").replace("+", " plus")} damage` : ""}. ${a.text}`);

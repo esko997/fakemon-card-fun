@@ -159,6 +159,7 @@
 .card .art {
   position: relative;
   aspect-ratio: 1.6;
+  overflow: hidden;   /* otherwise a taller image stretches the box past its aspect ratio */
   margin: 0 0.15em;
   padding: 0.16em;
   background: linear-gradient(135deg, #f7f8f9, #a9afb5 40%, #eef0f2 60%, #9da4ab);
@@ -439,6 +440,175 @@
   background-position: var(--mx, 0%) var(--my, 0%);
   transition: background-position 0.1s;
 }
+
+/* ---------------- finishes (rolled per card, or asked for) ---------------- */
+
+/* cosmos holo: the art window's foil is a field of rainbow rings */
+.card .holo.cosmos {
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle at 20% 30%, transparent 0.55em, rgba(255, 120, 220, 0.75) 0.65em, transparent 0.85em),
+    radial-gradient(circle at 70% 60%, transparent 0.9em, rgba(120, 230, 255, 0.75) 1em, transparent 1.25em),
+    radial-gradient(circle at 45% 80%, transparent 0.35em, rgba(255, 240, 120, 0.8) 0.45em, transparent 0.6em);
+  background-size: 4em 4em, 5.5em 5.5em, 3em 3em;
+  background-repeat: repeat;
+  background-position: var(--mx, 0%) var(--my, 0%), calc(var(--mx, 0%) * -1) var(--my, 0%), var(--my, 0%) var(--mx, 0%);
+}
+/* sparkle: glitter over the whole card */
+.card .holo.sparkle {
+  opacity: 0.9;
+  mix-blend-mode: screen;
+  background-image:
+    radial-gradient(circle, #fff 0 0.05em, transparent 0.09em),
+    radial-gradient(circle, #fff6c2 0 0.045em, transparent 0.08em),
+    radial-gradient(circle, #c9f4ff 0 0.04em, transparent 0.07em);
+  background-size: 2.3em 2.9em, 3.1em 2.6em, 1.7em 2.1em;
+  background-repeat: repeat;
+  background-position: calc(var(--mx, 0%) * 0.3) calc(var(--my, 0%) * 0.3), calc(var(--my, 0%) * 0.5) var(--mx, 0%), var(--mx, 0%) calc(var(--my, 0%) * -0.4);
+}
+/* reverse holo: the card body is foil, the art is not. The foil sits under the content. */
+.card .finish-reverse .inner { isolation: isolate; }
+.card .finish-reverse .inner > :not(.holo):not(.foil) { position: relative; z-index: 1; }
+.card .holo.reverse {
+  z-index: 0;
+  /* color-dodge washes out to flat white on light bodies; soft-light keeps the bands visible */
+  mix-blend-mode: soft-light;
+  opacity: 1;
+  background-image: repeating-linear-gradient(120deg,
+    rgba(255, 120, 200, 0.55) 0 1em, rgba(120, 230, 255, 0.55) 1em 2em,
+    rgba(255, 250, 140, 0.55) 2em 3em, rgba(140, 255, 160, 0.55) 3em 4em);
+  background-size: 200% 200%;
+  background-repeat: repeat;
+}
+/* static foils stay on paper too */
+.card .foil { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+
+/* gold secret rare: gold frame and body, gold-etched art */
+.card .finish-gold {
+  background: linear-gradient(135deg, #b8902c 0%, #f6e3a0 25%, #c79c35 50%, #f8e7ad 75%, #b38a26 100%);
+}
+.card .finish-gold .art img { filter: sepia(0.9) saturate(1.8) hue-rotate(-8deg) brightness(1.05) contrast(1.05); }
+.card .foil.gold {
+  mix-blend-mode: overlay;
+  opacity: 0.6;
+  background: repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.18) 0 0.08em, transparent 0.08em 0.3em);
+}
+.card .trainer.finish-gold .inner {
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0 0.06em, rgba(0, 0, 0, 0.025) 0.06em 0.12em),
+    linear-gradient(175deg, #f3e2a6 0%, #d9b44a 45%, #f1dc96 100%);
+}
+
+/* rainbow rare: everything under a pastel rainbow */
+.card .finish-rainbow {
+  background: linear-gradient(135deg, #f9c6e3, #c6e7ff 25%, #d4ffc6 50%, #fff3b8 75%, #f9c6e3);
+}
+.card .foil.rainbow {
+  mix-blend-mode: color;
+  opacity: 0.55;
+  background: linear-gradient(125deg, #ff5aaa, #ffc850 25%, #78ff8c 50%, #50c8ff 75%, #be78ff);
+}
+
+/* rarity symbols and the shiny mark */
+.card .setline .rarity .rainbow,
+.card .shiny-mark, .card .shiny-star {
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.card .setline .rarity .rainbow { background-image: linear-gradient(90deg, #ff5aaa, #ffc850, #3fcf5a, #3fa8ff, #a35cff); }
+.card .shiny-mark, .card .shiny-star {
+  background-image: linear-gradient(135deg, #ffe45c, #ff8ad8, #6fdcff, #ffe45c);
+  -webkit-text-stroke: 0.03em #7a5a00;
+}
+.card .shiny-mark { font-size: 0.75em; margin-left: 0.15em; vertical-align: 0.35em; }
+.card .shiny-star { margin-right: 0.15em; }
+
+/* ---------------- vintage: 1990s yellow border ---------------- */
+
+.card .vintage {
+  background: linear-gradient(135deg, #f3cf33, #f9e27a 40%, #eac52b 70%, #f6d84c);
+  padding: 0.9em 0.9em 0.75em;
+}
+.card .vintage .inner {
+  padding: 0.15em 0.6em 0;
+  border-radius: 0.15em;
+  color: #111;
+  background:
+    radial-gradient(ellipse 70% 50% at 30% 25%, rgba(255, 255, 255, 0.35), transparent 70%),
+    radial-gradient(ellipse 60% 45% at 70% 80%, rgba(255, 255, 255, 0.25), transparent 70%),
+    linear-gradient(170deg, var(--frame-light), color-mix(in srgb, var(--frame-light) 70%, var(--frame)));
+}
+.card .v-stage { flex: none; font-size: 0.5em; font-weight: 700; padding-top: 0.25em; }
+.card .v-stage i { font-weight: 600; }
+.card .v-top { flex: none; display: flex; align-items: center; gap: 0.35em; height: 1.75em; }
+.card .v-name {
+  flex: 1;
+  min-width: 0;
+  font-size: calc(1.35em * var(--name-fit, 1));
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card .v-hp { color: #d2161e; font-size: 1.05em; font-weight: 600; white-space: nowrap; }
+.card .vintage .energy.type-badge { font-size: 1.25em; }
+.card .vintage .art {
+  aspect-ratio: 1.45;
+  margin: 0.15em 0.1em 0;
+  padding: 0;
+  border: 0.3em solid;
+  border-color: #ecc95a #a8841f #8f6e14 #dcb840;
+  background: #fff;
+  box-shadow: 0.1em 0.15em 0.3em rgba(0, 0, 0, 0.35);
+}
+.card .v-dex {
+  flex: none;
+  margin: 0.3em 1em 0.1em;
+  padding: 0.12em 0.4em;
+  font-size: 0.47em;
+  font-weight: 700;
+  font-style: italic;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: linear-gradient(90deg, transparent, #d9b847 10%, #f2dc8a 50%, #d9b847 90%, transparent);
+}
+.card .vintage .moves { justify-content: space-evenly; gap: 0.3em; }
+.card .vintage .attack + .attack, .card .v-power + .attack { border-top: 0.06em solid #222; padding-top: 0.35em; }
+.card .v-atk { display: flex; align-items: center; gap: 0.4em; }
+.card .v-atk .cost { display: flex; gap: 0.1em; min-width: 3.4em; }
+.card .v-atk-body { flex: 1; font-size: 0.62em; line-height: 1.25; }
+.card .v-atk-body b { font-size: 1.45em; font-weight: 800; }
+.card .v-atk .dmg { font-size: 1.4em; font-weight: 500; }
+.card .v-power { font-size: 0.6em; line-height: 1.3; }
+.card .v-power-name { color: #c8160d; font-weight: 800; }
+.card .v-wrr {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  text-align: center;
+  border-top: 0.06em solid #222;
+  padding-top: 0.15em;
+}
+.card .v-col > span { display: block; font-size: 0.45em; font-weight: 700; }
+.card .v-col > div { display: flex; justify-content: center; align-items: center; gap: 0.1em; min-height: 1.1em; }
+.card .v-col .energy { font-size: 0.85em; }
+.card .v-col b { font-size: 0.6em; }
+.card .v-flavor {
+  flex: none;
+  margin: 0.25em 0 0.15em;
+  padding: 0.2em 0.5em;
+  font-size: 0.45em;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.3;
+  border: 0.12em solid #c9a227;
+  background: rgba(255, 255, 255, 0.35);
+}
+.card .v-flavor b { font-style: normal; white-space: nowrap; }
+.card .v-foot { flex: none; display: flex; justify-content: space-between; font-size: 0.36em; font-weight: 600; padding-bottom: 0.35em; }
 /* Chrome's print path flattens the 3D flip and ignores backface-visibility, so the back face
    (rotated 180°, later in the DOM) printed mirrored over the front. Print the front only, flat. */
 @media print {
