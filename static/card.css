@@ -330,7 +330,7 @@
     color-mix(in srgb, var(--frame-light) 82%, transparent) 50%,
     color-mix(in srgb, var(--frame-light) 88%, transparent) 100%);
 }
-.card .fullart .inner > :not(.art):not(.holo) { position: relative; z-index: 2; }
+.card .fullart .inner > :not(.art):not(.holo):not(.foil) { position: relative; z-index: 2; }
 .card .fullart .holo { z-index: 3; }
 .card .mega .name {
   color: #ffe94a;
