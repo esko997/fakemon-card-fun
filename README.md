@@ -28,6 +28,8 @@ more time drawing, inventing and telling stories.
 - The kid's ideas win: names, numbers, and attacks go on the card exactly as they were said.
 - Flip a card to see the original drawing and the kid's words. Tap an attack for a new one, 🎨 for new
   art, 🔊 to hear the card read aloud.
+- **Redo** starts a new photo and description, keeping the original card. **Delete** removes a
+  card from the binder but lets a grown-up restore it. Both ask **ARE YOU SURE?** first.
 - In the full-size view, the card gently tilts under a fixed light as the pointer moves.
   Tablet orientation also tilts it; reduced-motion preferences disable the effect. Printing stays flat.
 - A binder of every card, and printing 9 to a page at real card size.

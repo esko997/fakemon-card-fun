@@ -132,7 +132,8 @@ authority created in `data/certs/`.
    switches cameras, 🖼️ uses the system camera app instead.
 
 The grown-ups page is at `/parent.html`: cards left today and top-ups, spend this month, cost per
-card, cards with errors, and restoring cards the kid "put away" (🗑️ hides, never deletes).
+card, cards with errors, and **Deleted cards**, where **Restore** returns a card to the binder.
+Delete hides the card; its saved details, original media and artwork are retained.
 
 ## Kid flow
 
@@ -141,6 +142,9 @@ card, cards with errors, and restoring cards the kid "put away" (🗑️ hides, 
 3. Watch it get made, then the drawing flips over into the finished card.
 4. On a card: tap to flip (the back is the original drawing and their words), tap an attack to
    get a new one, 🎨 for a new picture, 🔊 to hear it read aloud.
+   **Redo** asks **ARE YOU SURE?**, then starts a new photo and description without changing the
+   original card. It uses the normal new-card flow and limits. **Delete** asks **ARE YOU SURE?**
+   before removing the card from the binder; a grown-up can restore it on `/parent.html`.
 5. 📒 **My cards** → 🖨️ Print → tap cards → print (letter paper, cut along the silver borders).
 6. Out of cards for today → "Ask Mom and Dad for more cards!". With `PARENT_PIN` set, a grown-up
    taps 🔑 on that message and enters the PIN to add 5 more for today.

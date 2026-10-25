@@ -205,6 +205,14 @@ function show(name, { history: mode = "push" } = {}) {
 
 let draft = false;   // true from "Make a new card" until the card is submitted
 
+async function beginCard() {
+  await refreshStatus();
+  if (!status.budget_ok) return tell("The card machine needs a grown-up");
+  if (status.cards_left_today <= 0) return outOfCards();
+  draft = true;
+  show("snap");
+}
+
 window.addEventListener("popstate", (e) => {
   const target = e.state?.screen || "home";
   const none = { history: "none" };
@@ -219,12 +227,7 @@ window.addEventListener("popstate", (e) => {
 document.addEventListener("click", async (e) => {
   const go = e.target.closest("[data-go]")?.dataset.go;
   if (!go) return;
-  if (go === "snap") {
-    await refreshStatus();
-    if (!status.budget_ok) return tell("The card machine needs a grown-up 🔧");
-    if (status.cards_left_today <= 0) return outOfCards();
-    draft = true;
-  }
+  if (go === "snap") return beginCard();
   show(go);
 });
 
@@ -494,6 +497,8 @@ function showCard(card, { reveal = false, history: mode } = {}) {
   requestAnimationFrame(() => fitCard(el));
   const busy = card.status === "working";
   $("new-art").disabled = busy;
+  $("redo-card").disabled = busy;
+  $("delete-card").disabled = busy;
   const tip = card.stats.card_type === "pokemon"
     ? "Tap the card to flip it • Tap an attack to change it"
     : "Tap the card to flip it";
@@ -545,10 +550,28 @@ $("new-art").onclick = async () => {
   }
 };
 
-$("put-away").onclick = async () => {
-  if (!(await ask("Put this card away?"))) return;
-  await api(`/api/cards/${current.id}/hide`, { method: "POST" });
-  show("binder");
+$("redo-card").onclick = async () => {
+  if (current?.status !== "ready") return;
+  if (!(await ask("ARE YOU SURE? Start again with a new photo and description? Your original card will stay in My cards.",
+    { yes: "Yes, redo", no: "Cancel" }))) return;
+  await beginCard();
+};
+
+$("delete-card").onclick = async () => {
+  if (current?.status !== "ready") return;
+  const cardId = current.id;
+  if (!(await ask("ARE YOU SURE? Delete this card from My cards? A grown-up can restore it from the grown-ups page.",
+    { yes: "Yes, delete", no: "Cancel" }))) return;
+  $("delete-card").disabled = true;
+  try {
+    await api(`/api/cards/${cardId}/hide`, { method: "POST" });
+    current = null;
+    show("binder", { history: "replace" });
+  } catch (err) {
+    explain(err, "The card could not be deleted. Try again?", "delete card");
+  } finally {
+    $("delete-card").disabled = false;
+  }
 };
 
 // ---------------------------------------------------------------- binder + printing
