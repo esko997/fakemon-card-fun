@@ -25,6 +25,18 @@
         The first number to reach the top wins!</p>
       <h2>Who's playing?</h2>
       <div class="row wrap" id="who"></div>
+      <div id="robot-row" class="setting" hidden>
+        <h2>🤖 Robo's brain</h2>
+        <div class="row wrap" id="robot-level">
+          <button class="chip" data-level="silly">🙃 Silly</button>
+          <button class="chip" data-level="smart">🧠 Smart</button>
+        </div>
+      </div>
+      <h2>Which dice?</h2>
+      <div class="row wrap" id="dice-mode">
+        <button class="chip" data-mode="tablet">📱 Tablet dice</button>
+        <button class="chip" data-mode="real">✋ Our own dice</button>
+      </div>
       <h2>Who adds the dice?</h2>
       <div class="row wrap" id="adder">
         <button class="chip" data-auto="false">🧠 I'll add them!</button>
@@ -56,6 +68,10 @@
           <div class="die"></div>
         </div>
         <p class="prompt" id="prompt"></p>
+        <div class="real-dice" id="real-dice" hidden>
+          <div class="face-row" data-die="0"></div>
+          <div class="face-row" data-die="1"></div>
+        </div>
         <button class="big primary roll" id="roll">🎲 Roll!</button>
       </div>
       <div class="board" id="board"></div>
