@@ -155,15 +155,18 @@ function credit(card, kidName, rarityMark) {
 const copyright = (card, kidName) =>
   h("div", { class: "copyright" }, `©${new Date(card.created_at).getFullYear()} ${kidName} / Fakemon Card Maker`);
 
+const TRAINER_LABEL = { item: "Item", supporter: "Supporter", stadium: "Stadium" };
+
 const TRAINER_RULE = {
   item: "You may play any number of Item cards during your turn.",
   supporter: "You may play only 1 Supporter card during your turn.",
+  stadium: "You may play only 1 Stadium card during your turn. It stays in play until another Stadium replaces it. You can't play a Stadium with the same name as the one in play.",
 };
 
-/** Item and Supporter cards: silver body, "TRAINER" banner, effect text, rule pill. */
+/** Trainer cards: silver body, subtype banner, effect text, rule pill. */
 function trainerFront(card, { kidName }) {
   const s = card.stats;
-  const label = s.card_type === "item" ? "Item" : "Supporter";
+  const label = TRAINER_LABEL[s.card_type];
   return h("div", { class: faceClasses(s, "trainer", s.card_type) },
     h("div", { class: "inner" },
       h("div", { class: "trainer-top" },
@@ -442,7 +445,7 @@ export function attachCardTilt(cardEl) {
 export function cardSpeech(card) {
   const s = card.stats;
   if (s.card_type !== "pokemon") {
-    return `${s.name}! ${s.card_type === "item" ? "Item" : "Supporter"} card. ${s.effect}`;
+    return `${s.name}! ${TRAINER_LABEL[s.card_type]} card. ${s.effect}`;
   }
   const ex = s.kind === "ex" || s.kind === "mega_ex";
   const parts = [`${s.shiny ? "Shiny " : ""}${s.name}${ex ? " ex" : ""}! ${s.hp} HP. ${s.type} type.`];

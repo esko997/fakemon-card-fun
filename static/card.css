@@ -364,6 +364,7 @@
 
 .card .trainer { --accent: #2b8fd8; --accent-light: #cfe8fb; }      /* Item: blue */
 .card .trainer.supporter { --accent: #e8582c; --accent-light: #fbd9c8; }  /* Supporter: orange */
+.card .trainer.stadium { --accent: #368547; --accent-light: #d4edcc; }  /* Stadium: green */
 
 .card .trainer .inner {
   color: #111;

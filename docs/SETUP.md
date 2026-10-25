@@ -64,10 +64,15 @@ often), watercolor, painterly, 3D CG, papercraft, pastel, woodblock print, clay,
 🎨 New picture rolls again. The styles and their weights are `ART_STYLES` in `fakemon/ai.py`; the
 style used for each painting is recorded with its cost.
 
-Saying "item" or "supporter" (or "trainer card") makes a Trainer card instead: silver body,
-"TRAINER" banner, blue (Item) or orange (Supporter) accents, an effect written like real rules
-text, and the matching rule line. The text model decides from the whole description, so "it's an
-item card" counts but "he's holding an item" doesn't. Anything else is a creature card.
+Saying "item", "supporter" (or "support card"), or "stadium card" makes a Trainer card instead:
+silver body, "TRAINER" banner, blue (Item), orange (Supporter), or green (Stadium) accents,
+an effect written like real rules text, and the matching rule line. For "trainer card" without
+a subtype, a person becomes a Supporter, an object an Item, and a place a Stadium.
+Stadium artwork depicts the place itself, and its effect stays active while the card is in play.
+For example: "This is a Stadium card called Moonlit Garden. Each player can heal 30 damage
+once during their turn." The text model uses the whole description: "he lives in a stadium"
+does not change a creature into a Stadium card. Without a card-type request, it stays a creature.
+Existing saved cards are not reclassified or changed.
 
 `ART_FREEDOM` in `.env` sets how literally the art follows the drawing: `reimagined` (default)
 treats it as a concept sketch, keeping the colors, eye count and body idea while adding anatomy,

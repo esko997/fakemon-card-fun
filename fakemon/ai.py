@@ -83,14 +83,14 @@ TRAINER_SCHEMA: dict[str, Any] = {
     "additionalProperties": False,
     "required": ["name", "effect", "rarity", "art_prompt"],
     "properties": {
-        "name": {"type": "string", "description": "Item: e.g. 'Zap Potion'. Supporter: e.g. 'Coach Rae's Pep Talk'."},
+        "name": {"type": "string", "description": "Item: e.g. 'Zap Potion'. Supporter: e.g. 'Coach Rae's Pep Talk'. Stadium: e.g. 'Moonlit Garden'."},
         "effect": {"type": "string", "description": "What playing the card does, in rules-text style."},
         "rarity": {"type": "string", "enum": ["common", "uncommon", "rare"]},
         "art_prompt": {"type": "string"},
     },
 }
 
-CARD_TYPES = ["pokemon", "item", "supporter"]
+CARD_TYPES = ["pokemon", "item", "supporter", "stadium"]
 
 # Special versions a kid can ask for; otherwise they are rolled at random (see roll_extras).
 REQUESTS = ["full_art", "vintage", "gold", "rainbow", "shiny", "holo"]
@@ -104,7 +104,7 @@ CARD_SCHEMA: dict[str, Any] = {
         "requests": {"type": "array", "items": {"type": "string", "enum": REQUESTS},
                      "description": "Special versions the child explicitly asked for; usually empty."},
         "pokemon": {"anyOf": [POKEMON_SCHEMA, {"type": "null"}], "description": "Only for card_type pokemon."},
-        "trainer": {"anyOf": [TRAINER_SCHEMA, {"type": "null"}], "description": "Only for item and supporter."},
+        "trainer": {"anyOf": [TRAINER_SCHEMA, {"type": "null"}], "description": "Only for item, supporter and stadium."},
     },
 }
 
@@ -114,12 +114,15 @@ You turn a child's invention into a trading card for a home card-making game. Th
 mistakes; interpret it generously).
 
 Card type:
-- card_type "item" if the child says it is an item (an item card); "supporter" if they say it is a
-  supporter (a supporter card). If they say "trainer card" without saying which: a person or
-  character is a supporter, an object is an item.
+- card_type "item" if the child says it is an item card; "supporter" if they say it is a
+  supporter or support card; "stadium" if they say it is a stadium card.
+  If they say "trainer card" without saying which: a person or character is a supporter,
+  an object is an item, a place or environment is a stadium.
 - Otherwise card_type "pokemon": a creature card. This includes when they say nothing about the
-  card type, even if the drawing looks like an object or a person.
-- Fill `pokemon` for creature cards and `trainer` for item and supporter cards; set the other to null.
+  card type, even if the drawing looks like an object, person or place. A creature living or
+  fighting in a stadium is still a creature card, not a request for a Stadium card.
+- Fill `pokemon` for creature cards and `trainer` for item, supporter and stadium cards;
+  set the other to null.
 
 Rules for every card:
 - The child's ideas win. Whatever they say about the name, numbers, powers, effects, looks or
@@ -153,10 +156,14 @@ Creature (pokemon) cards:
   background that fits where it lives. If the drawing is uncolored, pick colors from the
   description or the creature's type.
 
-Item and supporter cards:
+Item, supporter and stadium cards:
 - An item is a thing a trainer uses (potion, ball, gadget, snack, tool). A supporter is a person
   who helps (coach, scientist, friend, family member); supporter names usually look like
   "<Person>'s <Thing>", e.g. "Coach Rae's Pep Talk".
+- A stadium is a place or environment (garden, cave, arena, forest, imaginary landscape),
+  not necessarily a sports stadium. Its effect stays active while it is in play, usually
+  applying to both players. Preserve the child's stated effect and numbers; if inventing an
+  effect, make it ongoing or usable once during each player's turn, not a one-time item action.
 - effect: what playing the card does, written like real card rules text and using game actions:
   draw cards, search your deck, heal damage from a Fakemon, switch your Active Fakemon, attach
   Energy, look at the top cards of your deck, shuffle. Use the child's effect if they gave one.
@@ -164,6 +171,8 @@ Item and supporter cards:
 - art_prompt: 2-4 sentences. Item: the object from the drawing (shape, colors, materials, glow)
   presented on a simple bright background. Supporter: the person from the drawing (hair, face,
   clothes, colors, pose, expression) and a simple scenic background that fits them.
+  Stadium: the place from the drawing (landmarks, terrain, buildings, colors, atmosphere);
+  make the environment itself the subject, not a centered creature, person or handheld object.
 """
 
 ATTACK_INSTRUCTIONS = """\
@@ -187,6 +196,9 @@ invention, illustrated by a professional artist.""",
         "supporter": """\
 Stay faithful to the child's design: keep the same hair, clothes, colors and features as drawn. It is
 their character, illustrated by a professional artist.""",
+        "stadium": """\
+Stay faithful to the child's place: keep the same landmarks, arrangement, shapes and colors as drawn.
+It is their environment, illustrated by a professional artist.""",
     },
     # Treats the drawing as a concept sketch: recognizable at a glance, but properly designed.
     "reimagined": {
@@ -208,6 +220,10 @@ Treat the drawing as the child's concept sketch and develop it the way a profess
 designer would. Keep the hair, clothing colors and any signature features so the child recognizes the
 character at a glance, then design them as a real anime character with an expressive face, natural
 proportions and a detailed outfit. Do not copy the crayon or marker strokes or the paper.""",
+        "stadium": """\
+Treat the drawing as the child's concept sketch and develop it as a professional environment designer
+would. Keep the main landmarks, layout idea and colors recognizable, then add depth, lighting,
+textures and inviting scenic details. Do not copy the crayon or marker strokes or the paper.""",
     },
 }
 
@@ -284,6 +300,16 @@ background.
 Character details: {details}
 """ + _NO_TEXT
 
+STADIUM_ART_PROMPT = """\
+Turn the place in this child's drawing into polished artwork for a Stadium card in a collectible
+trading card game: an environment illustration.
+{freedom}
+Art style: {style}.
+Composition: a wide scenic view of the location, with recognizable landmarks and depth from
+foreground to background. The place itself is the subject, not a character or an object.
+Location details: {details}
+""" + _NO_TEXT
+
 LANDSCAPE, PORTRAIT = "1536x1024", "1024x1536"
 
 # Surprise "pulls", rolled once when a card is invented and stored with it. Odds are per card.
@@ -349,6 +375,8 @@ def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
         return ITEM_ART_PROMPT, "item", LANDSCAPE
     if stats["card_type"] == "supporter":
         return SUPPORTER_ART_PROMPT, "supporter", LANDSCAPE
+    if stats["card_type"] == "stadium":
+        return STADIUM_ART_PROMPT, "stadium", LANDSCAPE
     if stats["layout"] == "illustration":
         return ILLUSTRATION_ART_PROMPT, "creature", PORTRAIT
     if is_full_art(stats):
@@ -370,7 +398,7 @@ scary faces or violence. Show powers as harmless sparkles, glows or splashes.
 
 TRANSCRIBE_PROMPT = (
     "A young child describes something they invented for a trading card: a monster (its name, "
-    "looks, powers, attacks and where it lives), an item card, or a supporter card."
+    "looks, powers, attacks and where it lives), an item card, a supporter card, or a stadium card."
 )
 
 
