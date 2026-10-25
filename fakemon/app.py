@@ -105,6 +105,7 @@ class App:
         limit = self.limit_today()
         return {
             "kid_name": self.s.kid_name,
+            "env": self.s.env,
             "daily_limit": limit,
             "cards_left_today": max(0, limit - self.store.art_used_today()),
             "budget_ok": self.store.month_spend() < self.s.monthly_budget_usd,

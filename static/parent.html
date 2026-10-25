@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <h1>Grown-ups</h1>
+  <h1>Grown-ups <span id="env" hidden style="background:#ffcb05;padding:0 0.4em;border-radius:0.3em"></span></h1>
   <p><a href="/">⬅ Back to the card maker</a></p>
 
   <h2>Cards today</h2>
@@ -78,6 +78,9 @@
       document.getElementById("left").textContent = `${st.cards_left_today} left`;
       document.getElementById("left-detail").textContent = `of ${st.daily_limit} today (top-ups last until midnight)`;
       document.getElementById("pin").hidden = !st.pin_required;
+      const env = document.getElementById("env");
+      env.hidden = st.env === "prod";
+      env.textContent = st.env.toUpperCase();
     }
 
     for (const btn of document.querySelectorAll("[data-add]")) {

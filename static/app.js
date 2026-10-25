@@ -146,6 +146,10 @@ async function refreshStatus() {
     return;
   }
   $("stars").textContent = `⭐ ${status.cards_left_today} left today`;
+  const badge = $("env-badge");
+  badge.hidden = status.env === "prod";
+  badge.textContent = status.env.toUpperCase();
+  document.title = status.env === "prod" ? "Fakemon Cards" : `[${status.env.toUpperCase()}] Fakemon Cards`;
 }
 
 function stopWatching() {

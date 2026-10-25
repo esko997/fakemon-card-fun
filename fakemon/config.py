@@ -40,6 +40,7 @@ class Settings:
     data_dir: Path
     api_key: str = field(repr=False)
     kid_name: str
+    env: str                              # "prod", or e.g. "dev": shown as a badge in the app
     daily_card_limit: int
     parent_pin: str = field(repr=False)   # "" = top-ups need no PIN
     monthly_budget_usd: float
@@ -63,6 +64,7 @@ def load() -> Settings:
         data_dir=Path(_str("FAKEMON_DATA_DIR", str(ROOT / "data"))),
         api_key=_api_key(),
         kid_name=_str("KID_NAME", "Trainer"),
+        env=_str("FAKEMON_ENV", "prod"),
         daily_card_limit=_int("DAILY_CARD_LIMIT", 15),
         parent_pin=_str("PARENT_PIN", ""),
         monthly_budget_usd=_float("MONTHLY_BUDGET_USD", 20.0),
