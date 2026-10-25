@@ -12,7 +12,8 @@ stories.
 
 - 📷 Snap a drawing, 🎤 describe it out loud, ✨ get a card.
 - Cards follow the style of the trading card game's Mega Evolution era: silver border, energy
-  symbols, HP, attacks, weakness/resistance/retreat. Say "ex" or "Mega" for a full-art card.
+  symbols, HP, attacks, weakness/resistance/retreat. Say "ex" or "Mega" for a full-art card, or
+  "item" / "supporter" for a Trainer card.
 - The kid's ideas win: names, numbers, and attacks go on the card exactly as they were said.
 - Flip a card to see the original drawing and the kid's words. Tap an attack for a new one, 🎨 for new
   art, 🔊 to hear the card read aloud.

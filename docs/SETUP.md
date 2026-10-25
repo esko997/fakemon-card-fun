@@ -21,6 +21,11 @@ darkness, metal, dragon, colorless); other words a kid uses are mapped onto them
 lightning, ice → water, …). Saying "ex" or "Mega" makes a full-art ex / Mega Evolution ex card
 with portrait art and the rule box.
 
+Saying "item" or "supporter" (or "trainer card") makes a Trainer card instead: silver body,
+"TRAINER" banner, blue (Item) or orange (Supporter) accents, an effect written like real rules
+text, and the matching rule line. The text model decides from the whole description, so "it's an
+item card" counts but "he's holding an item" doesn't. Anything else is a creature card.
+
 `ART_FREEDOM` in `.env` sets how literally the art follows the drawing: `reimagined` (default)
 treats it as a concept sketch, keeping the colors, eye count and body idea while adding anatomy,
 texture and a few new features; `faithful` redraws it as drawn. `IMAGE_QUALITY` only changes

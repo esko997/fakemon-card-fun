@@ -27,8 +27,11 @@ fi
 
 sans="DNS:localhost,DNS:${host},DNS:${host}.local,IP:127.0.0.1"
 for ip in $(hostname -I); do
-  [[ "$ip" == *:* ]] && continue
-  sans+=",IP:${ip}"
+  # Only addresses the CA's name constraints allow (10/8, 172.16/12, 192.168/16). Any other SAN,
+  # e.g. a VPN's 100.64/10 address, makes clients reject the whole certificate.
+  case "$ip" in
+    10.*|192.168.*|172.1[6-9].*|172.2[0-9].*|172.3[01].*) sans+=",IP:${ip}" ;;
+  esac
 done
 
 if [[ -f server.crt && -f server.sans && "$(cat server.sans)" == "$sans" ]]; then

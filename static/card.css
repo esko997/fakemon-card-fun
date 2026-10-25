@@ -332,6 +332,88 @@
   paint-order: stroke fill;
 }
 
+/* ---------------- Trainer: Item / Supporter ---------------- */
+
+.card .trainer { --accent: #2b8fd8; --accent-light: #cfe8fb; }      /* Item: blue */
+.card .trainer.supporter { --accent: #e8582c; --accent-light: #fbd9c8; }  /* Supporter: orange */
+
+.card .trainer .inner {
+  color: #111;
+  /* brushed silver body */
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0 0.06em, rgba(0, 0, 0, 0.025) 0.06em 0.12em),
+    linear-gradient(175deg, #e9ebed 0%, #cfd3d6 45%, #e3e6e8 100%);
+  padding: 0.15em 0.85em 0;
+}
+/* colored dash ticks down both side edges */
+.card .trainer .inner::before,
+.card .trainer .inner::after {
+  content: "";
+  position: absolute;
+  top: 4.4em;
+  bottom: 3.2em;
+  width: 0.28em;
+  background: repeating-linear-gradient(180deg, var(--accent) 0 0.22em, transparent 0.22em 0.5em);
+  opacity: 0.85;
+}
+.card .trainer .inner::before { left: 0.18em; }
+.card .trainer .inner::after { right: 0.18em; }
+
+.card .trainer-top {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 1.6em;
+  margin: 0 -0.85em;
+}
+.card .trainer .subtype {
+  margin-left: 0.3em;
+  font-size: 0.72em;
+  font-weight: 800;
+  font-style: italic;
+  color: var(--accent);
+  padding: 0.1em 1.6em 0.1em 0.6em;
+  background: linear-gradient(180deg, #fff, #e6e9eb);
+  border-radius: 0.6em 0 0 0.6em;
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+  box-shadow: 0 0.05em 0.12em rgba(0, 0, 0, 0.25);
+}
+.card .trainer-word {
+  font-size: 1.05em;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.06em;
+  color: #8d9296;
+  -webkit-text-stroke: 0.03em #6f7478;
+  padding: 0 0.6em 0 2.2em;
+  background: linear-gradient(180deg, #f7f8f9, #c9cdd1);
+  clip-path: polygon(14% 0, 100% 0, 100% 100%, 0 100%);
+}
+.card .trainer-name {
+  flex: none;
+  font-size: 1.32em;
+  font-weight: 800;
+  line-height: 1.15;
+  padding: 0.15em 0 0.25em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.card .trainer .moves { justify-content: center; padding: 0.3em 0.2em; }
+.card .trainer .effect { font-size: 0.74em; line-height: 1.35; text-align: justify; }
+.card .trainer .bottom { align-items: flex-end; }
+.card .trainer-rule {
+  flex: 1;
+  font-size: 0.5em;
+  line-height: 1.3;
+  padding: 0.5em 1.2em;
+  border-radius: 1.4em 1.4em 0.4em 1.4em;
+  background: linear-gradient(180deg, var(--accent-light), color-mix(in srgb, var(--accent-light) 60%, var(--accent)));
+  box-shadow: inset 0 0 0 0.14em #fff, 0 0.06em 0.18em rgba(0, 0, 0, 0.3);
+}
+
 /* holo shine: rare cards on the art, ex cards across the whole card.
    no-repeat + soft-edged band + clamped position = no seam at any tilt. */
 .card .holo {

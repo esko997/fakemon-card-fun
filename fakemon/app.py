@@ -260,7 +260,7 @@ def create_app() -> FastAPI:
         card = a.require_card(card_id)
         if card.status != "ready" or card.stats is None:
             raise HTTPException(409, "Card is busy")
-        if not 0 <= index < len(card.stats["attacks"]):
+        if card.stats["card_type"] != "pokemon" or not 0 <= index < len(card.stats["attacks"]):
             raise HTTPException(404, "No such attack")
         a.require_budget()
         try:

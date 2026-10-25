@@ -6,6 +6,7 @@ import base64
 import hashlib
 import io
 import json
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -38,7 +39,7 @@ ATTACK_SCHEMA: dict[str, Any] = {
     },
 }
 
-CARD_SCHEMA: dict[str, Any] = {
+POKEMON_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
     "required": [
@@ -52,7 +53,7 @@ CARD_SCHEMA: dict[str, Any] = {
         "evolves_from": {"type": ["string", "null"], "description": "Invented pre-evolution name; null for Basic."},
         "hp": {"type": "integer", "description": "Multiple of 10; the child's number if they said one, else 30-300."},
         "type": {"type": "string", "enum": TYPES},
-        "species": {"type": "string", "description": "Short category, e.g. 'Bubble Dragon'."},
+        "species": {"type": "string", "description": "Short category without the word Fakemon, e.g. 'Bubble Dragon'."},
         "height": {"type": "string", "description": "e.g. 3'2\""},
         "weight": {"type": "string", "description": "e.g. 41.5 lbs."},
         "ability": {
@@ -76,15 +77,53 @@ CARD_SCHEMA: dict[str, Any] = {
     },
 }
 
-CARD_INSTRUCTIONS = """\
-You turn a child's invented creature into a trading card for a home card-making game.
-The child drew the creature (the image) and described it out loud (the transcript, which
-may contain speech-recognition mistakes; interpret it generously).
+TRAINER_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["name", "effect", "rarity", "art_prompt"],
+    "properties": {
+        "name": {"type": "string", "description": "Item: e.g. 'Zap Potion'. Supporter: e.g. 'Coach Rae's Pep Talk'."},
+        "effect": {"type": "string", "description": "What playing the card does, in rules-text style."},
+        "rarity": {"type": "string", "enum": ["common", "uncommon", "rare"]},
+        "art_prompt": {"type": "string"},
+    },
+}
 
-Rules:
-- The child's ideas win. If they say the creature's name, type, HP, attacks, energy costs,
-  weakness, resistance, powers, size, or where it lives, use exactly that (fix only obvious
-  transcription errors). Invent only what they didn't say, in the spirit of what they said and drew.
+CARD_TYPES = ["pokemon", "item", "supporter"]
+
+CARD_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["card_type", "pokemon", "trainer"],
+    "properties": {
+        "card_type": {"type": "string", "enum": CARD_TYPES},
+        "pokemon": {"anyOf": [POKEMON_SCHEMA, {"type": "null"}], "description": "Only for card_type pokemon."},
+        "trainer": {"anyOf": [TRAINER_SCHEMA, {"type": "null"}], "description": "Only for item and supporter."},
+    },
+}
+
+CARD_INSTRUCTIONS = """\
+You turn a child's invention into a trading card for a home card-making game. The child drew it
+(the image) and described it out loud (the transcript, which may contain speech-recognition
+mistakes; interpret it generously).
+
+Card type:
+- card_type "item" if the child says it is an item (an item card); "supporter" if they say it is a
+  supporter (a supporter card). If they say "trainer card" without saying which: a person or
+  character is a supporter, an object is an item.
+- Otherwise card_type "pokemon": a creature card. This includes when they say nothing about the
+  card type, even if the drawing looks like an object or a person.
+- Fill `pokemon` for creature cards and `trainer` for item and supporter cards; set the other to null.
+
+Rules for every card:
+- The child's ideas win. Whatever they say about the name, numbers, powers, effects, looks or
+  where it lives goes on the card exactly as said (fix only obvious transcription errors). Invent
+  only what they didn't say, in the spirit of what they said and drew.
+- Original inventions only: never use names of real Pokémon, real trainer cards, or other existing
+  characters. Creatures are called "Fakemon" in card text.
+- Kid-friendly content only.
+
+Creature (pokemon) cards:
 - Types are the card game's energy types. Map other words: electric -> lightning, dark -> darkness,
   steel -> metal, normal -> colorless, ice -> water, ghost/fairy -> psychic, rock/ground -> fighting,
   bug/plant -> grass.
@@ -94,16 +133,26 @@ Rules:
   ex or describe it as legendary or super strong, otherwise "regular". Never put "ex" in the name.
 - Short and readable for a young child: name <= 18 characters, attack names <= 20,
   attack/ability text <= 90 characters, flavor text <= 120 characters.
-- An original creature: never use names of real Pokémon or other existing characters.
 - Fun and a bit over-the-top. Use the child's HP and damage numbers exactly, however big. When you
   invent them, damage is a multiple of 10 (10-200, ex up to 300), optionally ending in '+' or '×',
   and HP is 30-300.
 - Give 1 or 2 attacks. Include an ability only if the child described a special power that isn't an attack.
-- Kid-friendly content only.
 - art_prompt: 2-4 sentences describing how the creature looks in the drawing (body shape,
   colors, number of limbs/eyes, horns, wings, tail, markings), a lively pose, and a simple
   background that fits where it lives. If the drawing is uncolored, pick colors from the
   description or the creature's type.
+
+Item and supporter cards:
+- An item is a thing a trainer uses (potion, ball, gadget, snack, tool). A supporter is a person
+  who helps (coach, scientist, friend, family member); supporter names usually look like
+  "<Person>'s <Thing>", e.g. "Coach Rae's Pep Talk".
+- effect: what playing the card does, written like real card rules text and using game actions:
+  draw cards, search your deck, heal damage from a Fakemon, switch your Active Fakemon, attach
+  Energy, look at the top cards of your deck, shuffle. Use the child's effect if they gave one.
+  Fun and a bit generous. Name <= 22 characters, effect <= 160 characters.
+- art_prompt: 2-4 sentences. Item: the object from the drawing (shape, colors, materials, glow)
+  presented on a simple bright background. Supporter: the person from the drawing (hair, face,
+  clothes, colors, pose, expression) and a simple scenic background that fits them.
 """
 
 ATTACK_INSTRUCTIONS = """\
@@ -114,14 +163,23 @@ ending in '+' or '×'. Cost is 1-4 energy symbols, usually the creature's type p
 colorless. Never use names of real Pokémon moves or existing characters.
 """
 
-# How closely the art follows the drawing (ART_FREEDOM in .env).
+# How closely the art follows the drawing (ART_FREEDOM in .env), per thing being drawn.
 ART_FREEDOM = {
     # Redraws the drawing as-is, down to boxy shapes and crayon texture.
-    "faithful": """\
+    "faithful": {
+        "creature": """\
 Stay faithful to the child's design: keep the same body shape, number of limbs and eyes, horns, wings,
 tail, markings and colors as drawn. It is their creature, illustrated by a professional artist.""",
-    # Treats the drawing as a concept sketch: recognizable at a glance, but developed into a creature.
-    "reimagined": """\
+        "item": """\
+Stay faithful to the child's design: keep the same shape, parts and colors as drawn. It is their
+invention, illustrated by a professional artist.""",
+        "supporter": """\
+Stay faithful to the child's design: keep the same hair, clothes, colors and features as drawn. It is
+their character, illustrated by a professional artist.""",
+    },
+    # Treats the drawing as a concept sketch: recognizable at a glance, but properly designed.
+    "reimagined": {
+        "creature": """\
 Treat the drawing as the child's concept sketch and develop it the way a professional creature designer
 would turn a kid's concept into an official monster design. Keep the child's core idea so they can
 recognize their monster at a glance: the basic body shape idea, the main colors, and the number of eyes.
@@ -129,7 +187,20 @@ Everything else is yours to design: real anatomy and a confident stance, a chara
 interesting texture, patterns and markings, and two or three memorable new features (crests, fins,
 horns, tail, glowing parts, armor) that fit its type and personality. Simple shapes in the sketch should
 become a living creature, not a shape with a face. Do not copy the crayon or marker strokes or the paper.""",
+        "item": """\
+Treat the drawing as the child's concept sketch and develop it the way a professional prop designer
+would. Keep the basic shape idea and main colors so the child recognizes it at a glance, then design it
+as a real, finely made object: materials, shine, and two or three clever details. Do not copy the crayon
+or marker strokes or the paper.""",
+        "supporter": """\
+Treat the drawing as the child's concept sketch and develop it the way a professional character
+designer would. Keep the hair, clothing colors and any signature features so the child recognizes the
+character at a glance, then design them as a real anime character with an expressive face, natural
+proportions and a detailed outfit. Do not copy the crayon or marker strokes or the paper.""",
+    },
 }
+
+_NO_TEXT = "No text, letters, numbers, logos, borders or card frame anywhere in the image."
 
 ART_PROMPT = """\
 Turn the creature in this child's drawing into polished artwork for a collectible monster trading card.
@@ -138,8 +209,7 @@ Style: vibrant cel-shaded anime monster illustration, bold clean outlines, frien
 whole creature visible and centered.
 Background: simple and uncluttered, matching its habitat, with {type}-themed colors.
 Creature details: {details}
-No text, letters, numbers, logos, borders or card frame anywhere in the image.
-"""
+""" + _NO_TEXT
 
 # ex cards are full-art: portrait, the creature bursting with energy, filling the frame.
 EX_ART_PROMPT = """\
@@ -150,10 +220,39 @@ Style: vibrant cel-shaded anime monster illustration, bold clean outlines, power
 slightly from below, the creature large in the upper half of the image, swirling {type}-themed energy
 ribbons and sparkles bursting around it and flowing to the edges.
 Creature details: {details}
-No text, letters, numbers, logos, borders or card frame anywhere in the image.
-"""
+""" + _NO_TEXT
 
-ART_SIZE = {"regular": "1536x1024", "ex": "1024x1536", "mega_ex": "1024x1536"}
+ITEM_ART_PROMPT = """\
+Turn the object in this child's drawing into polished artwork for an Item card in a collectible trading
+card game.
+{freedom}
+Style: vibrant cel-shaded anime illustration, bold clean outlines, the object large and centered, seen
+slightly from above with shine and highlights, on a simple bright background with soft radiating rays.
+Item details: {details}
+""" + _NO_TEXT
+
+SUPPORTER_ART_PROMPT = """\
+Turn the person in this child's drawing into polished artwork for a Supporter card in a collectible
+trading card game: an anime-style character illustration.
+{freedom}
+Style: vibrant cel-shaded anime character art, bold clean outlines, friendly confident pose, shown from
+the waist up and centered, with a simple scenic background.
+Character details: {details}
+""" + _NO_TEXT
+
+LANDSCAPE, PORTRAIT = "1536x1024", "1024x1536"
+
+
+def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
+    """(prompt template, ART_FREEDOM subject, image size) for a card."""
+    if stats["card_type"] == "item":
+        return ITEM_ART_PROMPT, "item", LANDSCAPE
+    if stats["card_type"] == "supporter":
+        return SUPPORTER_ART_PROMPT, "supporter", LANDSCAPE
+    if stats["kind"] == "regular":
+        return ART_PROMPT, "creature", LANDSCAPE
+    return EX_ART_PROMPT, "creature", PORTRAIT
+
 
 # Appended after a moderation block; resending the identical request would only be blocked again.
 SAFER_ART = """\
@@ -162,8 +261,8 @@ scary faces or violence. Show powers as harmless sparkles, glows or splashes.
 """
 
 TRANSCRIBE_PROMPT = (
-    "A young child describes a monster they invented for a trading card: its name, "
-    "what it looks like, its powers, attacks and where it lives."
+    "A young child describes something they invented for a trading card: a monster (its name, "
+    "looks, powers, attacks and where it lives), an item card, or a supporter card."
 )
 
 
@@ -198,15 +297,27 @@ def tidy_attack(attack: dict[str, Any]) -> dict[str, Any]:
     return {**attack, "cost": cost}
 
 
-def tidy_card(stats: dict[str, Any]) -> dict[str, Any]:
-    """Structured output guarantees shape, not ranges; enforce what the card layout relies on."""
+def tidy_card(raw: dict[str, Any]) -> dict[str, Any]:
+    """Flatten the model's reply into stored stats and enforce what the card layout relies on.
+    Structured output guarantees shape, not ranges or which branch got filled."""
+    card_type = raw["card_type"]
+    if card_type != "pokemon":
+        if raw["trainer"] is None:
+            raise ValueError(f"{card_type} card came back without trainer details")
+        return {"card_type": card_type, **raw["trainer"]}
+    stats = raw["pokemon"]
+    if stats is None:
+        raise ValueError("creature card came back without creature details")
     attacks = [tidy_attack(a) for a in stats["attacks"][:2]]
     if not attacks:
         raise ValueError("card came back with no attacks")
     return {
+        "card_type": "pokemon",
         **stats,
         "hp": _clamp(round(int(stats["hp"]) / 10) * 10, 10, 990),   # 3 digits fit the header
         "retreat": _clamp(int(stats["retreat"]), 0, 4),
+        # the card prints "<species> Fakemon"
+        "species": re.sub(r"\s*(Fakemon|Pok[eé]mon)$", "", stats["species"].strip(), flags=re.I),
         "attacks": attacks,
     }
 
@@ -286,10 +397,11 @@ class CardAI:
         return tidy_attack(attack), spend
 
     async def paint(self, drawing_jpeg: bytes, stats: dict[str, Any], *, safer: bool = False) -> tuple[bytes, Spend]:
-        kind = stats["kind"]
-        template = ART_PROMPT if kind == "regular" else EX_ART_PROMPT
+        template, subject, size = art_spec(stats)
         prompt = template.format(
-            freedom=ART_FREEDOM[self.s.art_freedom], type=stats["type"], details=stats["art_prompt"]
+            freedom=ART_FREEDOM[self.s.art_freedom][subject],
+            type=stats.get("type", ""),
+            details=stats["art_prompt"],
         )
         if safer:
             prompt += SAFER_ART
@@ -298,7 +410,7 @@ class CardAI:
                 model=self.s.image_model,
                 image=("drawing.jpg", drawing_jpeg, "image/jpeg"),
                 prompt=prompt,
-                size=ART_SIZE[kind],
+                size=size,
                 quality=self.s.image_quality,
                 output_format="png",
                 safety_identifier=self.safety_id,
@@ -317,6 +429,6 @@ class CardAI:
             self.s.image_model,
             pricing.image_cost(self.s.image_model, text_in, image_in, out),
             {"text_in": text_in, "image_in": image_in, "output": out, "quality": self.s.image_quality,
-             "size": ART_SIZE[kind], "usage": usage.model_dump() if usage else None},
+             "size": size, "usage": usage.model_dump() if usage else None},
         )
         return base64.b64decode(result.data[0].b64_json), spend

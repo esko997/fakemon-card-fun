@@ -291,7 +291,8 @@ function stopRecording() {
 }
 
 $("say-hint").onclick = () =>
-  say("Tell me about your Fakemon! What's its name? What does it look like? What are its powers and attacks? Where does it live?");
+  say("Tell me about your Fakemon! What's its name? What does it look like? What are its powers and attacks? " +
+      "Where does it live? If it's an Item card or a Supporter card, just say so!");
 
 let micStarting = false;   // a second tap while the permission prompt is open must not start two recorders
 
@@ -412,7 +413,10 @@ function showCard(card, { reveal = false, history: mode } = {}) {
   requestAnimationFrame(() => fitCard(el));
   const busy = card.status === "working";
   $("new-art").disabled = busy;
-  $("view-tip").textContent = busy ? "🎨 Painting a new picture…" : "Tap the card to flip it • Tap an attack to change it";
+  const tip = card.stats.card_type === "pokemon"
+    ? "Tap the card to flip it • Tap an attack to change it"
+    : "Tap the card to flip it";
+  $("view-tip").textContent = busy ? "🎨 Painting a new picture…" : tip;
   if (reveal) {
     slot.classList.remove("reveal");
     void slot.offsetWidth; // restart the animation

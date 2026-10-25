@@ -92,20 +92,69 @@ function setNumber(id) {
   return `${String(id).padStart(3, "0")}/151`;
 }
 
-function front(card, { kidName, onAttack }) {
-  const s = card.stats;
-  const t = TYPES[s.type] || TYPES.colorless;
-  const ex = s.kind === "ex" || s.kind === "mega_ex";
-  const mega = s.kind === "mega_ex";
-  const holo = ex || s.rarity === "rare";
-
+function artBox(card, holo) {
   const art = h("div", { class: "art" },
-    card.art_url ? h("img", { src: card.art_url, alt: s.name }) : null,
-    holo && !ex ? h("div", { class: "holo" }) : null,
+    card.art_url ? h("img", { src: card.art_url, alt: card.stats.name }) : null,
+    holo ? h("div", { class: "holo" }) : null,
   );
   if (card.status === "working") {
     art.append(h("div", { class: "pending" }, h("img", { src: card.drawing_url, alt: "" }), h("span", {}, "🎨 Painting…")));
   }
+  return art;
+}
+
+function credit(card, kidName, rarityMark) {
+  return h("div", { class: "credit" },
+    h("span", { class: "illus" }, `Illus. ${kidName}`),
+    h("span", { class: "setline" },
+      h("span", { class: "reg" }, kidName.charAt(0).toUpperCase()),
+      h("span", { class: "setcode" }, "FKM", h("small", {}, "EN")),
+      setNumber(card.id),
+      h("span", { class: "rarity" }, rarityMark),
+    ),
+  );
+}
+
+const copyright = (card, kidName) =>
+  h("div", { class: "copyright" }, `©${new Date(card.created_at).getFullYear()} ${kidName} / Fakemon Card Maker`);
+
+const TRAINER_RULE = {
+  item: "You may play any number of Item cards during your turn.",
+  supporter: "You may play only 1 Supporter card during your turn.",
+};
+
+/** Item and Supporter cards: silver body, "TRAINER" banner, effect text, rule pill. */
+function trainerFront(card, { kidName }) {
+  const s = card.stats;
+  const label = s.card_type === "item" ? "Item" : "Supporter";
+  return h("div", { class: `face front trainer ${s.card_type}` },
+    h("div", { class: "inner" },
+      h("div", { class: "trainer-top" },
+        h("span", { class: "subtype" }, label),
+        h("span", { class: "trainer-word" }, "TRAINER"),
+      ),
+      h("div", { class: "trainer-name" }, s.name),
+      artBox(card, s.rarity === "rare"),
+      h("div", { class: "moves" }, h("div", { class: "effect" }, s.effect)),
+      h("div", { class: "bottom" },
+        credit(card, kidName, RARITY[s.rarity] || "●"),
+        h("div", { class: "trainer-rule" }, TRAINER_RULE[s.card_type]),
+      ),
+      copyright(card, kidName),
+    ),
+  );
+}
+
+function front(card, opts) {
+  return card.stats.card_type === "pokemon" ? pokemonFront(card, opts) : trainerFront(card, opts);
+}
+
+function pokemonFront(card, { kidName, onAttack }) {
+  const s = card.stats;
+  const t = TYPES[s.type] || TYPES.colorless;
+  const ex = s.kind === "ex" || s.kind === "mega_ex";
+  const mega = s.kind === "mega_ex";
+  const art = artBox(card, s.rarity === "rare" && !ex);
 
   const moves = h("div", { class: "moves" },
     s.ability && h("div", { class: "ability" },
@@ -156,15 +205,7 @@ function front(card, { kidName, onAttack }) {
         h("span", { class: "seg" }, h("i", {}, "retreat"), Array.from({ length: s.retreat }, () => energy("colorless"))),
       ),
       h("div", { class: "bottom" },
-        h("div", { class: "credit" },
-          h("span", { class: "illus" }, `Illus. ${kidName}`),
-          h("span", { class: "setline" },
-            h("span", { class: "reg" }, kidName.charAt(0).toUpperCase()),
-            h("span", { class: "setcode" }, "FKM", h("small", {}, "EN")),
-            setNumber(card.id),
-            h("span", { class: "rarity" }, ex ? "★★" : RARITY[s.rarity] || "●"),
-          ),
-        ),
+        credit(card, kidName, ex ? "★★" : RARITY[s.rarity] || "●"),
         ex
           ? h("div", { class: "rule" },
               h("span", { class: "rule-name" }, mega ? "Mega Evolution ex rule" : "Fakemon ex rule"),
@@ -174,7 +215,7 @@ function front(card, { kidName, onAttack }) {
                   : "When your Fakemon ex is Knocked Out, your opponent takes 2 Prize cards."))
           : h("div", { class: "flavor" }, s.flavor),
       ),
-      h("div", { class: "copyright" }, `©${new Date(card.created_at).getFullYear()} ${kidName} / Fakemon Card Maker`),
+      copyright(card, kidName),
       ex ? h("div", { class: "holo" }) : null,
     ),
   );
@@ -234,6 +275,9 @@ export function attachShine(cardEl) {
 /** Words for speechSynthesis. */
 export function cardSpeech(card) {
   const s = card.stats;
+  if (s.card_type !== "pokemon") {
+    return `${s.name}! ${s.card_type === "item" ? "Item" : "Supporter"} card. ${s.effect}`;
+  }
   const ex = s.kind === "ex" || s.kind === "mega_ex";
   const parts = [`${s.name}${ex ? " ex" : ""}! ${s.hp} HP. ${s.type} type.`];
   if (s.ability) parts.push(`Ability: ${s.ability.name}. ${s.ability.text}`);
