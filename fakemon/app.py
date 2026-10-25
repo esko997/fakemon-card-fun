@@ -16,7 +16,7 @@ from openai import APIStatusError
 from pydantic import BaseModel
 
 from . import pricing
-from .ai import ArtBlocked, CardAI, Spend, normalize_drawing
+from .ai import ART_FREEDOM, ArtBlocked, CardAI, Spend, normalize_drawing
 from .config import ROOT, load
 from .store import Card, Store
 
@@ -39,6 +39,8 @@ class App:
         )
         if not self.s.api_key:
             raise SystemExit("No OpenAI key: set OPENAI_API_KEY or OPENAI_API_KEY_FILE in .env (see .env.example).")
+        if self.s.art_freedom not in ART_FREEDOM:
+            raise SystemExit(f"ART_FREEDOM must be one of: {', '.join(ART_FREEDOM)} (got {self.s.art_freedom!r}).")
         self.s.media_dir.mkdir(parents=True, exist_ok=True)
         self.store = Store(self.s.db_path)
         self.ai = CardAI(self.s)

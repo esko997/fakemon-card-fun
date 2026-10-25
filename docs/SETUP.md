@@ -21,6 +21,11 @@ darkness, metal, dragon, colorless); other words a kid uses are mapped onto them
 lightning, ice → water, …). Saying "ex" or "Mega" makes a full-art ex / Mega Evolution ex card
 with portrait art and the rule box.
 
+`ART_FREEDOM` in `.env` sets how literally the art follows the drawing: `reimagined` (default)
+treats it as a concept sketch, keeping the colors, eye count and body idea while adding anatomy,
+texture and a few new features; `faithful` redraws it as drawn. `IMAGE_QUALITY` only changes
+rendering detail, not how closely the drawing is followed.
+
 ## Setup (server)
 
 Requires Python 3.11+ and `openssl`.

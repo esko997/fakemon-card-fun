@@ -45,6 +45,7 @@ class Settings:
     monthly_budget_usd: float
     image_model: str
     image_quality: str
+    art_freedom: str                      # faithful | reimagined (see ai.ART_FREEDOM)
     text_model: str
     transcribe_model: str
 
@@ -67,6 +68,7 @@ def load() -> Settings:
         monthly_budget_usd=_float("MONTHLY_BUDGET_USD", 20.0),
         image_model=_str("IMAGE_MODEL", "gpt-image-2.5-sunburst"),
         image_quality=_str("IMAGE_QUALITY", "medium"),
+        art_freedom=_str("ART_FREEDOM", "reimagined"),
         text_model=_str("TEXT_MODEL", "gpt-6-luna"),
         transcribe_model=_str("TRANSCRIBE_MODEL", "gpt-transcribe"),
     )

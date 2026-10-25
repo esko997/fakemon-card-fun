@@ -114,10 +114,26 @@ ending in '+' or '×'. Cost is 1-4 energy symbols, usually the creature's type p
 colorless. Never use names of real Pokémon moves or existing characters.
 """
 
-ART_PROMPT = """\
-Redraw the creature in this child's drawing as polished artwork for a collectible monster trading card.
+# How closely the art follows the drawing (ART_FREEDOM in .env).
+ART_FREEDOM = {
+    # Redraws the drawing as-is, down to boxy shapes and crayon texture.
+    "faithful": """\
 Stay faithful to the child's design: keep the same body shape, number of limbs and eyes, horns, wings,
-tail, markings and colors as drawn. It is their creature, illustrated by a professional artist.
+tail, markings and colors as drawn. It is their creature, illustrated by a professional artist.""",
+    # Treats the drawing as a concept sketch: recognizable at a glance, but developed into a creature.
+    "reimagined": """\
+Treat the drawing as the child's concept sketch and develop it the way a professional creature designer
+would turn a kid's concept into an official monster design. Keep the child's core idea so they can
+recognize their monster at a glance: the basic body shape idea, the main colors, and the number of eyes.
+Everything else is yours to design: real anatomy and a confident stance, a characterful face,
+interesting texture, patterns and markings, and two or three memorable new features (crests, fins,
+horns, tail, glowing parts, armor) that fit its type and personality. Simple shapes in the sketch should
+become a living creature, not a shape with a face. Do not copy the crayon or marker strokes or the paper.""",
+}
+
+ART_PROMPT = """\
+Turn the creature in this child's drawing into polished artwork for a collectible monster trading card.
+{freedom}
 Style: vibrant cel-shaded anime monster illustration, bold clean outlines, friendly dynamic pose,
 whole creature visible and centered.
 Background: simple and uncluttered, matching its habitat, with {type}-themed colors.
@@ -127,10 +143,9 @@ No text, letters, numbers, logos, borders or card frame anywhere in the image.
 
 # ex cards are full-art: portrait, the creature bursting with energy, filling the frame.
 EX_ART_PROMPT = """\
-Redraw the creature in this child's drawing as a dramatic full-art illustration for a rare collectible
+Turn the creature in this child's drawing into a dramatic full-art illustration for a rare collectible
 monster trading card, portrait orientation.
-Stay faithful to the child's design: keep the same body shape, number of limbs and eyes, horns, wings,
-tail, markings and colors as drawn. It is their creature, illustrated by a professional artist.
+{freedom}
 Style: vibrant cel-shaded anime monster illustration, bold clean outlines, powerful dynamic pose seen
 slightly from below, the creature large in the upper half of the image, swirling {type}-themed energy
 ribbons and sparkles bursting around it and flowing to the edges.
@@ -273,7 +288,9 @@ class CardAI:
     async def paint(self, drawing_jpeg: bytes, stats: dict[str, Any], *, safer: bool = False) -> tuple[bytes, Spend]:
         kind = stats["kind"]
         template = ART_PROMPT if kind == "regular" else EX_ART_PROMPT
-        prompt = template.format(type=stats["type"], details=stats["art_prompt"])
+        prompt = template.format(
+            freedom=ART_FREEDOM[self.s.art_freedom], type=stats["type"], details=stats["art_prompt"]
+        )
         if safer:
             prompt += SAFER_ART
         try:
