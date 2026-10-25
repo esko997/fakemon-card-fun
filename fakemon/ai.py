@@ -6,6 +6,7 @@ import base64
 import hashlib
 import io
 import json
+import random
 import re
 from dataclasses import dataclass
 from typing import Any
@@ -43,12 +44,13 @@ POKEMON_SCHEMA: dict[str, Any] = {
     "type": "object",
     "additionalProperties": False,
     "required": [
-        "name", "kind", "stage", "evolves_from", "hp", "type", "species", "height", "weight", "ability",
-        "attacks", "weakness", "resistance", "retreat", "rarity", "flavor", "art_prompt",
+        "name", "kind", "full_art", "stage", "evolves_from", "hp", "type", "species", "height", "weight",
+        "ability", "attacks", "weakness", "resistance", "retreat", "rarity", "flavor", "art_prompt",
     ],
     "properties": {
         "name": {"type": "string", "description": "Without 'ex'; include 'Mega ' for mega_ex."},
         "kind": {"type": "string", "enum": KINDS},
+        "full_art": {"type": "boolean", "description": "True only if the child asks for a full-art or illustration card."},
         "stage": {"type": "string", "enum": ["Basic", "Stage 1", "Stage 2"]},
         "evolves_from": {"type": ["string", "null"], "description": "Invented pre-evolution name; null for Basic."},
         "hp": {"type": "integer", "description": "Multiple of 10; the child's number if they said one, else 30-300."},
@@ -131,6 +133,7 @@ Creature (pokemon) cards:
   If the child says how many energies an attack needs, use that many (max 4).
 - kind: "mega_ex" if the child says Mega (put "Mega " at the start of the name), "ex" if they say
   ex or describe it as legendary or super strong, otherwise "regular". Never put "ex" in the name.
+- full_art: true only if the child asks for a "full art" or "illustration" card; otherwise false.
 - Short and readable for a young child: name <= 18 characters, attack names <= 20,
   attack/ability text <= 90 characters, flavor text <= 120 characters.
 - Fun and a bit over-the-top. Use the child's HP and damage numbers exactly, however big. When you
@@ -202,11 +205,30 @@ proportions and a detailed outfit. Do not copy the crayon or marker strokes or t
 
 _NO_TEXT = "No text, letters, numbers, logos, borders or card frame anywhere in the image."
 
+# Real sets mix many illustrators' styles; each painting rolls one (weight, description).
+ART_STYLES: dict[str, tuple[int, str]] = {
+    "anime": (4, "vibrant cel-shaded anime illustration with bold clean outlines"),
+    "watercolor": (1, "soft watercolor painting on textured paper, gentle color bleeds and delicate ink linework"),
+    "painterly": (1, "rich painterly digital painting with visible brush strokes and dramatic lighting, like a fantasy book cover"),
+    "cg": (1, "glossy 3D-rendered look with soft studio lighting, like a modern animated movie"),
+    "papercraft": (1, "cut-paper collage of layered textured paper with soft drop shadows, like a handmade diorama"),
+    "pastel": (1, "dreamy colored-pencil and pastel drawing with soft grainy shading"),
+    "woodblock": (1, "Japanese woodblock print style with flat colors, strong ink outlines and patterned backgrounds"),
+    "clay": (1, "handmade clay figure in a tiny clay diorama, softly lit, like stop-motion animation"),
+    "retro": (1, "1990s trading card painting with airbrushed gradients and a nostalgic vintage feel"),
+}
+
+
+def pick_style() -> str:
+    names = list(ART_STYLES)
+    return random.choices(names, weights=[ART_STYLES[n][0] for n in names])[0]
+
+
 ART_PROMPT = """\
 Turn the creature in this child's drawing into polished artwork for a collectible monster trading card.
 {freedom}
-Style: vibrant cel-shaded anime monster illustration, bold clean outlines, friendly dynamic pose,
-whole creature visible and centered.
+Art style: {style}.
+Composition: friendly dynamic pose, whole creature visible and centered.
 Background: simple and uncluttered, matching its habitat, with {type}-themed colors.
 Creature details: {details}
 """ + _NO_TEXT
@@ -216,9 +238,21 @@ EX_ART_PROMPT = """\
 Turn the creature in this child's drawing into a dramatic full-art illustration for a rare collectible
 monster trading card, portrait orientation.
 {freedom}
-Style: vibrant cel-shaded anime monster illustration, bold clean outlines, powerful dynamic pose seen
-slightly from below, the creature large in the upper half of the image, swirling {type}-themed energy
-ribbons and sparkles bursting around it and flowing to the edges.
+Art style: {style}.
+Composition: powerful dynamic pose seen slightly from below, the creature large in the upper half of the
+image, swirling {type}-themed energy ribbons and sparkles bursting around it and flowing to the edges.
+Creature details: {details}
+""" + _NO_TEXT
+
+# "Illustration rare": a full-art storybook scene of the creature's everyday life.
+ILLUSTRATION_ART_PROMPT = """\
+Turn the creature in this child's drawing into a full-art "illustration rare" painting for a collectible
+monster trading card, portrait orientation.
+{freedom}
+Art style: {style}.
+Composition: a storybook moment from the creature's everyday life in its habitat (what it likes to do,
+where it lives), the creature medium-sized in the upper half, the scene filling the whole frame edge to
+edge, the bottom third calmer and less detailed. {type}-themed colors.
 Creature details: {details}
 """ + _NO_TEXT
 
@@ -226,21 +260,26 @@ ITEM_ART_PROMPT = """\
 Turn the object in this child's drawing into polished artwork for an Item card in a collectible trading
 card game.
 {freedom}
-Style: vibrant cel-shaded anime illustration, bold clean outlines, the object large and centered, seen
-slightly from above with shine and highlights, on a simple bright background with soft radiating rays.
+Art style: {style}.
+Composition: the object large and centered, seen slightly from above with shine and highlights, on a
+simple bright background with soft radiating rays.
 Item details: {details}
 """ + _NO_TEXT
 
 SUPPORTER_ART_PROMPT = """\
 Turn the person in this child's drawing into polished artwork for a Supporter card in a collectible
-trading card game: an anime-style character illustration.
+trading card game: a character illustration.
 {freedom}
-Style: vibrant cel-shaded anime character art, bold clean outlines, friendly confident pose, shown from
-the waist up and centered, with a simple scenic background.
+Art style: {style}.
+Composition: friendly confident pose, shown from the waist up and centered, with a simple scenic
+background.
 Character details: {details}
 """ + _NO_TEXT
 
 LANDSCAPE, PORTRAIT = "1536x1024", "1024x1536"
+
+# Share of regular creature cards that come out as full-art illustration cards, a surprise "pull".
+ILLUSTRATION_CHANCE = 1 / 6
 
 
 def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
@@ -249,9 +288,11 @@ def art_spec(stats: dict[str, Any]) -> tuple[str, str, str]:
         return ITEM_ART_PROMPT, "item", LANDSCAPE
     if stats["card_type"] == "supporter":
         return SUPPORTER_ART_PROMPT, "supporter", LANDSCAPE
-    if stats["kind"] == "regular":
-        return ART_PROMPT, "creature", LANDSCAPE
-    return EX_ART_PROMPT, "creature", PORTRAIT
+    if stats["kind"] != "regular":
+        return EX_ART_PROMPT, "creature", PORTRAIT
+    if stats["layout"] == "illustration":
+        return ILLUSTRATION_ART_PROMPT, "creature", PORTRAIT
+    return ART_PROMPT, "creature", LANDSCAPE
 
 
 # Appended after a moderation block; resending the identical request would only be blocked again.
@@ -311,9 +352,13 @@ def tidy_card(raw: dict[str, Any]) -> dict[str, Any]:
     attacks = [tidy_attack(a) for a in stats["attacks"][:2]]
     if not attacks:
         raise ValueError("card came back with no attacks")
+    full_art = stats.pop("full_art")
+    # ex / Mega ex have their own full-art layout; regular cards are full-art when asked, or by luck.
+    illustration = stats["kind"] == "regular" and (full_art or random.random() < ILLUSTRATION_CHANCE)
     return {
         "card_type": "pokemon",
         **stats,
+        "layout": "illustration" if illustration else "standard",
         "hp": _clamp(round(int(stats["hp"]) / 10) * 10, 10, 990),   # 3 digits fit the header
         "retreat": _clamp(int(stats["retreat"]), 0, 4),
         # the card prints "<species> Fakemon"
@@ -398,8 +443,10 @@ class CardAI:
 
     async def paint(self, drawing_jpeg: bytes, stats: dict[str, Any], *, safer: bool = False) -> tuple[bytes, Spend]:
         template, subject, size = art_spec(stats)
+        style = pick_style()
         prompt = template.format(
             freedom=ART_FREEDOM[self.s.art_freedom][subject],
+            style=ART_STYLES[style][1],
             type=stats.get("type", ""),
             details=stats["art_prompt"],
         )
@@ -429,6 +476,6 @@ class CardAI:
             self.s.image_model,
             pricing.image_cost(self.s.image_model, text_in, image_in, out),
             {"text_in": text_in, "image_in": image_in, "output": out, "quality": self.s.image_quality,
-             "size": size, "usage": usage.model_dump() if usage else None},
+             "size": size, "style": style, "usage": usage.model_dump() if usage else None},
         )
         return base64.b64decode(result.data[0].b64_json), spend

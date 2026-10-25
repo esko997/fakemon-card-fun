@@ -19,7 +19,14 @@ words show up exactly, and attacks or art can be re-rolled separately.
 Types follow the card game's ten energy types (grass, fire, water, lightning, psychic, fighting,
 darkness, metal, dragon, colorless); other words a kid uses are mapped onto them (electric →
 lightning, ice → water, …). Saying "ex" or "Mega" makes a full-art ex / Mega Evolution ex card
-with portrait art and the rule box.
+with portrait art and the rule box. About 1 in 6 regular creature cards comes out as a full-art
+**illustration** card (a storybook scene of the creature's life, gold ★), like a rare pull; saying
+"full art" or "illustration" asks for one. `ILLUSTRATION_CHANCE` in `fakemon/ai.py` sets the odds.
+
+Each painting rolls an art style, the way real sets mix illustrators: anime cel-shading (most
+often), watercolor, painterly, 3D CG, papercraft, pastel, woodblock print, clay, or 90s retro.
+🎨 New picture rolls again. The styles and their weights are `ART_STYLES` in `fakemon/ai.py`; the
+style used for each painting is recorded with its cost.
 
 Saying "item" or "supporter" (or "trainer card") makes a Trainer card instead: silver body,
 "TRAINER" banner, blue (Item) or orange (Supporter) accents, an effect written like real rules
@@ -30,6 +37,10 @@ item card" counts but "he's holding an item" doesn't. Anything else is a creatur
 treats it as a concept sketch, keeping the colors, eye count and body idea while adding anatomy,
 texture and a few new features; `faithful` redraws it as drawn. `IMAGE_QUALITY` only changes
 rendering detail, not how closely the drawing is followed.
+
+When something fails, the kid's message comes with "Ask Dad to look at this error:" and the literal
+error (what failed, HTTP status, message). Failed uploads are also listed under "Errors on the
+tablet" on `/parent.html`.
 
 ## Setup (server)
 

@@ -28,9 +28,11 @@ async function api(path, opts = {}) {
   return res.json();
 }
 
-function ask(text, { yes = "Yes!", no = "No" } = {}) {
+/** `detail`: raw error text shown under "Ask Dad to look at this error:" (for grown-up debugging). */
+function ask(text, { yes = "Yes!", no = "No", detail = null } = {}) {
   const dlg = $("ask");
   $("ask-text").textContent = text;
+  showDetail($("ask-detail"), detail);
   $("ask-yes").textContent = yes;
   $("ask-no").textContent = no;
   $("ask-no").hidden = no == null;
@@ -42,7 +44,18 @@ function ask(text, { yes = "Yes!", no = "No" } = {}) {
     dlg.showModal();
   });
 }
-const tell = (text) => ask(text, { yes: "OK", no: null });
+const tell = (text, detail = null) => ask(text, { yes: "OK", no: null, detail });
+
+function showDetail(box, detail) {
+  box.hidden = !detail;
+  box.querySelector("pre").textContent = detail || "";
+}
+
+/** The literal error, for the grown-up: what failed, HTTP status, and the message. */
+function errorText(where, err) {
+  const status = err?.status ? ` (HTTP ${err.status})` : "";
+  return `${where}${status}: ${err?.name || "Error"}: ${err?.message || err}`;
+}
 
 function say(text) {
   if (!("speechSynthesis" in window)) return;
@@ -70,7 +83,8 @@ async function outOfCards() {
     await refreshStatus();
     tell(`⭐ ${TOP_UP_COUNT} more cards! Have fun!`);
   } catch (err) {
-    tell(err.status === 403 ? "That's not the right PIN 🔒" : "Oops! Try again?");
+    if (err.status === 403) tell("That's not the right PIN 🔒");
+    else tell("Oops! Try again?", errorText("add cards", err));
   }
 }
 
@@ -89,11 +103,12 @@ function askPin() {
 }
 
 /** Tell the kid why a request failed. */
-function explain(err, fallback) {
+function explain(err, fallback, where) {
   if (err.status === 429) return outOfCards();
   if (err.status === 402) return tell("The card machine needs a grown-up 🔧");
-  if (err.status == null) return tell("📡 I couldn't reach the card machine. Try again!");
-  return tell(fallback);
+  const detail = errorText(where, err);
+  if (err.status == null) return tell("📡 I couldn't reach the card machine. Try again!", detail);
+  return tell(fallback, detail);
 }
 
 // Failures the server never saw (e.g. an upload that died on the way) are reported back so they
@@ -308,7 +323,7 @@ $("pick-photo").onchange = async (e) => {
     showSnapped(await photoCopy(file));
   } catch (err) {
     reportError("photo-read", err, { file: blobInfo(file) });
-    tell("I couldn't open that picture. Try taking it again! 📷");
+    tell("I couldn't open that picture. Try taking it again! 📷", errorText("open picture", err));
   }
 };
 $("flip-cam").onclick = () => {
@@ -423,7 +438,7 @@ $("make").onclick = async () => {
     showMaking(card);
   } catch (err) {
     reportError("make-card", err, { drawing: blobInfo(drawingBlob), audio: blobInfo(audioBlob), audioSeconds });
-    await explain(err, "Oops! Something went wrong. Try again?");
+    await explain(err, "Oops! Something went wrong. Try again?", "make card");
   } finally {
     $("make").disabled = false;
   }
@@ -444,6 +459,7 @@ function updateMaking(card) {
   const failed = card.status === "failed";
   $("making-failed").hidden = !failed;
   $("making-msg").textContent = failureMessage(card.error_kind);
+  showDetail($("making-detail"), failed ? `card #${card.id}: ${card.error}` : null);
   $("making-step").textContent = failed ? "😵" : STEP_TEXT[card.step] || STEP_TEXT.done;
   if (card.status === "ready") showCard(card, { reveal: true });
 }
@@ -452,7 +468,7 @@ $("retry").onclick = async () => {
   try {
     showMaking(await api(`/api/cards/${current.id}/retry`, { method: "POST" }));
   } catch (err) {
-    explain(err, "Still stuck! Ask a grown-up to check the card machine 🔧");
+    explain(err, "Still stuck! Ask a grown-up to check the card machine 🔧", "retry card");
   }
 };
 
@@ -484,7 +500,10 @@ function showCard(card, { reveal = false, history: mode } = {}) {
     watch(card.id, (c) => {
       if (screen !== "view" || c.status === "working") return;
       showCard(c, { reveal: !c.error });
-      if (c.error) tell(c.error_kind === "out_of_credits" ? failureMessage(c.error_kind) : "The new picture didn't work. Try again later!");
+      if (c.error) {
+        tell(c.error_kind === "out_of_credits" ? failureMessage(c.error_kind) : "The new picture didn't work. Try again later!",
+          `card #${c.id}: ${c.error}`);
+      }
     });
   }
 }
@@ -503,7 +522,7 @@ async function newAttack(index) {
     showCard(await api(`/api/cards/${current.id}/attacks/${index}/new`, { method: "POST" }));
   } catch (err) {
     $("view-tip").textContent = "";
-    explain(err, "Oops! Try again?");
+    explain(err, "Oops! Try again?", "new attack");
   }
 }
 
@@ -514,7 +533,7 @@ $("new-art").onclick = async () => {
   try {
     showCard(await api(`/api/cards/${current.id}/new-art`, { method: "POST" }));
   } catch (err) {
-    explain(err, "Oops! Try again?");
+    explain(err, "Oops! Try again?", "new picture");
   }
 };
 

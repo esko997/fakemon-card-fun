@@ -64,6 +64,10 @@
       <h2 id="making-step">Getting ready…</h2>
       <div id="making-failed" hidden>
         <p class="msg" id="making-msg">Oops! The card machine got confused.</p>
+        <div id="making-detail" class="err-detail" hidden>
+          <p>Ask Dad to look at this error:</p>
+          <pre></pre>
+        </div>
         <div class="row">
           <button class="big" data-go="home">🏠 Home</button>
           <button class="big primary" id="retry">🔁 Try again</button>
@@ -97,6 +101,10 @@
 
   <dialog id="ask">
     <p id="ask-text"></p>
+    <div id="ask-detail" class="err-detail" hidden>
+      <p>Ask Dad to look at this error:</p>
+      <pre></pre>
+    </div>
     <div class="row">
       <button class="big" value="no" id="ask-no">No</button>
       <button class="big primary" value="yes" id="ask-yes">Yes!</button>

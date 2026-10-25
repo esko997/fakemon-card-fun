@@ -61,8 +61,13 @@ class App:
         """Newest first."""
         if not self.client_log.is_file():
             return []
-        lines = self.client_log.read_text().splitlines()[-limit:]
-        return [json.loads(line) for line in reversed(lines)]
+        out = []
+        for line in reversed(self.client_log.read_text().splitlines()[-limit:]):
+            try:
+                out.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        return out
 
     def card_dir(self, card_id: int) -> Path:
         return self.s.media_dir / str(card_id)
@@ -333,7 +338,9 @@ def create_app() -> FastAPI:
         a = app()
         with a.client_log.open("a") as f:
             for entry in entries[-20:]:
-                line = json.dumps(entry, ensure_ascii=False)[:2000]
+                # Cap values, not the serialized line, so every line stays valid JSON.
+                line = json.dumps({k: str(v)[:500] if isinstance(v, str) else v for k, v in entry.items()},
+                                  ensure_ascii=False)
                 log.warning("tablet error: %s", line)
                 f.write(line + "\n")
         return {"ok": True}

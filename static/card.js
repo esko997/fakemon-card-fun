@@ -154,7 +154,9 @@ function pokemonFront(card, { kidName, onAttack }) {
   const t = TYPES[s.type] || TYPES.colorless;
   const ex = s.kind === "ex" || s.kind === "mega_ex";
   const mega = s.kind === "mega_ex";
-  const art = artBox(card, s.rarity === "rare" && !ex);
+  const illustration = s.layout === "illustration";
+  const fullArt = ex || illustration;   // art behind the whole card
+  const art = artBox(card, s.rarity === "rare" && !fullArt);
 
   const moves = h("div", { class: "moves" },
     s.ability && h("div", { class: "ability" },
@@ -178,11 +180,11 @@ function pokemonFront(card, { kidName, onAttack }) {
   const baseName = mega ? s.name.replace(/^Mega\s+/i, "") : s.name;
 
   return h("div", {
-    class: `face front ${ex ? "ex" : ""} ${mega ? "mega" : ""}`,
+    class: `face front ${fullArt ? "fullart" : ""} ${ex ? "ex" : ""} ${mega ? "mega" : ""}`,
     style: `--frame:${t.frame[0]};--frame-light:${t.frame[1]};--ink:${t.ink}`,
   },
     h("div", { class: "inner" },
-      ex ? art : null,
+      fullArt ? art : null,
       h("div", { class: "top" },
         h("span", { class: "stage" }, STAGE[s.stage] || "BASIC"),
         h("span", { class: "name" }, s.name, ex ? h("span", { class: "ex-mark" }, "ex") : null),
@@ -193,8 +195,8 @@ function pokemonFront(card, { kidName, onAttack }) {
         s.evolves_from && h("span", { class: "from" }, `Evolves from ${s.evolves_from}`),
         mega && h("span", { class: "mega-tag" }, `The Mega-Evolved form of ${baseName}`),
       ),
-      ex ? h("div", { class: "art-spacer" }) : art,
-      ex ? null : h("div", { class: "dex" },
+      fullArt ? h("div", { class: "art-spacer" }) : art,
+      fullArt ? null : h("div", { class: "dex" },
         `NO. ${String(card.id).padStart(4, "0")}  ${s.species} Fakemon  HT: ${s.height}  WT: ${s.weight}`),
       moves,
       h("div", { class: "wrr" },
@@ -205,7 +207,7 @@ function pokemonFront(card, { kidName, onAttack }) {
         h("span", { class: "seg" }, h("i", {}, "retreat"), Array.from({ length: s.retreat }, () => energy("colorless"))),
       ),
       h("div", { class: "bottom" },
-        credit(card, kidName, ex ? "★★" : RARITY[s.rarity] || "●"),
+        credit(card, kidName, ex ? "★★" : illustration ? h("span", { class: "gold" }, "★") : RARITY[s.rarity] || "●"),
         ex
           ? h("div", { class: "rule" },
               h("span", { class: "rule-name" }, mega ? "Mega Evolution ex rule" : "Fakemon ex rule"),
@@ -216,7 +218,7 @@ function pokemonFront(card, { kidName, onAttack }) {
           : h("div", { class: "flavor" }, s.flavor),
       ),
       copyright(card, kidName),
-      ex ? h("div", { class: "holo" }) : null,
+      fullArt ? h("div", { class: "holo" }) : null,
     ),
   );
 }
@@ -238,15 +240,22 @@ export function renderCard(card, { kidName, onAttack = null, flipped = false } =
   );
 }
 
-/** Shrink the move text until it fits; call once the card is in the DOM and visible. */
+/** Shrink long names and move text until they fit; call once the card is in the DOM and visible. */
 export function fitCard(cardEl) {
-  const moves = cardEl.querySelector(".moves");
-  if (!moves || !moves.clientHeight) return;
+  for (const name of cardEl.querySelectorAll(".front .name, .front .trainer-name")) {
+    shrink(name, "--name-fit", () => name.scrollWidth > name.clientWidth + 1, 0.5);
+  }
+  const moves = cardEl.querySelector(".front .moves");
+  if (moves) shrink(moves, "--fit", () => moves.scrollHeight > moves.clientHeight + 1, 0.55);
+}
+
+function shrink(el, prop, overflowing, min) {
+  if (!el.clientWidth) return;   // not laid out (hidden)
   let fit = 1;
-  moves.style.setProperty("--fit", fit);
-  while (moves.scrollHeight > moves.clientHeight + 1 && fit > 0.55) {
+  el.style.setProperty(prop, fit);
+  while (overflowing() && fit > min) {
     fit -= 0.05;
-    moves.style.setProperty("--fit", fit.toFixed(2));
+    el.style.setProperty(prop, fit.toFixed(2));
   }
 }
 

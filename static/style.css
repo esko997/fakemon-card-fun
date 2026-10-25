@@ -150,3 +150,10 @@ dialog .pin {
   font: inherit; font-size: 2rem; text-align: center; letter-spacing: 0.4em;
   width: 10rem; padding: 0.4rem; margin-bottom: 1rem; border: 0.2rem solid #2a3399; border-radius: 0.8rem;
 }
+.err-detail { margin: 0.6rem auto 1rem; max-width: 34rem; text-align: left; }
+.err-detail p { margin: 0 0 0.3rem; font-size: 1rem; }
+.err-detail pre {
+  margin: 0; padding: 0.5rem 0.7rem; max-height: 30vh; overflow: auto; white-space: pre-wrap;
+  word-break: break-word; user-select: text; font-size: 0.8rem; font-weight: 400;
+  background: #f1f2f7; color: #222; border-radius: 0.5rem;
+}
