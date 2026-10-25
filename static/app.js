@@ -92,8 +92,36 @@ function askPin() {
 function explain(err, fallback) {
   if (err.status === 429) return outOfCards();
   if (err.status === 402) return tell("The card machine needs a grown-up 🔧");
+  if (err.status == null) return tell("📡 I couldn't reach the card machine. Try again!");
   return tell(fallback);
 }
+
+// Failures the server never saw (e.g. an upload that died on the way) are reported back so they
+// show up on the grown-ups page. Kept in localStorage until the server accepts them.
+const ERR_KEY = "fakemon-client-errors";
+
+function reportError(where, err, extra = {}) {
+  const entry = {
+    at: new Date().toISOString(), where, name: err?.name, message: String(err?.message || err),
+    status: err?.status ?? null, online: navigator.onLine, ua: navigator.userAgent, ...extra,
+  };
+  const queue = JSON.parse(localStorage.getItem(ERR_KEY) || "[]").concat(entry).slice(-20);
+  localStorage.setItem(ERR_KEY, JSON.stringify(queue));
+  flushErrors();
+}
+
+async function flushErrors() {
+  const queue = JSON.parse(localStorage.getItem(ERR_KEY) || "[]");
+  if (!queue.length) return;
+  try {
+    const res = await fetch("/api/client-errors", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(queue),
+    });
+    if (res.ok) localStorage.removeItem(ERR_KEY);
+  } catch { /* still offline; next page load retries */ }
+}
+
+const blobInfo = (b) => b && { type: b.type, size: b.size };
 
 async function refreshStatus() {
   try {
@@ -250,10 +278,38 @@ $("shutter").onclick = () => {
   canvas.getContext("2d").drawImage(video, 0, 0);
   canvas.toBlob((blob) => blob && showSnapped(blob), "image/jpeg", 0.92);
 };
-$("pick-photo").onchange = (e) => {
+/**
+ * A picked or camera-app photo is a reference to a file that Android can change or revoke before
+ * upload (Chrome then fails the request outright). Decode it now and keep a downscaled copy.
+ */
+async function photoCopy(file) {
+  try {
+    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const scale = Math.min(1, 2048 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    return await new Promise((resolve, reject) =>
+      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("toBlob failed"))), "image/jpeg", 0.9));
+  } catch (err) {
+    // Not decodable here (unusual format): keep the original bytes and let the server convert them.
+    reportError("photo-decode", err, { file: blobInfo(file) });
+    return new Blob([await file.arrayBuffer()], { type: file.type });
+  }
+}
+
+$("pick-photo").onchange = async (e) => {
   const file = e.target.files?.[0];
   e.target.value = "";
-  if (file) showSnapped(file);
+  if (!file) return;
+  try {
+    showSnapped(await photoCopy(file));
+  } catch (err) {
+    reportError("photo-read", err, { file: blobInfo(file) });
+    tell("I couldn't open that picture. Try taking it again! 📷");
+  }
 };
 $("flip-cam").onclick = () => {
   facing = facing === "environment" ? "user" : "environment";
@@ -366,6 +422,7 @@ $("make").onclick = async () => {
     draft = false;
     showMaking(card);
   } catch (err) {
+    reportError("make-card", err, { drawing: blobInfo(drawingBlob), audio: blobInfo(audioBlob), audioSeconds });
     await explain(err, "Oops! Something went wrong. Try again?");
   } finally {
     $("make").disabled = false;
@@ -533,3 +590,4 @@ $("print-go").onclick = () => {
 // ---------------------------------------------------------------- boot
 
 refreshStatus().then(() => show(location.hash === "#binder" ? "binder" : "home", { history: "replace" }));
+flushErrors();

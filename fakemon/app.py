@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import asyncio
 import hmac
+import json
 import logging
 import time
 from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Any
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse
@@ -50,6 +52,17 @@ class App:
             log.warning("marked %d interrupted card(s) as failed", interrupted)
 
     # --- helpers ----------------------------------------------------------------
+
+    @property
+    def client_log(self) -> Path:
+        return self.s.data_dir / "client-errors.log"
+
+    def client_errors(self, limit: int) -> list[dict[str, Any]]:
+        """Newest first."""
+        if not self.client_log.is_file():
+            return []
+        lines = self.client_log.read_text().splitlines()[-limit:]
+        return [json.loads(line) for line in reversed(lines)]
 
     def card_dir(self, card_id: int) -> Path:
         return self.s.media_dir / str(card_id)
@@ -311,7 +324,19 @@ def create_app() -> FastAPI:
             "models": {"image": a.s.image_model, "quality": a.s.image_quality, "text": a.s.text_model,
                        "transcribe": a.s.transcribe_model},
             "errors": failed[:20],
+            "client_errors": a.client_errors(10),
         }
+
+    @api.post("/api/client-errors")
+    async def client_errors(entries: list[dict[str, Any]]):
+        """Failures the tablet saw but the server never did (e.g. an upload lost on the way)."""
+        a = app()
+        with a.client_log.open("a") as f:
+            for entry in entries[-20:]:
+                line = json.dumps(entry, ensure_ascii=False)[:2000]
+                log.warning("tablet error: %s", line)
+                f.write(line + "\n")
+        return {"ok": True}
 
     @api.get("/media/{card_id}/{name}")
     async def media(card_id: int, name: str):

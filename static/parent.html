@@ -47,6 +47,11 @@
   <p class="muted">Latest error per card; it clears once the card succeeds (the server log keeps the full history).</p>
   <table id="errors"></table>
 
+  <h2>Errors on the tablet</h2>
+  <p class="muted">Problems the tablet hit before the server saw anything (e.g. an upload that never
+    arrived). Newest first; also kept in <code>data/client-errors.log</code>.</p>
+  <table id="client-errors"></table>
+
   <h2>Tablet setup</h2>
   <ol>
     <li>Install the <a href="/ca.crt">local certificate</a> on the tablet: Settings → Security → Encryption &amp; credentials →
@@ -105,6 +110,13 @@
 
       const errors = document.getElementById("errors");
       errors.replaceChildren(row([["Card"], ["Error"]], true), ...s.errors.map((e) => row([[`#${e.id}`], [e.error]])));
+
+      const clientErrors = document.getElementById("client-errors");
+      clientErrors.replaceChildren(row([["When"], ["Where"], ["What happened"], ["Details"]], true),
+        ...s.client_errors.map((e) => row([
+          [new Date(e.at).toLocaleString()], [e.where], [`${e.name || ""}: ${e.message}`],
+          [JSON.stringify({ status: e.status, online: e.online, drawing: e.drawing, audio: e.audio, file: e.file })],
+        ])));
 
       const hidden = await fetch("/api/cards?hidden=true").then((r) => r.json());
       const box = document.getElementById("hidden");
