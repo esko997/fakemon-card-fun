@@ -69,8 +69,10 @@
         </div>
         <p class="prompt" id="prompt"></p>
         <div class="real-dice" id="real-dice" hidden>
-          <div class="face-row" data-die="0"></div>
-          <div class="face-row" data-die="1"></div>
+          <span id="first-die-label">First die</span>
+          <div class="face-row" data-die="0" role="group" aria-labelledby="first-die-label"></div>
+          <span id="second-die-label">Second die</span>
+          <div class="face-row" data-die="1" role="group" aria-labelledby="second-die-label"></div>
         </div>
         <button class="big primary roll" id="roll">🎲 Roll!</button>
       </div>

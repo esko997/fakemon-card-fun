@@ -40,7 +40,8 @@ The "Race to the Top" game many kindergarten and first-grade classes play on pap
    optionally 🤖 **Robo**, a computer player: *Smart* Robo picks the numbers that come up most
    (like 7), *Silly* Robo picks anything.
 2. Roll two dice: tap 🎲 for the tablet's dice, or choose **"our own dice"**, roll real dice at the
-   table, and tap the two faces you got. Robo always rolls on the tablet.
+   table, and tap a face under **First die** and **Second die**, in either order. Both selectors
+   have touch-sized buttons in portrait and landscape. Robo always rolls on the tablet.
 3. The kid adds up the dots and taps that number (or picks "add for me"); on Robo's turn the kid
    helps Robo add. Two misses show the answer as a hint.
 4. A box fills in above that number. The first column to reach the top wins.

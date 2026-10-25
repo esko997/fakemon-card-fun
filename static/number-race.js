@@ -242,7 +242,7 @@ function buildFaceButtons() {
       const b = document.createElement("button");
       b.className = "face";
       b.dataset.v = v;
-      b.setAttribute("aria-label", `${v}`);
+      b.setAttribute("aria-label", `${Number(row.dataset.die) === 0 ? "First" : "Second"} die: ${v}`);
       const die = Object.assign(document.createElement("div"), { className: "die mini" });
       drawDie(die, v);
       b.append(die);
@@ -255,7 +255,11 @@ function buildFaceButtons() {
 function renderFaceButtons() {
   for (const row of document.querySelectorAll("#real-dice .face-row")) {
     const chosen = game.entered[Number(row.dataset.die)];
-    for (const b of row.children) b.classList.toggle("on", Number(b.dataset.v) === chosen);
+    for (const b of row.children) {
+      const selected = Number(b.dataset.v) === chosen;
+      b.classList.toggle("on", selected);
+      b.setAttribute("aria-pressed", String(selected));
+    }
   }
 }
 

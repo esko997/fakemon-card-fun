@@ -54,10 +54,13 @@
 @keyframes tumble { from { transform: rotate(-14deg) translateY(-0.3rem); } to { transform: rotate(14deg) translateY(0.2rem); } }
 
 /* real dice: tap the face each die landed on */
-/* .controls centers its children, which would shrink this panel to zero width */
-.real-dice { display: flex; flex-direction: column; gap: 0.5rem; align-items: center; align-self: stretch; }
-.face-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.2rem; width: 100%; max-width: 20rem; }
-.face { border: none; background: none; padding: 0.15rem; border-radius: 0.6rem; min-width: 0; }
+/* Explicit width works with both the column and portrait row controls. */
+.real-dice { display: flex; flex: none; width: 100%; flex-direction: column; gap: 0.5rem; align-items: center; font-weight: 800; }
+.face-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem; width: 100%; max-width: 22rem; }
+@media (orientation: portrait), (min-width: 1200px) {
+  .face-row { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+.face { border: none; background: none; padding: 0.15rem; border-radius: 0.6rem; min-width: 0; min-height: 2.75rem; }
 .face.on { background: #ffcb05; box-shadow: 0 0 0 0.15rem #fff; }
 .face:active { transform: translateY(0.1rem); }
 .die.mini { width: 100%; padding: 18%; box-shadow: 0 0.2rem 0 #0005; }   /* % of the face button */
