@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Creature Field Guide</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="play.css">
+  <link rel="stylesheet" href="creatures.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mid" href="./">Home</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <span class="bar-title">Creature Field Guide</span>
+  </header>
+
+  <main class="play-main">
+    <!-- 1. the child's field guide: every creature they have made -->
+    <section id="library-view" class="panel" hidden>
+      <h1>My Creature Field Guide</h1>
+      <p class="muted">Make up a creature of your own. It can be magic, real-ish, or anything in between.</p>
+      <div class="actions" id="library-actions"></div>
+      <p class="muted" id="library-empty" hidden>No creatures yet. Your first one is waiting to be invented.</p>
+      <div class="book-grid" id="library-grid"></div>
+    </section>
+
+    <!-- 2. a brand-new creature: name + picture + one amazing thing -->
+    <section id="new-view" class="panel" hidden>
+      <h1>A new creature</h1>
+      <p class="muted">Give your creature a name. Then draw it or take a photo of your drawing, and tell one amazing thing about it.</p>
+      <div class="play-form">
+        <label for="new-name">Creature name</label>
+        <input id="new-name" type="text" maxlength="80" autocomplete="off" autocapitalize="sentences" spellcheck="false">
+      </div>
+      <div id="new-capture" class="capture-slot"></div>
+      <p class="notice" id="new-notice" role="status" hidden></p>
+      <div class="actions" id="new-actions"></div>
+    </section>
+
+    <!-- 3. one creature's encyclopedia page -->
+    <section id="guide-view" class="panel" hidden>
+      <article class="creature-page">
+        <p class="muted page-kicker">Creature Field Guide</p>
+        <h1 id="guide-name"></h1>
+        <div id="guide-pictures" class="creature-pictures" hidden></div>
+        <div id="guide-entries" class="creature-entries"></div>
+        <div id="guide-conversations" class="creature-conversations no-print"></div>
+      </article>
+
+      <p class="notice no-print" id="page-notice" role="status" hidden></p>
+      <div class="notice no-print" id="guide-pending" role="status" hidden></div>
+      <div class="notice no-print" id="guide-conflict" role="alert" hidden></div>
+
+      <div class="actions no-print" id="page-actions"></div>
+
+      <section class="creature-add no-print" aria-labelledby="add-heading">
+        <h2 id="add-heading">Add to this page</h2>
+        <div id="idea-panel" class="idea-panel"></div>
+        <div id="add-capture" class="capture-slot"></div>
+        <p class="notice" id="guide-notice" role="status" hidden></p>
+        <div class="actions" id="add-actions"></div>
+      </section>
+
+      <section class="creature-ask no-print" aria-labelledby="ask-heading">
+        <h2 id="ask-heading">Ask the helper (optional)</h2>
+        <p class="muted">The helper is an AI. It can share an idea and maybe one question. You never have to answer.</p>
+        <div class="play-form">
+          <label for="ask-text">Your question (or leave it empty)</label>
+          <input id="ask-text" type="text" maxlength="300" autocomplete="off">
+        </div>
+        <p class="notice" id="ask-notice" role="status" hidden></p>
+        <div class="actions" id="ask-actions"></div>
+      </section>
+
+      <details class="creature-rename no-print">
+        <summary>Change the creature's name</summary>
+        <div class="play-form">
+          <label for="rename-text">Creature name</label>
+          <input id="rename-text" type="text" maxlength="80" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="actions" id="rename-actions"></div>
+      </details>
+    </section>
+  </main>
+
+  <dialog id="confirm-dialog">
+    <p id="confirm-text"></p>
+    <div class="actions">
+      <button class="mid primary" id="confirm-no" type="button">Keep working</button>
+      <button class="mid" id="confirm-yes" type="button">Yes</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="creatures.js"></script>
+</body>
+</html>

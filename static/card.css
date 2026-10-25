@@ -19,6 +19,22 @@
 }
 .card.flipped .flipper { transform: rotateY(180deg); }
 
+/* Tilt belongs to the outer card; turning it over remains an independent transform. */
+.card.tilt-enabled {
+  transform: perspective(1100px) rotateX(var(--pitch, 0deg)) rotateY(var(--yaw, 0deg));
+  transition: transform 0.22s ease-out;
+}
+.card.tilt-enabled .holo::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at var(--foil-x, 29%) var(--foil-y, 25%), #fff, transparent 65%);
+  opacity: var(--glint, 0.18);
+  transition: opacity 0.22s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .card.tilt-enabled { transform: none; transition: none; }
+  .card .flipper, .card .holo, .card.tilt-enabled .holo::after { transition: none; }
+}
+
 .card .face {
   position: absolute;
   inset: 0;
@@ -426,8 +442,8 @@
   box-shadow: inset 0 0 0 0.14em #fff, 0 0.06em 0.18em rgba(0, 0, 0, 0.3);
 }
 
-/* holo shine: rare cards on the art, ex cards across the whole card.
-   no-repeat + soft-edged band + clamped position = no seam at any tilt. */
+/* Holo reflection responds to card orientation under a fixed light.
+   no-repeat + soft-edged band = no seam at any tilt. */
 .card .holo {
   position: absolute;
   inset: 0;
@@ -443,8 +459,8 @@
     transparent 68%);
   background-repeat: no-repeat;
   background-size: 300% 300%;
-  background-position: var(--mx, 0%) var(--my, 0%);
-  transition: background-position 0.1s;
+  background-position: var(--foil-x, 0%) var(--foil-y, 0%);
+  transition: background-position 0.22s ease-out;
 }
 
 /* ---------------- finishes (rolled per card, or asked for) ---------------- */
@@ -458,7 +474,7 @@
     radial-gradient(circle at 45% 80%, transparent 0.35em, rgba(255, 240, 120, 0.8) 0.45em, transparent 0.6em);
   background-size: 4em 4em, 5.5em 5.5em, 3em 3em;
   background-repeat: repeat;
-  background-position: var(--mx, 0%) var(--my, 0%), calc(var(--mx, 0%) * -1) var(--my, 0%), var(--my, 0%) var(--mx, 0%);
+  background-position: 0 0, 0 0, 0 0; /* foil texture stays attached to the card */
 }
 /* sparkle: glitter over the whole card */
 .card .holo.sparkle {
@@ -470,7 +486,7 @@
     radial-gradient(circle, #c9f4ff 0 0.04em, transparent 0.07em);
   background-size: 2.3em 2.9em, 3.1em 2.6em, 1.7em 2.1em;
   background-repeat: repeat;
-  background-position: calc(var(--mx, 0%) * 0.3) calc(var(--my, 0%) * 0.3), calc(var(--my, 0%) * 0.5) var(--mx, 0%), var(--mx, 0%) calc(var(--my, 0%) * -0.4);
+  background-position: 0 0, 0 0, 0 0;
 }
 /* reverse holo: the card body is foil, the art is not. The foil sits under the content. */
 .card .finish-reverse .inner { isolation: isolate; }
@@ -618,8 +634,9 @@
 /* Chrome's print path flattens the 3D flip and ignores backface-visibility, so the back face
    (rotated 180°, later in the DOM) printed mirrored over the front. Print the front only, flat. */
 @media print {
+  .card.tilt-enabled { transform: none; transition: none; }
   .card .holo, .card .face.back { display: none; }
-  .card .flipper, .card.flipped .flipper { transform: none; transform-style: flat; }
+  .card .flipper, .card.flipped .flipper { transform: none; transform-style: flat; transition: none; }
 }
 
 /* ---------------- back: the kid's original drawing ---------------- */

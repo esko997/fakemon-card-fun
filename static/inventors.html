@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Inventor's Workshop</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="play.css">
+  <link rel="stylesheet" href="inventors.css">
+</head>
+<body class="inventors">
+  <header class="bar">
+    <a class="mid home-link" href="./">Home</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <a class="mid inv-workshop-link" href="inventors.html">Workshop</a>
+  </header>
+
+  <main class="play-main inv-main" id="app">
+    <p class="muted">Opening the workshop...</p>
+  </main>
+
+  <dialog id="leave-dialog" aria-labelledby="leave-title">
+    <h2 id="leave-title">This is not saved yet</h2>
+    <p>You have words, a picture or a recording that is not saved. Do you want to stay and save it?</p>
+    <div class="actions">
+      <button type="button" class="mid primary" id="leave-stay">Stay here</button>
+      <button type="button" class="mid" id="leave-go">Leave without saving</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="inventors.js"></script>
+</body>
+</html>

@@ -8,6 +8,10 @@ For the short version, see the [README](../README.md).
 | `/` | Learning Box home: one tile per game |
 | `/cards.html` | Fakemon card maker (`/print.html` prints cards, `/parent.html` is the grown-ups page) |
 | `/number-race.html` | Number Race; runs entirely in the browser, no server data |
+| `/facts.html` | Sourced facts, ten-discovery sessions, optional follow-ups and reflection |
+| `/creatures.html` | Original drawings and descriptions in a creature field guide |
+| `/stories.html` | Photographed writing, narration, sound effects and printable stories |
+| `/inventors.html` | Reviewed building challenges and a notebook of each attempt |
 
 A second, separate instance for trying changes can run beside the kid's: its own checkout (a git
 worktree on another branch), its own copy of `data/`, `PORT=8444 ./run.sh`, and
@@ -47,7 +51,11 @@ Like real packs, some cards come out special. These are rolled once when a card 
 | Holo foils | "holo", "foil" | cosmos 7%, sparkle 6%, reverse 10%; rare cards get classic holo | ring pattern on the art / glitter over the card / foil card body |
 | Shiny | "shiny" | 1 in 15 creature cards | painted in alternate colors, ✦ by the name |
 
-Foils follow finger, mouse and tablet tilt. Gold and rainbow tints also print; moving shine doesn't.
+In the full-size view, pointer movement gently tilts the card under a fixed upper-left light.
+Foil reflection responds to orientation rather than following the pointer as a spotlight.
+Tablet orientation is used where the browser exposes it; touch taps still flip the card.
+Reduced-motion preferences disable tilt. Print output is flat, front-only; gold and rainbow
+tints print, but moving shine does not.
 
 Each painting rolls an art style, the way real sets mix illustrators: anime cel-shading (most
 often), watercolor, painterly, 3D CG, papercraft, pastel, woodblock print, clay, or 90s retro.
@@ -67,6 +75,35 @@ rendering detail, not how closely the drawing is followed.
 When something fails, the kid's message comes with "Ask Dad to look at this error:" and the literal
 error (what failed, HTTP status, message). Failed uploads are also listed under "Errors on the
 tablet" on `/parent.html`.
+
+## Play notebooks
+
+The four creative activities share `fakemon/play.py` and `static/play.js`: original photo/audio
+uploads, editable recognition proposals, saved notebooks, read-aloud and optional AI help.
+They are separate from the card binder; creating or editing a notebook never changes card rows.
+Saved notebooks have revisions, so an older browser window cannot overwrite a newer save.
+
+- `static/facts.json` contains 28 sourced starting facts. Each has a source link, explanation,
+  specific follow-up questions and a low-risk activity. The server enforces ten new facts per
+  session, even after a reload. After ten, the child can reflect, revisit, ask questions or stop
+  without completing an assignment. AI answers are labelled and can still be wrong.
+- Creature pages accept grounded or magical descriptions. Optional illustrations are separate
+  companions to the original drawing, not replacements. Existing entries remain available.
+- Story pages retain the photographed writing and original recording. Recognition is never
+  silently applied: the child can hear, edit and accept its proposed words. Sound-effect pages
+  stay distinct from narration, and the story helper asks rather than authors.
+- `static/challenges.json` contains ten reviewed material lists, safety notes and building ideas.
+  The workshop records a prediction, successive attempts and optional changes without grading.
+  The AI helper is limited by the selected challenge's materials and safety guidance; an adult
+  should supervise the real activity.
+
+Browsing, typing, recording, uploading, saving and printing do not need an AI call. Paid helpers
+reuse the configured text, transcription and image models. Their usage appears as `play_*` in
+the spend summary and counts toward `MONTHLY_BUDGET_USD`; creature illustrations also consume
+the shared daily picture allowance. Exhausting the budget does not prevent saving original work.
+Photo and audio originals are stored locally unchanged; recognition and helper requests send
+the relevant material to OpenAI only when requested. This remains a trusted-home-network app,
+not a public, authenticated hosting service.
 
 ## Setup (server)
 
@@ -116,7 +153,7 @@ per-card cost on `/parent.html`. Check it after the first few cards and adjust `
 
 Guards, all in `.env`:
 
-- `DAILY_CARD_LIMIT` (15) — new cards + new pictures per day (failed attempts are refunded).
+- `DAILY_CARD_LIMIT` (15) — new cards + new pictures + creature-guide illustrations per day (failed API attempts are refunded).
   Grown-ups can add more for the current day from `/parent.html` or the tablet's 🔑 button.
 - `PARENT_PIN` — required for top-ups when set. Without it, the tablet shows no 🔑 and anyone who
   opens `/parent.html` can add cards.
@@ -152,7 +189,10 @@ loginctl enable-linger "$USER"   # keep running when logged out
 ## Data
 
 Everything lives in `data/` (git-ignored): `cards.sqlite`, `media/<card>/` (drawing, voice
-recording, art), and `certs/`. Back up `data/` to keep the binder. Keep `certs/ca.key` private.
+recording, art), `play.sqlite` (discovery sessions and notebooks), `play-media/` (original
+uploads and companion illustrations), and `certs/`. Back up all of `data/` using a SQLite-aware
+backup or while the server is stopped; copying a live SQLite file alone can omit WAL changes.
+Keep `certs/ca.key` private.
 The CA is name-constrained to this machine's hostname, `*.local`, and private-network IPs, so even
 a leaked key can't impersonate real websites to the tablet.
 

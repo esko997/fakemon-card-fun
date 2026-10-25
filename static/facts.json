@@ -1,0 +1,478 @@
+[
+  {
+    "id": "space-venus-day",
+    "topic": "space",
+    "title": "A day on Venus is longer than its year",
+    "text": "Venus spins so slowly that one day there lasts 243 Earth days. But Venus travels all the way around the Sun in only 225 Earth days. So on Venus, a day is longer than a year!",
+    "explanation": "A day is one full spin of a planet. A year is one full trip around the Sun. Venus also spins backward compared to Earth, so on Venus the Sun would rise in the west and set in the east, and sunrise to sunset would take 117 Earth days.",
+    "questions": [
+      "Why does Venus spin so slowly?",
+      "Why does Venus spin the opposite way from Earth?",
+      "Which planet has the shortest day?"
+    ],
+    "activity": "Be a planet. Put a chair in the middle of the room as the Sun. Walk slowly in a big circle around it while you turn your body around once. Now try turning even slower, so you finish the circle before you finish your turn. That is what Venus does!",
+    "source": {
+      "title": "Venus: Facts - NASA Science",
+      "url": "https://science.nasa.gov/venus/facts/"
+    }
+  },
+  {
+    "id": "space-olympus-mons",
+    "topic": "space",
+    "title": "Mars has the biggest volcano in the solar system",
+    "text": "The largest volcano in our solar system is on Mars. It is called Olympus Mons, and it is about three times higher than Mount Everest, the highest mountain on Earth.",
+    "explanation": "Olympus Mons is a shield volcano, built long ago by runny lava that flowed out and piled up over time. It covers more ground than the whole chain of Hawaiian volcanoes. Its slopes rise only a few degrees at a time, so NASA says it would not be hard for people to climb in Mars's low gravity.",
+    "questions": [
+      "How did Olympus Mons get so big?",
+      "Could Olympus Mons ever erupt again?",
+      "What would I see from the top of Olympus Mons?"
+    ],
+    "activity": "Build a shield volcano. Squeeze a little play dough or wet sand into a low, wide hill, then add thin layers on top one at a time, like lava flows. Is your volcano wide and gentle like Olympus Mons, or tall and steep?",
+    "source": {
+      "title": "APOD: 2023 April 4 - Olympus Mons: Largest Volcano in the Solar System - NASA Science",
+      "url": "https://science.nasa.gov/image-article/apod-2023-april-4-olympus-mons-largest-volcano-in-the-solar-system/"
+    }
+  },
+  {
+    "id": "space-saturn-rings",
+    "topic": "space",
+    "title": "Saturn's rings are made of ice chunks",
+    "text": "Saturn's rings are not solid. They are made of billions of chunks of water ice. Some pieces are smaller than a grain of sand, and some are as big as mountains.",
+    "explanation": "The rings are very wide, but they are usually only about 10 meters (30 feet) thick. NASA's Cassini spacecraft found that water jets shooting out of Saturn's moon Enceladus supply much of the material in one faint ring, called the E ring.",
+    "questions": [
+      "How did Saturn get its rings?",
+      "Do other planets have rings too?",
+      "Why are Saturn's rings so thin?"
+    ],
+    "activity": "Make a ring model. Draw a planet in the middle of a paper plate. Then arrange dry rice, salt, or tiny torn paper bits in a big circle around it. Every grain is one chunk of ice going around Saturn.",
+    "source": {
+      "title": "Rings - NASA Science (Cassini mission)",
+      "url": "https://science.nasa.gov/mission/cassini/science/rings/"
+    }
+  },
+  {
+    "id": "space-great-red-spot",
+    "topic": "space",
+    "title": "Jupiter has a storm bigger than Earth",
+    "text": "Jupiter's Great Red Spot is a giant storm that is bigger than the whole Earth. It has been swirling for hundreds of years.",
+    "explanation": "Jupiter's stripes and swirls are cold, windy clouds of ammonia and water floating in an atmosphere of hydrogen and helium. The dark stripes are called belts and the light ones are called zones, and they flow east and west in opposite directions.",
+    "questions": [
+      "Why is the Great Red Spot red?",
+      "How fast does the wind blow inside the Great Red Spot?",
+      "Will the Great Red Spot ever stop?"
+    ],
+    "activity": "Make a storm in a bowl. With a grown-up, fill a bowl with water and stir it in a circle with a spoon. Sprinkle in a pinch of pepper or a few paper bits and watch them swirl around like a storm on Jupiter.",
+    "source": {
+      "title": "Jupiter Facts - NASA Science",
+      "url": "https://science.nasa.gov/jupiter/jupiter-facts/"
+    }
+  },
+  {
+    "id": "space-station-sunrises",
+    "topic": "space",
+    "title": "Astronauts see 16 sunrises every day",
+    "text": "The International Space Station goes all the way around Earth about every 90 minutes. That means astronauts on board can see 16 sunrises and 16 sunsets every day!",
+    "explanation": "The space station travels at about 17,100 miles (27,500 kilometers) per hour. On every trip around Earth it passes over the daytime side and the nighttime side, so the Sun seems to come up and go down again and again.",
+    "questions": [
+      "How do astronauts know when it is time to sleep?",
+      "How does the space station stay up there?",
+      "Can I see the space station from my house?"
+    ],
+    "activity": "Ask a grown-up to shine a lamp at a ball. The lamp is the Sun and the ball is Earth. Move a small toy quickly around the ball and count how many times it goes from the bright side to the dark side.",
+    "source": {
+      "title": "Sunrise to Sunset - NASA Science (Earth Matters blog)",
+      "url": "https://science.nasa.gov/blogs/earth-matters/2016/01/15/sunrise-to-sunset/"
+    }
+  },
+  {
+    "id": "space-sunlight-trip",
+    "topic": "space",
+    "title": "Sunlight takes about 8 minutes to reach us",
+    "text": "Light from the Sun takes about 8 minutes and 20 seconds to travel to Earth. So the sunshine you see left the Sun a few minutes ago.",
+    "explanation": "Light is super fast, but the Sun is very far away. Before that trip, the energy in sunlight spent a much longer time traveling from the Sun's center out to its surface. NASA says that part of the journey takes millions of years!",
+    "questions": [
+      "How fast does light travel?",
+      "How long does light from other stars take to reach us?",
+      "Does moonlight come from the Sun too?"
+    ],
+    "activity": "Set a timer for 8 minutes and see what you can do before it rings: draw a picture, build a tower, or read a story. That is how long sunlight travels to reach you. Remember: never look straight at the Sun.",
+    "source": {
+      "title": "More Quick Facts - NASA Astrobiology",
+      "url": "https://astrobiology.nasa.gov/quick-facts/more-quick-facts/"
+    }
+  },
+  {
+    "id": "space-neptune-winds",
+    "topic": "space",
+    "title": "Neptune is the windiest planet",
+    "text": "Neptune is the windiest world in our solar system. Its winds push clouds of frozen methane across the planet at more than 2,000 kilometers (1,200 miles) per hour.",
+    "explanation": "Neptune is very far from the Sun and gets little energy from it, yet its winds can be three times stronger than Jupiter's and nine times stronger than Earth's. Earth's most powerful winds reach only about 400 kilometers (250 miles) per hour.",
+    "questions": [
+      "Why is Neptune so windy?",
+      "Why is Neptune blue?",
+      "Has a spacecraft ever visited Neptune?"
+    ],
+    "activity": "Make a wind tester. Tape a strip of tissue or thin paper to the end of a pencil. Blow on it gently, then harder, and watch how far it flutters. Take it outside on a breezy day and compare.",
+    "source": {
+      "title": "Neptune: Facts - NASA Science",
+      "url": "https://science.nasa.gov/neptune/facts/"
+    }
+  },
+  {
+    "id": "ocean-oxygen",
+    "topic": "ocean",
+    "title": "The ocean makes about half of Earth's oxygen",
+    "text": "Scientists estimate that about half of the oxygen made on Earth comes from the ocean. Most of it is made by plankton: tiny drifting plants, algae, and some bacteria.",
+    "explanation": "Plankton use sunlight to make their food, like plants do, and they give off oxygen. One kind, Prochlorococcus, is the smallest living thing on Earth that does this. Ocean animals also use up about the same amount of oxygen, and most of the air we breathe built up over hundreds of millions of years.",
+    "questions": [
+      "How can something too tiny to see make so much oxygen?",
+      "Do fish breathe the oxygen that plankton make?",
+      "Where in the ocean do plankton live?"
+    ],
+    "activity": "Draw an ocean in a jar. Fill a big circle with as many tiny dots, squiggles, and shapes as you can, each one a different kind of plankton. Give your favorite one a name and a tiny sun beam to make oxygen with.",
+    "source": {
+      "title": "How much oxygen comes from the ocean? - NOAA's National Ocean Service",
+      "url": "https://oceanservice.noaa.gov/facts/ocean-oxygen.html"
+    }
+  },
+  {
+    "id": "ocean-challenger-deep",
+    "topic": "ocean",
+    "title": "The deepest ocean spot could hide Mount Everest",
+    "text": "The Challenger Deep in the Pacific Ocean is the deepest part of the ocean, about 11,000 meters (36,000 feet) down. It is about 2,100 meters (7,000 feet) deeper than Mount Everest is tall!",
+    "explanation": "The Challenger Deep is the deepest part of the Mariana Trench, a long, deep crescent-shaped valley in the seafloor of the western Pacific Ocean. Nearby, undersea mud volcanoes and thermal vents support unusual living things in some of the harshest places on Earth.",
+    "questions": [
+      "What lives at the bottom of the Challenger Deep?",
+      "How do people get all the way down there?",
+      "Is it dark and cold at the bottom of the ocean?"
+    ],
+    "activity": "Make a deep-sea tower. Stack blocks or cups as tall as you can and call it Mount Everest. Then imagine stacking even more on top, about one more cup for every four in your tower. That is how much deeper the Challenger Deep goes.",
+    "source": {
+      "title": "Mariana Trench Marine National Monument - NOAA Fisheries",
+      "url": "https://www.fisheries.noaa.gov/pacific-islands/habitat-conservation/mariana-trench-marine-national-monument"
+    }
+  },
+  {
+    "id": "ocean-mid-ocean-ridge",
+    "topic": "ocean",
+    "title": "The longest mountain range is under the sea",
+    "text": "The longest mountain range on Earth is the mid-ocean ridge. It stretches about 65,000 kilometers (40,389 miles) around the globe, and about 90 percent of it is underwater.",
+    "explanation": "It forms where Earth's giant plates push apart. Melted rock called magma rises up to fill the gaps and makes new ocean floor. NOAA says the ridge wraps around the globe like the stitches on a baseball, and it is made of thousands of volcanoes.",
+    "questions": [
+      "How do scientists see mountains under the ocean?",
+      "Does the ridge ever poke out above the water?",
+      "Do the volcanoes on the ridge still erupt?"
+    ],
+    "activity": "Press two flat pieces of play dough together side by side, then slowly pull them apart. Fill the crack in the middle with a new strip of a different color. That is like magma making new seafloor along the ridge.",
+    "source": {
+      "title": "What is the longest mountain range on Earth? - NOAA's National Ocean Service",
+      "url": "https://oceanservice.noaa.gov/facts/midoceanridge.html"
+    }
+  },
+  {
+    "id": "ocean-blue-whale-heart",
+    "topic": "ocean",
+    "title": "A blue whale's heart weighs as much as a piano",
+    "text": "Blue whales are the largest animals ever known to have lived, even bigger than all known dinosaurs. A blue whale's heart weighs about 400 pounds (180 kilograms), about as much as a piano!",
+    "explanation": "Blue whales can grow to about 110 feet (34 meters) long, which is longer than a basketball court. With each beat, a blue whale's heart pumps about 60 gallons (230 liters) of blood. A human heart pumps only about 2.4 ounces (70 milliliters).",
+    "questions": [
+      "How do blue whales get so big eating tiny krill?",
+      "How long can a blue whale hold its breath?",
+      "Why do blue whales sing?"
+    ],
+    "activity": "Measure a blue whale. With a grown-up, take 34 big steps across a yard, park, or long hallway. That is about how long a big blue whale can be. Put a toy at the start and the end to see the size.",
+    "source": {
+      "title": "The Big-Hearted Blue Whale - NOAA Fisheries",
+      "url": "https://www.fisheries.noaa.gov/feature-story/big-hearted-blue-whale"
+    }
+  },
+  {
+    "id": "ocean-octopus-hearts",
+    "topic": "ocean",
+    "title": "Octopuses have three hearts and blue blood",
+    "text": "An octopus has three hearts. One heart pumps blood around its body, and the other two pump blood past the gills to pick up oxygen. And its blood is blue!",
+    "explanation": "Our blood carries oxygen using a protein with iron in it. An octopus uses a different protein, called haemocyanin, which has copper in it. That makes octopus blood blue, and it works well in cold water with little oxygen.",
+    "questions": [
+      "Why does an octopus need three hearts?",
+      "Do squids have blue blood too?",
+      "How do octopuses change color?"
+    ],
+    "activity": "Make a paper octopus. Cut eight arms from strips of paper and stick them to a paper body. Draw three hearts inside: two small ones near the gills and one in the middle. Color the blood lines blue.",
+    "source": {
+      "title": "Octopuses keep surprising us - here are eight examples how - Natural History Museum",
+      "url": "https://www.nhm.ac.uk/discover/octopuses-keep-surprising-us-here-are-eight-examples-how.html"
+    }
+  },
+  {
+    "id": "ocean-sea-otter-fur",
+    "topic": "ocean",
+    "title": "Sea otters wear the thickest fur coat",
+    "text": "Sea otters have two layers of incredibly thick fur, with more than a million hairs on every square inch of skin. A square inch is about the size of a postage stamp!",
+    "explanation": "The sea otter is the only marine mammal without blubber, a layer of fat that keeps whales and seals warm. Instead, it relies on its fur. Long outer guard hairs lie flat when the otter grooms them, and the layer of fur underneath stays completely dry.",
+    "questions": [
+      "How do sea otters keep their fur clean?",
+      "Why do sea otters float on their backs?",
+      "What do sea otters eat?"
+    ],
+    "activity": "Fur test: put a fluffy sock over one hand and a thin plastic bag over the sock. Dip both hands in a bowl of cool water for a few seconds. Which hand stays warmer and drier?",
+    "source": {
+      "title": "Sea Otter Anatomy - NOAA Ocean Today",
+      "url": "https://oceantoday.noaa.gov/seaotteranatomy/"
+    }
+  },
+  {
+    "id": "ocean-bioluminescence",
+    "topic": "ocean",
+    "title": "Many sea creatures make their own light",
+    "text": "Some living things can make their own light. This is called bioluminescence. In the ocean it is not rare at all: most kinds of animals, from bacteria to sharks, include some members that glow.",
+    "explanation": "The light comes from a chemical reaction inside the living thing. Animals may glow to warn or escape predators, to lure or find food, or to send messages to others of their own kind.",
+    "questions": [
+      "What colors of light do ocean animals make?",
+      "How does a firefly make its light?",
+      "Why is the deep ocean so dark?"
+    ],
+    "activity": "Invent a glow language. In a dim room, use a flashlight under a blanket to send signals: one flash for hello, two flashes for follow me. Make up more signals with a friend or grown-up.",
+    "source": {
+      "title": "What is bioluminescence? - NOAA's National Ocean Service",
+      "url": "https://oceanservice.noaa.gov/facts/biolum.html"
+    }
+  },
+  {
+    "id": "animals-hummingbird-backward",
+    "topic": "animals",
+    "title": "Hummingbirds can fly backward",
+    "text": "Hummingbirds can fly backward and even upside down. They are the only animals with backbones that can hover, staying in one place in the air, for a long time.",
+    "explanation": "Hummingbirds are tiny. Most weigh between 2 and 20 grams, about as much as one to eight pennies. They are fast, too: they have been clocked flying close to 30 miles (48 kilometers) per hour.",
+    "questions": [
+      "How fast do hummingbird wings flap?",
+      "What do hummingbirds eat?",
+      "Where do hummingbirds go in winter?"
+    ],
+    "activity": "Try to hover like a hummingbird. Stand still on one spot and sweep your arms forward and back in a sideways figure-eight. Count how long you can keep going without moving your feet.",
+    "source": {
+      "title": "Hummingbirds - Smithsonian's National Zoo and Conservation Biology Institute",
+      "url": "https://nationalzoo.si.edu/migratory-birds/hummingbirds"
+    }
+  },
+  {
+    "id": "animals-cheetah-speed",
+    "topic": "animals",
+    "title": "Cheetahs are the fastest land mammals",
+    "text": "The cheetah is the world's fastest land mammal. Its top speed is between 60 and 70 miles (96 and 112 kilometers) per hour!",
+    "explanation": "At top speed, a cheetah covers 7 meters (23 feet) in one stride and takes four strides every second. But it can keep that speed for only about 274 meters (300 yards). It can go from standing still to 72 kilometers (45 miles) per hour in just 2.5 seconds.",
+    "questions": [
+      "Why can't cheetahs run fast for a long time?",
+      "How do cheetahs grip the ground when they run?",
+      "Why do cheetahs have black lines on their faces?"
+    ],
+    "activity": "Measure a cheetah stride. With a grown-up, use a measuring tape to mark 7 meters (23 feet) on the ground. Then see how many of your own jumps it takes to cover one cheetah stride.",
+    "source": {
+      "title": "Cheetah - Smithsonian's National Zoo and Conservation Biology Institute",
+      "url": "https://nationalzoo.si.edu/animals/cheetah"
+    }
+  },
+  {
+    "id": "animals-sloth-algae",
+    "topic": "animals",
+    "title": "Sloths grow tiny gardens in their fur",
+    "text": "Each hair on a sloth has grooves running along it, and two kinds of blue-green algae grow inside them. The green tint helps sloths blend in with the leaves.",
+    "explanation": "The algae also invites ticks, mites, beetles, moths, and other little creatures to live in the fur. This tiny world is so special that some animals, like the sloth moth, live only on sloths.",
+    "questions": [
+      "Why do sloths move so slowly?",
+      "How often do sloths come down from the trees?",
+      "Can sloths swim?"
+    ],
+    "activity": "Sloth challenge: cross the room as slowly as you can, like a sloth. Then draw a sloth and give its fur a green tint, with tiny moths and beetles living in it.",
+    "source": {
+      "title": "Why are Sloths So Slow? And Other Sloth Facts - Smithsonian's National Zoo",
+      "url": "https://nationalzoo.si.edu/animals/news/why-are-sloths-so-slow-and-other-sloth-facts"
+    }
+  },
+  {
+    "id": "animals-axolotl-regrow",
+    "topic": "animals",
+    "title": "Axolotls can regrow lost legs",
+    "text": "Axolotls are a kind of salamander that can regrow lost limbs, like legs, and repair parts of their organs.",
+    "explanation": "Scientists found that a special molecule called retinoic acid helps an axolotl's body know how much to rebuild. There is more of it near the shoulder and less near the wrist, so the body can tell whether to regrow a whole leg or just a foot. Scientists hope this may someday help people heal.",
+    "questions": [
+      "What other body parts can an axolotl regrow?",
+      "Where do axolotls live in the wild?",
+      "What are the feathery things on an axolotl's head?"
+    ],
+    "activity": "Build an axolotl from play dough. Take off one leg, then rebuild it slowly in steps: first a little bump, then a longer leg, then tiny toes. Draw each step to make a regrowing comic.",
+    "source": {
+      "title": "New axolotl study gives researchers a leg up in work towards limb regeneration - U.S. National Science Foundation",
+      "url": "https://www.nsf.gov/news/new-axolotl-study-gives-researchers-leg-work-towards-limb"
+    }
+  },
+  {
+    "id": "animals-monarch-journey",
+    "topic": "animals",
+    "title": "Monarch butterflies fly thousands of miles",
+    "text": "Some monarch butterflies fly as far as 3,000 miles (about 4,800 kilometers) to reach their winter home.",
+    "explanation": "Monarchs ride air currents and rising warm air called thermals to travel long distances. Eastern monarchs spend the winter in the mountains of Mexico, and western monarchs in California. The butterflies that make the trip have never been to those places before, yet they find the way.",
+    "questions": [
+      "How do monarchs know where to go?",
+      "What do monarch caterpillars eat?",
+      "How long do monarch butterflies live?"
+    ],
+    "activity": "Fold a paper butterfly and toss it gently to see how far it glides. Then fan it from behind with a paper plate like a breeze. Does a little wind help it travel farther?",
+    "source": {
+      "title": "Monarch Butterfly Migration and Overwintering - USDA Forest Service",
+      "url": "https://www.fs.usda.gov/wildflowers/pollinators/Monarch_Butterfly/migration/index.shtml"
+    }
+  },
+  {
+    "id": "animals-giraffe-tongue",
+    "topic": "animals",
+    "title": "A giraffe's tongue is longer than a ruler",
+    "text": "A giraffe's tongue is about 46 centimeters (18 inches) long. That is longer than a school ruler!",
+    "explanation": "Giraffes love leaves from acacia trees, which have long thorns. Giraffes use their long tongue and bendy lips to reach around the thorns. Scientists think the dark color of a giraffe's tongue may protect it from sunburn while the giraffe eats.",
+    "questions": [
+      "Why is a giraffe's tongue so dark?",
+      "How do giraffes drink water?",
+      "Do thorns hurt a giraffe's mouth?"
+    ],
+    "activity": "Cut a piece of string or ribbon 46 centimeters (18 inches) long. That is a giraffe tongue! Compare it with your arm, a book, and your own tongue in a mirror.",
+    "source": {
+      "title": "Giraffe - San Diego Zoo Animals & Plants",
+      "url": "https://animals.sandiegozoo.org/animals/giraffe"
+    }
+  },
+  {
+    "id": "animals-elephant-trunk",
+    "topic": "animals",
+    "title": "An elephant's trunk has no bones",
+    "text": "An elephant's trunk is its nose and upper lip joined together. It has no bones at all. Instead it is made of muscles, nerves, skin, and other soft parts.",
+    "explanation": "A trunk has about 150,000 tiny muscle units and tendons that work against one another, so the trunk can move in any direction. Asian elephants have a small 'finger' at the tip for careful grabbing, and a trunk can hold about 2 gallons (7.5 liters) of water.",
+    "questions": [
+      "What do elephants use their trunks for?",
+      "How do elephants drink with their trunks?",
+      "Can elephants use their trunks to snorkel?"
+    ],
+    "activity": "Make a pretend trunk by rolling a sheet of paper into a tube or pulling a long sock over your arm. Try to pick up a soft toy, a sock, and a crayon using only your trunk.",
+    "source": {
+      "title": "Asian elephant - Smithsonian's National Zoo and Conservation Biology Institute",
+      "url": "https://nationalzoo.si.edu/animals/asian-elephant"
+    }
+  },
+  {
+    "id": "earth-lightning-hot",
+    "topic": "earth",
+    "title": "Lightning is hotter than the Sun's surface",
+    "text": "Lightning can heat the air it passes through to 50,000 degrees Fahrenheit (about 27,700 degrees Celsius). That is about five times hotter than the surface of the Sun!",
+    "explanation": "Lightning is electric charge moving through the air. Air is very bad at carrying electricity, so it gets extremely hot when lightning passes through. The air heats up so fast that it bursts outward, and that makes the sound of thunder.",
+    "questions": [
+      "Why does thunder come after the lightning?",
+      "Where is the safest place to be in a storm?",
+      "Can lightning strike the same place twice?"
+    ],
+    "activity": "Make a tiny spark of static. Rub a balloon on your hair or a wool sweater, then hold it near small bits of tissue paper and watch them jump. Lightning is a giant electric spark, so always go indoors when thunder roars.",
+    "source": {
+      "title": "How Hot Is Lightning? - National Weather Service",
+      "url": "https://www.weather.gov/safety/lightning-temperature"
+    }
+  },
+  {
+    "id": "earth-thunder-count",
+    "topic": "earth",
+    "title": "You can count how far away lightning is",
+    "text": "Count the seconds between a lightning flash and the sound of its thunder, then divide by 5. That tells you about how many miles away the lightning was.",
+    "explanation": "You see lightning almost right away, but the sound of thunder takes about 5 seconds to travel one mile. So 5 seconds means about 1 mile, and 15 seconds means about 3 miles. If you can hear thunder, you are probably close enough to be struck, so count from a safe place indoors.",
+    "questions": [
+      "Why does light travel faster than sound?",
+      "Why does thunder sometimes rumble for a long time?",
+      "How do weather forecasters track storms?"
+    ],
+    "activity": "Play flash and bang. One person flicks a flashlight, waits a few seconds, then claps. The other person counts the seconds and works out how many miles away the pretend storm is.",
+    "source": {
+      "title": "Understanding Lightning: Thunder - National Weather Service",
+      "url": "https://www.weather.gov/safety/lightning-science-thunder"
+    }
+  },
+  {
+    "id": "earth-snowflake-six",
+    "topic": "earth",
+    "title": "Snowflakes have six sides",
+    "text": "Snowflakes have six sides or six arms. That is because frozen ice crystals are built in a six-sided shape.",
+    "explanation": "A snowflake starts as a tiny ice crystal in a cloud, and water vapor freezes onto it. Flat faces called facets grow in the same six-sided shape. Water vapor also sticks to the first bump it touches, so little bumps grow into branches like tiny trees.",
+    "questions": [
+      "Are any two snowflakes exactly the same?",
+      "What makes some snowflakes big and fluffy?",
+      "Why is snow white?"
+    ],
+    "activity": "Fold a paper circle in half, then fold it into three equal parts like a fan. Cut small notches along the edges and open it up to find a six-sided paper snowflake.",
+    "source": {
+      "title": "How Do Snowflakes Form? - NOAA NESDIS",
+      "url": "https://www.nesdis.noaa.gov/about/k-12-education/ice-snow/how-do-snowflakes-form"
+    }
+  },
+  {
+    "id": "earth-mauna-kea",
+    "topic": "earth",
+    "title": "The tallest mountain starts under the ocean",
+    "text": "Measured from its base to its peak, the tallest mountain on Earth is Mauna Kea in Hawaii, at more than 10,210 meters (33,500 feet). Most of it is hidden under the Pacific Ocean!",
+    "explanation": "Mauna Kea is a volcano that rises from deep beneath the ocean to form part of the Big Island of Hawaii. Mount Everest's peak is the highest above sea level, at 8,848 meters (29,029 feet). And the point farthest from Earth's center is the top of Mount Chimborazo in Ecuador!",
+    "questions": [
+      "Can Mauna Kea still erupt?",
+      "How did the Hawaiian islands form?",
+      "Why is Chimborazo farther from Earth's center than Everest?"
+    ],
+    "activity": "Fill a clear bowl or tub with water and stack blocks or cups inside until the top pokes out. Only a little shows above the ocean, just like Mauna Kea. Count how many blocks are underwater and how many are above.",
+    "source": {
+      "title": "What is the highest point on Earth as measured from Earth's center? - NOAA's National Ocean Service",
+      "url": "https://oceanservice.noaa.gov/facts/highestpoint.html"
+    }
+  },
+  {
+    "id": "earth-plates-fingernails",
+    "topic": "earth",
+    "title": "The ground moves as fast as your fingernails grow",
+    "text": "Earth's outer shell is broken into giant pieces called tectonic plates. They move roughly as fast as your fingernails grow.",
+    "explanation": "Each plate moves at its own speed and in its own direction. Scientists measure the movement with satellite-based GPS, which can notice changes smaller than a millimeter a year. They also study ocean-floor rocks to work out how plates moved long ago.",
+    "questions": [
+      "What makes the plates move?",
+      "Which plate am I standing on?",
+      "Will the continents ever join together again?"
+    ],
+    "activity": "Draw or print a world map and cut out the continents. Try fitting South America and Africa together like puzzle pieces. Then slide them apart very slowly, as slowly as a fingernail grows.",
+    "source": {
+      "title": "How fast do tectonic plates move? - U.S. Geological Survey",
+      "url": "https://www.usgs.gov/faqs/how-fast-do-tectonic-plates-move"
+    }
+  },
+  {
+    "id": "earth-old-faithful",
+    "topic": "earth",
+    "title": "Old Faithful erupts again and again",
+    "text": "Old Faithful is a geyser in Yellowstone National Park that shoots hot water into the air over and over. In 2025, the usual wait between eruptions was about 102 minutes.",
+    "explanation": "Old Faithful is one of nearly 500 geysers in Yellowstone and one of six that park rangers predict. After a short eruption, less water and heat come out, so it refills and is ready sooner. After a long eruption, it needs more time to recharge.",
+    "questions": [
+      "Why is the water in a geyser so hot?",
+      "How do rangers predict the next eruption?",
+      "Are there geysers in other places?"
+    ],
+    "activity": "Be a geyser timer. Fill a squeeze bottle with water and, outside or over a sink, give it a short squeeze and then a long squeeze. Count how long you wait to refill before each new eruption.",
+    "source": {
+      "title": "Old Faithful - Yellowstone National Park (U.S. National Park Service)",
+      "url": "https://www.nps.gov/yell/planyourvisit/exploreoldfaithful.htm"
+    }
+  },
+  {
+    "id": "earth-antarctica-desert",
+    "topic": "earth",
+    "title": "Icy Antarctica is a desert",
+    "text": "Antarctica is covered almost completely in ice, but it is a desert! A desert is a place that gets very little rain or snow, and Antarctica gets very little.",
+    "explanation": "The small amount of snow that does fall in Antarctica does not melt. Instead it builds up over hundreds and thousands of years to make huge, thick sheets of ice. Deserts do not have to be hot or sandy.",
+    "questions": [
+      "How cold does it get in Antarctica?",
+      "What animals live in Antarctica?",
+      "How thick is the ice in Antarctica?"
+    ],
+    "activity": "Make a rain and snow catcher. Put a clear straight-sided cup outside with a ruler beside it and check it after rain or snow. Mark the level with a pen and imagine a whole year in Antarctica filling it only a little.",
+    "source": {
+      "title": "What Is Antarctica? - NASA Space Place",
+      "url": "https://spaceplace.nasa.gov/antarctica/"
+    }
+  }
+]

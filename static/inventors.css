@@ -1,0 +1,81 @@
+/* Inventor's Workshop: feature styles on top of style.css + play.css. */
+
+.inv-wrap {
+  width: 100%;
+  max-width: 54rem;
+  margin: 0 auto;
+  padding: 0 0.8rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.inv-title { font-size: clamp(2rem, 7vw, 3.2rem); }
+.inv-lead { font-size: 1.2rem; text-align: center; margin: 0; line-height: 1.5; }
+
+.inv-wrap .panel h1,
+.inv-wrap .panel h2,
+.inv-wrap .panel h3 { text-shadow: none; }
+.inv-wrap .panel h3 { margin: 1rem 0 0.4rem; font-size: 1.25rem; }
+
+.inv-question { font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 800; line-height: 1.35; margin: 0.6rem 0; }
+.inv-ask { font-size: clamp(1.15rem, 3.5vw, 1.45rem); font-weight: 700; line-height: 1.4; margin: 0.6rem 0; }
+
+/* Safety is the first thing under the question and hard to miss. */
+.inv-safety {
+  background: #fff4cc;
+  color: #1a1a1a;
+  border: 0.2rem solid #e0a000;
+  border-left-width: 0.7rem;
+  border-radius: 0.9rem;
+  padding: 0.6rem 1rem;
+  margin: 0.8rem 0;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+.inv-safety h3 { margin: 0 0 0.3rem; }
+.inv-safety p { margin: 0.3rem 0; }
+.inv-reminder {
+  background: #fff4cc;
+  color: #1a1a1a;
+  border-left: 0.5rem solid #e0a000;
+  border-radius: 0.6rem;
+  padding: 0.5rem 0.8rem;
+  line-height: 1.5;
+}
+
+.inv-materials li,
+.inv-steps li { font-size: 1.15rem; line-height: 1.45; margin: 0.35rem 0; }
+
+.inv-details summary {
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 1.15rem;
+  padding: 0.7rem 0;
+  min-height: 3rem;
+}
+
+.inv-tile { display: flex; flex-direction: column; gap: 0.35rem; text-align: left; font: inherit; }
+.inv-tile strong { font-size: 1.3rem; }
+
+.inv-try { border-top: 0.15rem dashed #b9bde6; margin-top: 0.8rem; padding-top: 0.4rem; }
+.inv-date { margin: 0.3rem 0 0; font-size: 0.95rem; }
+.inv-status { min-height: 1.4em; margin: 0.4rem 0; }
+.inv-helper-note { margin: 0.6rem 0 0.2rem; font-size: 0.95rem; }
+.inv-answer { line-height: 1.5; margin: 0.2rem 0; white-space: pre-wrap; }
+.inv-wonder { font-style: italic; line-height: 1.5; }
+.inv-pending { margin-top: 0.6rem; }
+
+.inventors textarea { user-select: text; -webkit-user-select: text; }
+
+@media print {
+  .bar,
+  .inv-step,
+  .inv-helper,
+  .inv-actions,
+  .inv-stale,
+  .inv-main button,
+  .inv-details summary { display: none !important; }
+  .inv-safety, .inv-reminder { background: none; }
+  .inv-try { break-inside: avoid; }
+}

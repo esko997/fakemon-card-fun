@@ -1,0 +1,190 @@
+[
+  {
+    "id": "paper-tower",
+    "title": "Paper Tower",
+    "question": "How tall can you build a tower using only paper?",
+    "materials": [
+      "10 sheets of scrap paper",
+      "A strip of masking tape (if you want it)",
+      "A clear spot on the floor"
+    ],
+    "steps": [
+      "Roll, fold or scrunch the paper into building pieces.",
+      "Stand your pieces up on the floor and stack them.",
+      "Let go and watch: does it stay up?",
+      "Come back and show what happened."
+    ],
+    "safety": "Build on the floor. Stop when the tower reaches as high as you can reach with both feet flat on the floor. No chairs, stools or climbing to make it taller. Tear or fold the paper; you do not need scissors.",
+    "writing_prompt": "I think my tower stood up (or fell down) because...",
+    "followup": "What one thing could you change about your paper pieces to make the tower taller or steadier?"
+  },
+  {
+    "id": "paper-bridge",
+    "title": "Paper Bridge",
+    "question": "Can one sheet of paper make a bridge that holds up toy blocks?",
+    "materials": [
+      "1 sheet of paper",
+      "Two small piles of books, the same height (2 or 3 books each)",
+      "A few big toy blocks or small soft toys"
+    ],
+    "steps": [
+      "Put the two book piles on the floor with a gap between them.",
+      "Lay the paper across the gap like a bridge.",
+      "Put one block on the middle. Then another, one at a time.",
+      "Try folding the paper into a new shape and test it again."
+    ],
+    "safety": "Keep the book piles low and on the floor. Use big blocks or soft toys, not tiny pieces that could end up in someone's mouth. Keep fingers out from under the bridge while you add blocks.",
+    "writing_prompt": "I think the bridge held (or bent) because... You could draw your bridge and label the paper and the books.",
+    "followup": "What one change to the paper's shape do you want to try next?"
+  },
+  {
+    "id": "ramp-roll",
+    "title": "Ramp Racer",
+    "question": "Does a higher ramp make a toy car roll farther?",
+    "materials": [
+      "A big flat book or a stiff piece of cardboard for the ramp",
+      "A few books to lift one end",
+      "One toy car or a soft ball"
+    ],
+    "steps": [
+      "Lift one end of the ramp with one book.",
+      "Let the car go from the top. Do not push it.",
+      "Look where it stops. You could mark the spot with a sock or a block.",
+      "Add another book and see what changes."
+    ],
+    "safety": "Roll on the floor in a clear space, away from stairs and away from where people are walking. Keep the book pile short (no more than 4 books). Do not stand or sit on the ramp. Little brothers and sisters should not play with toy cars that have small parts.",
+    "writing_prompt": "I think the car went farther (or not as far) because...",
+    "followup": "What one thing could you change: the height, the car, or the floor at the bottom?"
+  },
+  {
+    "id": "slow-fall",
+    "title": "Slow Faller",
+    "question": "How can you make a piece of paper fall as slowly as possible?",
+    "materials": [
+      "A few sheets of paper",
+      "A clear space to stand in"
+    ],
+    "steps": [
+      "Stand on the floor and hold one flat sheet up high.",
+      "Let it go and watch how it falls.",
+      "Scrunch one sheet into a ball and drop it from the same height.",
+      "Fold a sheet into your own shape and see how slowly it can fall."
+    ],
+    "safety": "Drop your paper while standing on the floor. Do not drop things from stairs, beds, chairs or windows.",
+    "writing_prompt": "I think the slow one was slow because... You could draw your best shape and label two parts.",
+    "followup": "What one fold or change could make your paper fall even more slowly?"
+  },
+  {
+    "id": "strong-columns",
+    "title": "Strong Shapes",
+    "question": "Which paper shape holds up the most books: a tube, a triangle or a square?",
+    "materials": [
+      "3 sheets of paper",
+      "A little masking tape",
+      "A few light paperback books"
+    ],
+    "steps": [
+      "Roll one sheet into a tube, fold one into a triangle and one into a square. Tape them so they hold their shapes.",
+      "Stand one shape up on the floor.",
+      "Gently lay one paperback book on top, then another.",
+      "Try the other shapes the same way."
+    ],
+    "safety": "Do this on the floor. Use light paperback books, not big heavy ones. Put books on gently and keep fingers and toes out from under the pile in case it falls.",
+    "writing_prompt": "I think the strongest shape was strong because...",
+    "followup": "What one change could make your weakest shape stronger?"
+  },
+  {
+    "id": "paper-megaphone",
+    "title": "Voice Cone",
+    "question": "Can a paper cone make your voice sound louder?",
+    "materials": [
+      "1 big sheet of paper or thin card",
+      "A little masking tape"
+    ],
+    "steps": [
+      "Roll the paper into a cone with a small hole at one end and a big hole at the other.",
+      "Tape it so it stays rolled up.",
+      "Say a word with your normal voice. Then say it again through the small end of the cone.",
+      "Ask a grown-up to listen from across the room and tell you which sounded louder."
+    ],
+    "safety": "Use your normal speaking voice. Never shout through the cone, and never point it at someone's ear up close.",
+    "writing_prompt": "I think the cone changed my voice because... You could draw the cone and label the big end and the small end.",
+    "followup": "What one change could you make to the cone: longer, shorter, wider or narrower?"
+  },
+  {
+    "id": "toy-seesaw",
+    "title": "Toy Seesaw",
+    "question": "Can you make a seesaw balance with a different toy on each side?",
+    "materials": [
+      "A ruler or a long strip of stiff cardboard",
+      "A thick book or a big block to be the middle",
+      "Two small soft toys or big blocks"
+    ],
+    "steps": [
+      "Lay the ruler across the book so it can tip up and down.",
+      "Put one toy on each end.",
+      "Slide the ruler or the toys until it balances.",
+      "Swap in a different toy and find the balance again."
+    ],
+    "safety": "Play on the floor or a steady table. Use soft toys or big blocks, not tiny pieces. The seesaw is for toys only, not for flipping or flinging things.",
+    "writing_prompt": "I think it balanced when... You could draw your seesaw and label the middle and one toy.",
+    "followup": "What one thing could you move or swap to make it balance a different way?"
+  },
+  {
+    "id": "paper-plane",
+    "title": "Paper Plane Hangar",
+    "question": "What can you change about a paper plane to make it fly farther?",
+    "materials": [
+      "A few sheets of paper",
+      "A big clear space, like a hallway with no one in it",
+      "A sock or block to mark where the plane lands"
+    ],
+    "steps": [
+      "Fold a sheet of paper into a plane any way you like.",
+      "Stand in one spot and give it a gentle throw straight ahead.",
+      "Put the sock where it lands.",
+      "Change one fold and fly it again from the same spot."
+    ],
+    "safety": "Ask a grown-up to help pick a clear space. Throw only where no people or pets are in front of you, and never toward faces. Throw gently. Pick the plane up before anyone walks through.",
+    "writing_prompt": "I think my plane flew that way because... You could draw your plane and label the wings and the nose.",
+    "followup": "Which one fold do you want to change for the next flight?"
+  },
+  {
+    "id": "toy-shelter",
+    "title": "Toy Hideout",
+    "question": "Can you build a hideout that keeps a small stuffed toy covered on every side?",
+    "materials": [
+      "A few books or big blocks",
+      "A small cloth, like a tea towel or napkin",
+      "One small stuffed toy",
+      "A cardboard box or piece of cardboard (if you have one)"
+    ],
+    "steps": [
+      "Pick a spot on the floor for the hideout.",
+      "Stand books or blocks up to make walls around the toy.",
+      "Lay the cloth or cardboard over the top for a roof.",
+      "Walk around it: can you still see the toy from any side?"
+    ],
+    "safety": "Build on the floor with books lying flat or standing low. Do not stack heavy books high. The hideout is toy-sized. Do not put a cloth or box over a person's or pet's head.",
+    "writing_prompt": "I think my hideout keeps the toy covered because... You could draw it and label the walls and the roof.",
+    "followup": "What one change could make the hideout cozier or sturdier?"
+  },
+  {
+    "id": "breezy-blocks",
+    "title": "Breezy Block Wall",
+    "question": "How can you build a block wall that stays up when a gentle breeze blows on it?",
+    "materials": [
+      "Toy blocks",
+      "A piece of cardboard or a paper fan to wave"
+    ],
+    "steps": [
+      "Build a wall of blocks on the floor.",
+      "Wave the cardboard gently near the wall to make a breeze.",
+      "Watch which blocks move first.",
+      "Try a new way of stacking and make the same gentle breeze."
+    ],
+    "safety": "Build on the floor and keep the wall lower than your shoulders. Wave the fan gently and only toward the blocks, never at anyone's face. Use big blocks if little brothers or sisters are nearby.",
+    "writing_prompt": "I think my wall stayed up (or fell) because...",
+    "followup": "What one change to the way you stack the blocks do you want to try next?"
+  }
+]

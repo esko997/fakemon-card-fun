@@ -1,4 +1,4 @@
-import { renderCard, fitCard, attachShine, cardSpeech, h } from "./card.js";
+import { renderCard, fitCard, attachCardTilt, cardSpeech, h } from "./card.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -184,6 +184,7 @@ const enter = {
 const leave = {
   snap: stopCamera,
   talk: stopRecording,
+  view: () => stopCardTilt(),
 };
 
 /**
@@ -478,13 +479,16 @@ $("retry").onclick = async () => {
 
 // ---------------------------------------------------------------- 4. the card
 
+let stopCardTilt = () => {};
+
 function showCard(card, { reveal = false, history: mode } = {}) {
   current = card;
   // Coming from the making screen, replace it: going back shouldn't land on a finished "making".
   if (screen !== "view") show("view", { history: mode ?? (screen === "making" ? "replace" : "push") });
   const el = renderCard(card, { kidName: status.kid_name, onAttack: newAttack, flipped: reveal });
   el.addEventListener("click", () => el.classList.toggle("flipped"));
-  attachShine(el);
+  stopCardTilt();
+  stopCardTilt = attachCardTilt(el);
   const slot = $("card-slot");
   slot.replaceChildren(el);
   requestAnimationFrame(() => fitCard(el));

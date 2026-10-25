@@ -351,26 +351,59 @@ function shrink(el, prop, overflowing, min) {
   }
 }
 
-const clamp = (v) => Math.max(0, Math.min(100, v));
+/** A gently held card under a fixed upper-left light. Returns listener cleanup. */
+export function attachCardTilt(cardEl) {
+  const controller = new AbortController();
+  const options = { signal: controller.signal, passive: true };
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const bound = (value, limit) => Math.max(-limit, Math.min(limit, value));
+  let reference = null;
+  cardEl.classList.add("tilt-enabled");
 
-/** Holo shine follows the finger / mouse / tablet tilt. */
-export function attachShine(cardEl) {
-  const set = (x, y) => {
-    for (const holo of cardEl.querySelectorAll(".holo")) {
-      holo.style.setProperty("--mx", `${clamp(x)}%`);
-      holo.style.setProperty("--my", `${clamp(y)}%`);
-    }
+  const pose = (pitch, yaw) => {
+    if (reduced.matches) pitch = yaw = 0;
+    const rx = pitch * Math.PI / 180, ry = yaw * Math.PI / 180;
+    // Fixed light/view half-vector, transformed into the card's local coordinates.
+    // The reflection moves because the card rotates, not because a light follows the pointer.
+    const hx = -0.18, hy = -0.22, hz = 0.959;
+    const y = hy * Math.cos(rx) + hz * Math.sin(rx);
+    const z = -hy * Math.sin(rx) + hz * Math.cos(rx);
+    const x = hx * Math.cos(ry) - z * Math.sin(ry);
+    const depth = hx * Math.sin(ry) + z * Math.cos(ry);
+    cardEl.style.setProperty("--pitch", `${pitch}deg`);
+    cardEl.style.setProperty("--yaw", `${yaw}deg`);
+    cardEl.style.setProperty("--foil-x", `${50 + x / depth * 110}%`);
+    cardEl.style.setProperty("--foil-y", `${50 + y / depth * 110}%`);
+    cardEl.style.setProperty("--glint", `${Math.pow(Math.max(0, depth), 16) * 0.35}`);
   };
-  cardEl.addEventListener("pointermove", (e) => {
-    const r = cardEl.getBoundingClientRect();
-    set(((e.clientX - r.left) / r.width) * 100, ((e.clientY - r.top) / r.height) * 100);
-  });
-  const tilt = (e) => {
-    if (!cardEl.isConnected) return window.removeEventListener("deviceorientation", tilt);
-    if (e.gamma == null) return;
-    set(50 + e.gamma * 2, 50 + (e.beta - 45) * 2);
+  const reset = () => { reference = null; pose(0, 0); };
+  cardEl.addEventListener("pointerenter", () => {
+    // The untransformed parent is stable while the card tilts beneath the pointer.
+    reference = cardEl.parentElement.getBoundingClientRect();
+  }, options);
+  cardEl.addEventListener("pointermove", (event) => {
+    if (event.pointerType === "touch" || reduced.matches) return;
+    const rect = reference || cardEl.parentElement.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const x = bound((event.clientX - rect.left) / rect.width * 2 - 1, 1);
+    const y = bound((event.clientY - rect.top) / rect.height * 2 - 1, 1);
+    pose(-y * 7, x * 7);
+  }, options);
+  cardEl.addEventListener("pointerleave", reset, options);
+  cardEl.addEventListener("pointercancel", reset, options);
+  window.addEventListener("resize", reset, options);
+  window.addEventListener("blur", reset, options);
+  window.addEventListener("deviceorientation", (event) => {
+    if (event.gamma == null || event.beta == null || reduced.matches || !cardEl.isConnected) return;
+    pose(bound((45 - event.beta) * 0.2, 7), bound(event.gamma * 0.25, 7));
+  }, options);
+  reduced.addEventListener("change", reset, options);
+  reset();
+  return () => {
+    controller.abort();
+    reset();
+    cardEl.classList.remove("tilt-enabled");
   };
-  window.addEventListener("deviceorientation", tilt);
 }
 
 /** Words for speechSynthesis. */

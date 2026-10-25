@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Story Director</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="play.css">
+  <link rel="stylesheet" href="stories.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="home-link" href="./">Home</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <span class="bar-spacer"></span>
+  </header>
+
+  <main class="play-main">
+    <!-- 1. all my stories -->
+    <section id="library-view" class="story-view" hidden>
+      <div class="panel">
+        <h1>Story Director</h1>
+        <p class="muted">Make up a story, draw it, tell it. Write one sentence, tell the rest.</p>
+        <div class="actions" id="library-actions"></div>
+      </div>
+      <div class="panel">
+        <h2>My stories</h2>
+        <p class="muted" id="library-empty" hidden>No stories yet.</p>
+        <div class="book-grid" id="library-list"></div>
+      </div>
+    </section>
+
+    <!-- 2. start a new story -->
+    <section id="setup-view" class="story-view" hidden>
+      <div class="panel">
+        <h1>A new story</h1>
+        <p class="muted">Pick some story ideas, or use your own idea. You can pick one, all, or none.</p>
+        <div class="ingredient-group">
+          <h2>Who is it about?</h2>
+          <div class="ingredient-row" id="pick-character" role="group" aria-label="Who is it about"></div>
+        </div>
+        <div class="ingredient-group">
+          <h2>Where does it happen?</h2>
+          <div class="ingredient-row" id="pick-place" role="group" aria-label="Where does it happen"></div>
+        </div>
+        <div class="ingredient-group">
+          <h2>What surprise starts it?</h2>
+          <div class="ingredient-row" id="pick-spark" role="group" aria-label="What surprise starts it"></div>
+        </div>
+        <div class="actions" id="setup-idea-actions"></div>
+        <label class="story-field" for="new-title">Story name (you can change it later)
+          <input id="new-title" type="text" maxlength="80" autocomplete="off" placeholder="My story">
+        </label>
+        <div class="actions" id="setup-actions"></div>
+      </div>
+    </section>
+
+    <!-- 3. making the story -->
+    <section id="editor-view" class="story-view" hidden>
+      <div class="panel">
+        <h1 id="editor-title"></h1>
+        <p class="muted" id="editor-ideas"></p>
+        <label class="story-field" for="title-input">Story name
+          <input id="title-input" type="text" maxlength="80" autocomplete="off">
+        </label>
+        <div class="actions" id="editor-actions"></div>
+        <div class="notice" id="conflict-notice" role="status" hidden>
+          <p>This story was changed somewhere else. Your new words and pictures here are still safe.
+            Get the newest saved story, then save again.</p>
+          <div class="actions" id="conflict-actions"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>My pages</h2>
+        <p class="muted" id="pages-empty">No pages yet.</p>
+        <ol class="story-pages" id="page-list"></ol>
+      </div>
+
+      <div class="panel" id="add-scene">
+        <h2 id="scene-heading">Add a page</h2>
+        <p class="story-prompt" id="scene-prompt"></p>
+        <p class="muted">Write one sentence, tell the rest. Record yourself telling the rest of the page if you like. Any spelling is fine.</p>
+        <label class="story-field" for="scene-label">Page name (optional)
+          <input id="scene-label" type="text" maxlength="60" autocomplete="off">
+        </label>
+        <div id="scene-capture"></div>
+        <p class="notice" id="scene-notice" role="status" hidden></p>
+        <div class="actions" id="scene-actions"></div>
+      </div>
+
+      <div class="panel" id="add-sound">
+        <h2>Sound effects</h2>
+        <p class="muted">Record a sound for your story, like a door creaking or a dragon snoring. It is kept apart from your telling.</p>
+        <label class="story-field" for="sound-label">What sound is it?
+          <input id="sound-label" type="text" maxlength="60" autocomplete="off" placeholder="Sound effect">
+        </label>
+        <div id="sound-capture"></div>
+        <p class="notice" id="sound-notice" role="status" hidden></p>
+        <div class="actions" id="sound-actions"></div>
+      </div>
+
+      <div class="panel" id="story-helper">
+        <h2>Want a question to think about?</h2>
+        <p class="muted">Only if you want one. The helper reads your saved pages and asks one question. It never writes your story.</p>
+        <label class="story-field" for="helper-question">Ask the helper something (optional)
+          <textarea id="helper-question" rows="2" maxlength="400"></textarea>
+        </label>
+        <div class="actions" id="helper-actions"></div>
+        <div class="conversation" id="helper-answer" hidden></div>
+        <details id="helper-history" hidden>
+          <summary>Earlier questions</summary>
+          <div class="conversation" id="helper-history-list"></div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 4. reading the storybook -->
+    <section id="reader-view" class="story-view" hidden>
+      <div class="panel story-reader">
+        <p class="muted story-page-count" id="reader-count" aria-live="polite"></p>
+        <div id="reader-slide" class="reader-slide"></div>
+        <div class="actions reader-nav" id="reader-nav"></div>
+        <div class="actions" id="reader-play"></div>
+        <div class="actions" id="reader-actions"></div>
+      </div>
+    </section>
+
+    <!-- whole story for printing -->
+    <section id="print-view" class="story-print" aria-hidden="true"></section>
+  </main>
+
+  <dialog id="leave-dialog" aria-labelledby="leave-title">
+    <h2 id="leave-title">Your new page is not saved yet</h2>
+    <p>Do you want to keep working on it?</p>
+    <div class="actions">
+      <button type="button" class="mid primary" id="leave-stay">Keep working</button>
+      <button type="button" class="mid" id="leave-go">Leave it</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="stories.js"></script>
+</body>
+</html>

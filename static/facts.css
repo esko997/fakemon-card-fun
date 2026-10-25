@@ -1,0 +1,48 @@
+/* Fact Explorer: only feature-specific bits; shared panels, captures, and print rules live in play.css. */
+.facts-count { font-size: 1.2rem; font-weight: 800; margin: 0; }
+.facts-topics, .facts-chips, .facts-trail { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 0.8rem 0; }
+.facts-topic, .facts-trail-item, .facts-chip {
+  border: 2px solid #b5c5e9; text-align: left; text-decoration: none; line-height: 1.3;
+  display: inline-flex; align-items: center; min-height: 44px;
+}
+.panel .facts-topic.on, .panel .facts-trail-item.on { background: #29389a; color: #fff; border-color: #29389a; }
+.facts-topic:disabled { opacity: 0.55; cursor: default; }
+.facts-chip { white-space: normal; max-width: 100%; }
+
+.facts-head { display: flex; align-items: center; gap: 1rem; }
+.facts-head h2 { text-align: left; margin: 0; }
+.facts-art { flex: 0 0 auto; width: clamp(4.5rem, 16vw, 6rem); }
+.facts-art svg { display: block; width: 100%; height: auto; }
+.facts-topic-label { margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.95rem; color: #5a63a8; }
+.facts-text { font-size: clamp(1.25rem, 3.4vw, 1.6rem); font-weight: 700; }
+.facts-source { margin-bottom: 0; }
+.facts-source-note { margin-top: 0.3rem; }
+.facts-url { overflow-wrap: anywhere; font-size: 0.9rem; }
+
+.facts-try, .facts-ask { margin-top: 1.5rem; padding-top: 1rem; border-top: 2px dashed #c9d3ee; }
+.facts-reflect-ideas ul { margin: 0.4rem 0 0; padding-left: 1.4rem; }
+.facts-reflect-ideas li { margin: 0.5rem 0; line-height: 1.5; }
+.facts-reflect-ideas li .mid { margin-left: 0.4rem; font-size: 1rem; padding: 0.4rem 0.8rem; }
+
+.conversation:empty { display: none; }
+.facts-turn + .facts-turn { margin-top: 1.2rem; padding-top: 1rem; border-top: 2px solid #d4ddf3; }
+.facts-answer { margin: 0.6rem 0 0; padding: 1rem; border-radius: 0.8rem; background: #fff; border-left: 0.3rem solid #5470c1; }
+.facts-answer h4 { margin: 0 0 0.4rem; font-size: 1rem; color: #3d4a8f; }
+.facts-answer p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.facts-prompt { font-style: italic; }
+.facts-answer .mid { margin: 0.3rem 0.6rem 0.3rem 0; }
+
+#leave-dialog { width: min(90vw, 32rem); border: 0; border-radius: 1.2rem; padding: 1.5rem; background: #fffdf5; color: #252c57; }
+#leave-dialog h2 { font-size: 1.5rem; text-shadow: none; color: #29389a; }
+#leave-dialog::backdrop { background: #0008; }
+
+@media (max-width: 480px) {
+  .facts-head { align-items: flex-start; }
+  .facts-topic, .facts-trail-item, .facts-chip { font-size: 1rem; padding: 0.6rem 0.8rem; }
+}
+
+@media print {
+  .facts-art { width: 18mm; }
+  .facts-answer { border: 0; padding: 0.3rem 0; }
+  .facts-book-fact { break-inside: auto; }
+}

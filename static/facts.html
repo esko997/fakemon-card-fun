@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Fact Explorer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="play.css">
+  <link rel="stylesheet" href="facts.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mid home-link" href="./">Home</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <span class="bar-spacer"></span>
+  </header>
+
+  <main class="play-main">
+    <!-- 1. all my discovery sessions -->
+    <section id="library-view" class="facts-view" hidden>
+      <h1>Fact Explorer</h1>
+      <p class="muted">Pick a topic, discover a true fact, and ask anything you wonder about. Each session holds ten new discoveries.</p>
+      <div class="panel">
+        <h2>Start a new discovery session</h2>
+        <div class="play-form">
+          <label for="new-title">Name this session (you can leave it blank)</label>
+          <input id="new-title" type="text" maxlength="160" autocomplete="off">
+        </div>
+        <div class="actions" id="new-actions"></div>
+      </div>
+      <h2>My discovery sessions</h2>
+      <p id="library-status" class="muted" role="status"></p>
+      <div id="library" class="book-grid"></div>
+    </section>
+
+    <!-- 2. exploring one session -->
+    <section id="session-view" class="facts-view" hidden>
+      <h1 id="session-title">Fact Explorer</h1>
+      <nav class="actions no-print" id="session-nav" aria-label="Session"></nav>
+      <p id="session-count" class="facts-count" role="status"></p>
+      <div id="session-notice" class="notice" role="status" hidden></div>
+
+      <div id="discover-panel" class="panel no-print">
+        <h2>Choose a topic</h2>
+        <div id="topics" class="facts-topics" role="group" aria-label="Topics"></div>
+        <p id="topic-note" class="muted" role="status"></p>
+        <div class="actions" id="discover-actions"></div>
+      </div>
+
+      <div id="pause-panel" class="panel" hidden>
+        <h2>Ten discoveries! A good place to stop and think.</h2>
+        <p>You can still look back at any discovery and ask more questions about it.</p>
+        <div class="facts-reflect-ideas">
+          <p class="muted">Some ideas, only if you want them:</p>
+          <ul id="reflect-ideas"></ul>
+        </div>
+        <div id="reflections"></div>
+        <div id="reflect-capture"></div>
+        <div class="actions" id="reflect-actions"></div>
+        <div class="actions" id="reflect-links"></div>
+      </div>
+
+      <div id="trail-panel" class="panel no-print" hidden>
+        <h2>My discoveries in this session</h2>
+        <p class="muted">Tap one to look at it again.</p>
+        <div id="trail" class="facts-trail"></div>
+      </div>
+
+      <article id="fact-panel" class="panel facts-card" hidden>
+        <div class="facts-head">
+          <div id="fact-art" class="facts-art" aria-hidden="true"></div>
+          <div>
+            <p id="fact-topic" class="facts-topic-label"></p>
+            <h2 id="fact-title"></h2>
+          </div>
+        </div>
+        <p id="fact-text" class="facts-text"></p>
+        <div class="actions no-print" id="fact-read"></div>
+        <h3>How it works</h3>
+        <p id="fact-explanation"></p>
+        <div class="actions no-print" id="explain-read"></div>
+        <p class="facts-source">Where this fact comes from:
+          <a id="fact-source" target="_blank" rel="noopener"></a>
+        </p>
+        <p class="muted facts-source-note">This source backs up the fact above. It is not proof for every answer the helper gives to other questions.</p>
+
+        <section class="facts-try">
+          <h3>Try this, any time you like</h3>
+          <p id="fact-activity"></p>
+          <div class="actions no-print" id="activity-read"></div>
+          <div id="notes"></div>
+          <div id="note-capture"></div>
+          <div class="actions no-print" id="note-actions"></div>
+        </section>
+
+        <section class="facts-ask">
+          <h3>Things you could wonder about</h3>
+          <p class="muted no-print">Tap one to ask the helper, or ask your own question below. The helper's answers are AI explanations and might be wrong.</p>
+          <div id="chips" class="facts-chips no-print"></div>
+          <div id="thread" class="conversation"></div>
+          <div id="ask-capture"></div>
+          <div class="actions no-print" id="ask-actions"></div>
+        </section>
+      </article>
+    </section>
+
+    <!-- 3. the whole discovery book, for reading and printing -->
+    <section id="book-view" class="facts-view" hidden>
+      <h1 id="book-title">My discovery book</h1>
+      <nav class="actions no-print" id="book-nav" aria-label="Book"></nav>
+      <div id="book"></div>
+    </section>
+  </main>
+
+  <dialog id="leave-dialog" aria-labelledby="leave-title">
+    <h2 id="leave-title">Something is not saved yet</h2>
+    <p>You have words, a picture, or a recording here that is not saved in your book.</p>
+    <div class="actions">
+      <button type="button" class="mid primary" value="stay" id="leave-stay">Stay and save it</button>
+      <button type="button" class="mid" value="leave" id="leave-go">Leave without saving</button>
+    </div>
+  </dialog>
+
+  <script type="module" src="facts.js"></script>
+</body>
+</html>

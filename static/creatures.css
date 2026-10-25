@@ -1,0 +1,57 @@
+/* Creature Field Guide: feature styles on top of style.css + play.css. */
+
+.bar-title { font-weight: 800; font-size: 1.15rem; }
+
+.creature-tile { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; text-align: center; }
+.creature-tile img {
+  width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 0.8rem; background: #f1f2f7;
+}
+.creature-tile .tile-blank {
+  width: 100%; aspect-ratio: 1; display: grid; place-items: center; border-radius: 0.8rem;
+  border: 0.2rem dashed #9aa3d6; color: #555; font-size: 1rem;
+}
+.creature-tile strong { font-size: 1.2rem; overflow-wrap: anywhere; }
+
+.creature-page h1 { overflow-wrap: anywhere; }
+.page-kicker { text-align: center; margin: 0 0 0.2rem; text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.9rem; }
+
+.creature-pictures {
+  display: grid; gap: 1rem; margin: 1rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.creature-figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.creature-figure img {
+  display: block; max-width: 100%; max-height: 50vh; border-radius: 0.8rem; object-fit: contain;
+  border: 0.3rem solid #d7dbf2;
+}
+.creature-figure.illustration img { border-style: dashed; }
+.creature-figure figcaption { font-weight: 700; text-align: center; }
+
+.creature-entries, .creature-conversations { display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0; }
+.creature-entry { display: flex; flex-direction: column; gap: 0.4rem; }
+.creature-conversations h2 { text-shadow: none; }
+
+.creature-add, .creature-ask, .creature-rename { margin-top: 1.5rem; }
+.creature-add h2, .creature-ask h2 { text-shadow: none; margin-bottom: 0.6rem; }
+.creature-rename summary { cursor: pointer; font-weight: 700; font-size: 1.1rem; padding: 0.4rem 0; }
+
+.idea-panel {
+  border-radius: 1rem; padding: 0.8rem 1rem; margin-bottom: 0.8rem;
+  background: #fff6cc; color: #1a1a1a;
+}
+.idea-panel p { margin: 0 0 0.5rem; }
+.idea-head { font-weight: 700; }
+.idea-text { font-size: 1.35rem; font-weight: 800; }
+
+.conv-label { font-weight: 800; margin: 0.4rem 0 0.2rem; }
+.conv-question, .conv-prompt { font-style: italic; }
+
+#confirm-dialog p { margin: 0 0 1rem; }
+
+@media print {
+  .bar, .no-print, dialog { display: none !important; }
+  body { background: #fff; color: #000; }
+  .creature-page { color: #000; }
+  .creature-figure img { max-height: 40vh; break-inside: avoid; }
+  .creature-entry { break-inside: avoid; }
+}

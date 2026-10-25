@@ -21,6 +21,7 @@ from . import pricing
 from .ai import ART_FREEDOM, ArtBlocked, CardAI, Spend, normalize_drawing
 from .config import ROOT, load
 from .store import Card, Store
+from .play import register_play
 
 log = logging.getLogger("fakemon")
 
@@ -181,6 +182,8 @@ def create_app() -> FastAPI:
         yield
         for task in list(state["app"].tasks):
             task.cancel()
+        if hasattr(state["app"], "play"):
+            state["app"].play.db.close()
 
     api = FastAPI(title="Learning Box", lifespan=lifespan)
 
@@ -362,6 +365,8 @@ def create_app() -> FastAPI:
         if not path.is_file():
             raise HTTPException(404, "No local CA generated; run ./run.sh")
         return FileResponse(path, media_type="application/x-x509-ca-cert", filename="fakemon-ca.crt")
+
+    register_play(api, app)
 
     api.mount("/", StaticFiles(directory=ROOT / "static", html=True), name="static")
     return api

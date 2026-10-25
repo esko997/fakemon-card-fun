@@ -9,7 +9,8 @@
   <link rel="icon" href="icon.svg">
   <link rel="stylesheet" href="style.css">
   <style>
-    .hub { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; padding: 1rem; }
+    body { min-height: 100vh; height: auto; }
+    .hub { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; padding: 1rem 1rem 3rem; }
     .hub h1 { font-size: clamp(2.6rem, 10vw, 5rem); }
     .hub h1 small { display: block; font-size: 0.35em; color: #fff; -webkit-text-stroke: 0; margin-top: 0.4rem; }
     .tiles { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; }
@@ -21,8 +22,13 @@
     }
     .tile:active { transform: translateY(0.35rem); box-shadow: 0 0.15rem 0 #0005; }
     .tile .emoji { font-size: 4em; line-height: 1; }
+    .tile .symbol { display: grid; place-items: center; width: 3em; height: 3em; border: 0.12em solid currentColor; border-radius: 50%; font-size: 1.6em; }
     .tile.cards { background: linear-gradient(160deg, #fff6c2, #ffcb05); }
     .tile.race { background: linear-gradient(160deg, #d6f5ff, #5bc8f5); }
+    .tile.facts { background: linear-gradient(160deg, #f5f4c8, #c6e7a5); }
+    .tile.creatures { background: linear-gradient(160deg, #e4fae3, #93d5ba); }
+    .tile.stories { background: linear-gradient(160deg, #f7e7fc, #d3b9f5); }
+    .tile.inventors { background: linear-gradient(160deg, #fff1dc, #f7c28f); }
   </style>
 </head>
 <body>
@@ -36,6 +42,10 @@
     <nav class="tiles">
       <a class="tile cards" href="cards.html"><span class="emoji">🃏</span>Fakemon Cards</a>
       <a class="tile race" href="number-race.html"><span class="emoji">🎲</span>Number Race</a>
+      <a class="tile facts" href="facts.html"><span class="symbol" aria-hidden="true">?</span>Fact Explorer</a>
+      <a class="tile creatures" href="creatures.html"><span class="symbol" aria-hidden="true">Aa</span>Creature Field Guide</a>
+      <a class="tile stories" href="stories.html"><span class="symbol" aria-hidden="true">Once</span>Story Director</a>
+      <a class="tile inventors" href="inventors.html"><span class="symbol" aria-hidden="true">+</span>Inventor's Workshop</a>
     </nav>
   </main>
   <script type="module">
