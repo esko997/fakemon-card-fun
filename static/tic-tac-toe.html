@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4cca">
+  <title>Tic-Tac-Toe</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="tic-tac-toe.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mid" href="./">All games</a>
+    <span id="env-badge" class="env-badge" hidden></span>
+    <button class="mid" id="rules-btn" type="button" aria-label="Hear how to play">Hear rules</button>
+  </header>
+  <main class="game">
+    <div class="intro">
+      <h1 class="logo">Tic-Tac-Toe</h1>
+      <p id="rules">Get three in a row: across, down, or diagonally.</p>
+      <div class="players"><span class="player-x">You are X</span><span class="player-o">Robo is O</span></div>
+    </div>
+    <div id="board" class="board" role="group" aria-label="Tic-Tac-Toe board" aria-describedby="rules"></div>
+    <div class="game-actions">
+      <p id="turn" role="status" aria-live="polite" aria-atomic="true"></p>
+      <button class="big primary" id="again" type="button">Start again</button>
+      <p class="hint">Robo picks a random empty square.<br>You go first!</p>
+    </div>
+  </main>
+  <script type="module" src="tic-tac-toe.js"></script>
+</body>
+</html>

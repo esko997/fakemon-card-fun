@@ -8,6 +8,7 @@ For the short version, see the [README](../README.md).
 | `/` | Learning Box home: one tile per game |
 | `/cards.html` | Fakemon card maker (`/print.html` prints cards, `/parent.html` is the grown-ups page) |
 | `/number-race.html` | Number Race; runs entirely in the browser, no server data |
+| `/tic-tac-toe.html` | Tic-Tac-Toe against a random computer opponent; browser-only, no paid calls or saved game data |
 | `/facts.html` | Sourced facts, ten-discovery sessions, optional follow-ups and reflection |
 | `/creatures.html` | Original drawings and descriptions in a creature field guide |
 | `/stories.html` | Photographed writing, narration, sound effects and printable stories |

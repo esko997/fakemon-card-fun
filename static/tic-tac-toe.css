@@ -1,0 +1,48 @@
+/* Keep the page scrollable on small screens and when text is enlarged. */
+html, body { height: auto; min-height: 100%; }
+body { min-height: 100vh; }
+.bar { flex-wrap: wrap; gap: 0.5rem; }
+.bar a { text-decoration: none; }
+.game {
+  width: min(100%, 62rem); margin: auto; padding: 1rem 1rem 2rem;
+  display: grid; justify-items: center; align-content: center; gap: 1.4rem;
+  flex: 1; min-height: auto;
+}
+.intro { text-align: center; }
+.intro .logo { font-size: clamp(2.5rem, 9vw, 4.5rem); }
+#rules { max-width: 28rem; margin: 1rem auto; font-size: 1.2rem; line-height: 1.4; }
+.players { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.7rem; font-size: 1.3rem; font-weight: 900; }
+.players span { border-radius: 0.8rem; padding: 0.4rem 0.8rem; }
+.player-x { background: #ffedbc; color: #8c320a; }
+.player-o { background: #d5f2ff; color: #164d88; }
+.board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; width: min(100%, 27rem); }
+.square {
+  display: grid; place-items: center; aspect-ratio: 1; min-width: 44px; min-height: 44px;
+  padding: 0; border: 0.2rem solid #ffffff80; border-radius: 1rem;
+  background: #fff; color: #2a3399; box-shadow: 0 0.3rem 0 #0005;
+  font-size: clamp(3rem, 13vw, 5rem); font-weight: 900; line-height: 1;
+  touch-action: manipulation;
+}
+.square:disabled { opacity: 1; cursor: default; }
+.square[data-mark="X"] { background: #ffedbc; color: #8c320a; }
+.square[data-mark="O"] { background: #d5f2ff; color: #164d88; }
+.square.winning { border-color: #ffcb05; box-shadow: 0 0 0 0.15rem #ffcb05, 0 0.3rem 0 #0005; }
+button:focus-visible, a:focus-visible { outline: 0.25rem solid #ffcb05; outline-offset: 0.3rem; }
+.game-actions { display: grid; justify-items: center; gap: 1rem; text-align: center; }
+#turn { min-height: 2.8em; max-width: 24rem; margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 900; }
+#again { touch-action: manipulation; }
+@media (min-width: 600px) and (orientation: landscape) {
+  .game { grid-template-columns: 1fr 1fr; gap: 0.8rem 1.5rem; padding-top: 0.4rem; }
+  .intro { grid-column: 1; grid-row: 1; }
+  .intro .logo { font-size: clamp(2.5rem, 5vw, 3.5rem); }
+  #rules { margin: 0.6rem auto; }
+  .board { grid-column: 2; grid-row: 1 / 3; align-self: center; width: min(100%, 65vh, 27rem); }
+  .square { font-size: clamp(2.5rem, 12vh, 5rem); }
+  .game-actions { grid-column: 1; grid-row: 2; gap: 0.6rem; }
+  #turn { font-size: 1.3rem; min-height: 2.4em; }
+  #again { padding: 0.7rem 1.2rem; }
+  .hint { font-size: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+}

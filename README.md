@@ -7,6 +7,7 @@ game (the Fakemon card maker, hence the repo's original name) and grew into a sm
 |---|---|
 | 🃏 **Fakemon Cards** | Draw a monster, describe it out loud, get a real-looking trading card back |
 | 🎲 **Number Race** | The classroom dice game: roll two dice, add them up, race the numbers to the top |
+| **Tic-Tac-Toe** | Get three in a row against Robo, who chooses uniformly at random from empty squares |
 | **Fact Explorer** | A sourced talking fact book: ten discoveries, optional questions and hands-on ideas |
 | **Creature Field Guide** | Invent imaginary wildlife; keep drawings, words and recordings in a personal encyclopedia |
 | **Story Director** | Photograph a written sentence, draw or narrate the next page, and make a storybook |
@@ -57,6 +58,15 @@ The "Race to the Top" game many kindergarten and first-grade classes play on pap
 
 It practices counting, adding, and number recognition, and the end screen points out why the
 middle numbers (like 7) win so often. No AI and no cost: it runs entirely on the tablet.
+
+## Tic-Tac-Toe
+
+The child plays X and goes first; Robo plays O. Get three in a row across, down, or diagonally.
+Robo chooses each move uniformly at random from the empty squares, with no winning, blocking,
+or positional strategy. Winning lines are highlighted, draws are announced, and **Play again**
+starts a fresh board. **Start again** also works during a game, including while Robo is choosing.
+Large buttons support touch and keyboard play; **Hear rules** reads the instructions aloud.
+The game runs in the browser with no paid AI calls or saved game data.
 
 ## Play notebooks
 
