@@ -11,6 +11,11 @@ body { min-height: 100vh; }
 .intro { text-align: center; }
 .intro .logo { font-size: clamp(2.5rem, 9vw, 4.5rem); }
 #rules { max-width: 28rem; margin: 1rem auto; font-size: 1.2rem; line-height: 1.4; }
+.choices { border: none; padding: 0; margin: 0.9rem 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+.choices legend { float: left; width: 100%; margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 800; }
+.choices button { min-height: 44px; touch-action: manipulation; }
+.choices [aria-pressed="true"] { background: #ffcb05; color: #1a1a1a; box-shadow: 0 0.35rem 0 #0005, inset 0 0 0 0.15rem #fff; }
+.settings-hint { font-size: 0.95rem; margin: 0.9rem 0; }
 .players { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.7rem; font-size: 1.3rem; font-weight: 900; }
 .players span { border-radius: 0.8rem; padding: 0.4rem 0.8rem; }
 .player-x { background: #ffedbc; color: #8c320a; }
@@ -28,7 +33,7 @@ body { min-height: 100vh; }
 .square[data-mark="O"] { background: #d5f2ff; color: #164d88; }
 .square.winning { border-color: #ffcb05; box-shadow: 0 0 0 0.15rem #ffcb05, 0 0.3rem 0 #0005; }
 button:focus-visible, a:focus-visible { outline: 0.25rem solid #ffcb05; outline-offset: 0.3rem; }
-.game-actions { display: grid; justify-items: center; gap: 1rem; text-align: center; }
+.game-actions { display: grid; justify-items: center; gap: 1rem; text-align: center; max-width: 28rem; }
 #turn { min-height: 2.8em; max-width: 24rem; margin: 0; font-size: clamp(1.3rem, 4vw, 1.8rem); font-weight: 900; }
 #again { touch-action: manipulation; }
 @media (min-width: 600px) and (orientation: landscape) {

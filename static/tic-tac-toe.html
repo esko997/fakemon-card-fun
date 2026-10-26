@@ -20,13 +20,24 @@
     <div class="intro">
       <h1 class="logo">Tic-Tac-Toe</h1>
       <p id="rules">Get three in a row: across, down, or diagonally.</p>
-      <div class="players"><span class="player-x">You are X</span><span class="player-o">Robo is O</span></div>
+      <fieldset class="choices">
+        <legend>Who's playing?</legend>
+        <button class="mid" type="button" data-mode="robo" aria-pressed="true">Play Robo</button>
+        <button class="mid" type="button" data-mode="two" aria-pressed="false">Two players</button>
+      </fieldset>
+      <fieldset class="choices" id="robo-options">
+        <legend>Robo's moves</legend>
+        <button class="mid" type="button" data-difficulty="random" aria-pressed="true">Random</button>
+        <button class="mid" type="button" data-difficulty="tricky" aria-pressed="false">Tricky</button>
+      </fieldset>
+      <p class="settings-hint">Changing an option starts a new game.</p>
+      <div class="players"><span class="player-x" id="player-x">You are X</span><span class="player-o" id="player-o">Robo is O</span></div>
     </div>
     <div id="board" class="board" role="group" aria-label="Tic-Tac-Toe board" aria-describedby="rules"></div>
     <div class="game-actions">
       <p id="turn" role="status" aria-live="polite" aria-atomic="true"></p>
       <button class="big primary" id="again" type="button">Start again</button>
-      <p class="hint">Robo picks a random empty square.<br>You go first!</p>
+      <p class="hint" id="game-hint">Robo picks a random empty square. You go first!</p>
     </div>
   </main>
   <script type="module" src="tic-tac-toe.js"></script>
